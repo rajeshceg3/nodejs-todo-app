@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongodb = require('mongodb');
 const mongodbMemoryServer = require('mongodb-memory-server');
+const path = require('path'); // Ensure path is at the top level
 
 async function wrapper() {
   const mongoServer = new mongodbMemoryServer.MongoMemoryServer();
@@ -15,7 +16,7 @@ async function wrapper() {
 
         const app = express();
         const port = 3000;
-        const path = require('path'); // path is not used, can be removed
+        // const path = require('path'); // Removed from here
 
         // Middleware to attach db to req
         app.use((req, res, next) => {
@@ -25,13 +26,18 @@ async function wrapper() {
 
         app.use(bodyParser.json());
 
-        // Serve static files from the 'static' directory
+        // Serve Angular static files
+        app.use(express.static(path.join(__dirname, 'angular-ui', 'dist', 'angular-ui', 'browser')));
+
+        // Serve static files from the 'static' directory (if still needed, ensure it doesn't conflict)
+        // For now, assuming Angular handles all UI, so /static might be for other purposes or removable.
+        // If Angular app also uses a /static path, this could conflict or need adjustment.
+        // For this task, we are focusing on serving the Angular app.
+        // Let's keep it but be mindful.
         app.use('/static', express.static(path.join(__dirname, 'static')));
 
-        // Serve index.html for the root path
-        app.get('/', (req, res) => {
-          res.sendFile(path.join(__dirname, 'pages', 'index.html'));
-        });
+        // Old route for serving pages/index.html is now removed.
+        // The catch-all route below will handle serving Angular's index.html.
 
         app.post('/list', (req, res) => {
           const content = req.body.text;
@@ -63,6 +69,17 @@ async function wrapper() {
               console.error("Error fetching documents:", err);
               res.status(500).send({ error: 'Failed to fetch list' });
             });
+        });
+
+        // Handle all other routes by serving the Angular app
+        app.get('*', (req, res, next) => {
+          // Check if the request is for an API endpoint (e.g., /list, or other future API routes)
+          // Add all your API prefixes here
+          if (req.path.startsWith('/list')) {
+            return next(); // Pass to the next Express middleware (could be a 404 if no API route matches)
+          }
+          // Serve Angular's index.html for UI routes
+          res.sendFile(path.join(__dirname, 'angular-ui', 'dist', 'angular-ui', 'browser', 'index.html'));
         });
 
         app.listen(port, () => {

@@ -1,0 +1,9 @@
+<div *ngIf="todos.length === 0">
+  No todos yet! Add one above.
+</div>
+<app-todo-item
+  *ngFor="let todo of todos"
+  [todo]="todo"
+  (delete)="handleDeleteTodo($event)"
+  ></app-todo-item>
+  <!-- (toggleComplete)="handleToggleComplete($event)" -->

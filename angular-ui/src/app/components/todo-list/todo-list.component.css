@@ -1,0 +1,12 @@
+.no-todos {
+  color: #777;
+  text-align: center;
+  padding: 20px;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+}
+
+/* Container for todo items if needed, but app-todo-item will handle its own style mostly */
+div { /* Referring to the div that wraps app-todo-item in todo-list.html */
+  margin-top: 10px;
+}
