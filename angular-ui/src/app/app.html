@@ -1,0 +1,12 @@
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+</div>
+<h2>Todo List</h2>
+
+<app-todo-add (todoAdded)="onTodoAdded($event)"></app-todo-add>
+<app-todo-list #todoListComponent></app-todo-list>
+
+<!-- Router outlet might be used later if we add more pages -->
+<!-- <router-outlet></router-outlet> -->

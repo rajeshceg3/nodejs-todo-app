@@ -1,0 +1,62 @@
+:host {
+  display: block; /* Makes the host element a block for better spacing */
+  padding: 10px;
+  margin-bottom: 8px;
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content {
+  flex-grow: 1;
+  /* Add styling for completed state if/when it's implemented */
+}
+
+.content.completed {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+button {
+  margin-left: 8px;
+  padding: 5px 10px;
+  font-size: 0.9em;
+  cursor: pointer;
+  border-radius: 3px;
+  border: 1px solid transparent;
+}
+
+.delete-button {
+  background-color: #d9534f;
+  color: white;
+  border-color: #d43f3a;
+}
+
+.delete-button:hover {
+  background-color: #c9302c;
+}
+
+/* Styles for complete button if added later
+.complete-button {
+  background-color: #5bc0de;
+  color: white;
+  border-color: #46b8da;
+}
+
+.complete-button:hover {
+  background-color: #31b0d5;
+}
+
+.undo-button {
+  background-color: #f0ad4e;
+  color: white;
+  border-color: #eea236;
+}
+
+.undo-button:hover {
+  background-color: #ec971f;
+}
+*/
