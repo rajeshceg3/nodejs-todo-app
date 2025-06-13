@@ -1,23 +1,27 @@
 /* General app layout */
 :host {
   display: block;
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  border: 1px solid #ccc;
+  max-width: 700px; /* Adjusted max-width */
+  margin: 30px auto; /* Increased margin for better spacing */
+  padding: 25px; /* Slightly increased padding */
+  font-family: 'Roboto', sans-serif; /* Ensure Roboto is applied if not inherited globally */
+  background-color: #ffffff; /* White background for the card */
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Modern box-shadow */
+  color: #333333; /* Default text color for the app container */
 }
 
 h1 {
   text-align: center;
-  color: #333;
+  color: #2ecc71; /* Primary Accent - Emerald Green */
+  font-weight: 500; /* Adjusted font-weight for h1 */
+  margin-bottom: 20px; /* Added margin for spacing */
 }
 
 h2 {
-  color: #555;
-  border-bottom: 1px solid #eee;
+  color: #555555; /* Darker gray for subheadings */
+  border-bottom: 1px solid rgba(0,0,0,0.1); /* Lighter, subtle border */
   padding-bottom: 10px;
   margin-top: 30px;
+  font-weight: 400; /* Adjusted font-weight for h2 */
 }

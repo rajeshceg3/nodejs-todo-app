@@ -1,43 +1,112 @@
 form {
   display: flex;
   margin-bottom: 20px;
-  gap: 10px;
+  gap: 10px; /* Existing gap, seems fine */
+  align-items: center; /* Vertically align items if they wrap or have different heights */
+}
+
+/* Label Styling - Assuming a label might be added later or is visually hidden */
+label[for='content'] {
+  font-size: 1em; /* Or adjust as needed */
+  color: #555555;
+  font-weight: 500;
+  margin-right: 5px; /* If side-by-side with input */
+  /* margin-bottom: 5px; If on its own line */
 }
 
 input[type="text"] {
   flex-grow: 1;
   padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid #ccc; /* Softened border */
+  border-radius: 4px; /* Consistent border-radius */
   font-size: 1em;
+  font-family: 'Roboto', sans-serif; /* Ensure Roboto font */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transition for focus */
 }
 
-button {
+input[type="text"]:focus {
+  border-color: #2ecc71; /* Primary Accent */
+  box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.2); /* Subtle glow effect */
+  outline: none;
+}
+
+button[type="submit"] {
   padding: 10px 15px;
-  background-color: #5cb85c;
+  background-color: #2ecc71; /* Primary Accent */
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1em;
+  font-weight: 500; /* For Roboto */
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out; /* Added transform for active state */
 }
 
-button:disabled {
-  background-color: #aaa;
+button[type="submit"]:hover:not(:disabled) {
+  background-color: #27ae60; /* Secondary Accent */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+button[type="submit"]:disabled {
+  background-color: #bdc3c7; /* Neutral gray */
   cursor: not-allowed;
+  box-shadow: none; /* Remove shadow when disabled */
 }
 
-button:hover:not(:disabled) {
-  background-color: #4cae4c;
+button[type="submit"]:active:not(:disabled) {
+  transform: translateY(1px); /* Visual feedback on click */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
+
+/* Error Message Styling (if <small> is used) */
+small.error-message { /* Made class specific */
+  color: #e74c3c; /* Standard error red */
+  font-size: 0.85em;
+  margin-top: 5px;
+  display: block; /* Ensure it takes its own line if needed */
+  width: 100%; /* Span full width if form becomes column */
+}
+
+/* Button animation for successful add */
+button.adding {
+  animation: pulseEffect 0.5s ease-out;
+}
+
+@keyframes pulseEffect {
+  0% {
+    transform: scale(1) translateY(0px); /* Include translateY if active transform is applied */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  50% {
+    transform: scale(1.05) translateY(0px);
+    background-color: #25a25a; /* Slightly lighter or more vibrant green */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+  100% {
+    transform: scale(1) translateY(0px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+}
+
 
 /* Basic responsive adjustment */
 @media (max-width: 600px) {
   form {
     flex-direction: column;
+    align-items: stretch; /* Stretch items to full width in column layout */
   }
-  button {
+  label[for='content'] { /* Adjust label margin for column layout */
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+  input[type="text"] {
+    width: 100%; /* Ensure input takes full width */
+  }
+  button[type="submit"] {
     width: 100%;
     margin-top: 10px;
+  }
+  small.error-message { /* Ensure error message is also full width */
+    margin-left: 0; /* Reset any horizontal margin if previously side-by-side */
   }
 }
