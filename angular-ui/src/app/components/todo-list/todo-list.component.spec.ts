@@ -13,8 +13,8 @@ describe('TodoListComponent', () => {
   let fixture: ComponentFixture<TodoListComponent>;
   let mockTodoService: jasmine.SpyObj<TodoService>;
   const mockTodos: Todo[] = [
-    { _id: '1', content: 'Todo 1' },
-    { _id: '2', content: 'Todo 2' }
+    { id: '1', content: 'Todo 1', completed: false },
+    { id: '2', content: 'Todo 2', completed: true }
   ];
 
   beforeEach(async () => {
@@ -53,9 +53,10 @@ describe('TodoListComponent', () => {
   it('should display "No todos yet!" message if todos array is empty', () => {
     mockTodoService.getTodos.and.returnValue(of([]));
     fixture.detectChanges();
-    const noTodosEl = fixture.debugElement.query(By.css('.no-todos'));
+    const noTodosEl = fixture.debugElement.query(By.css('.no-todos-message')); // Updated selector
     expect(noTodosEl).toBeTruthy();
-    expect(noTodosEl.nativeElement.textContent).toContain('No todos yet!');
+    // The text content check can be made more robust if needed, e.g. by trimming whitespace
+    expect(noTodosEl.nativeElement.textContent).toContain('No todos yet! Add one above.');
   });
 
   it('should log error if getTodos fails', () => {
@@ -66,32 +67,64 @@ describe('TodoListComponent', () => {
   });
 
   it('should reload todos when handleTodoAdded is called', () => {
-    const newTodo: Todo = { _id: '3', content: 'New Todo' };
-    mockTodoService.getTodos.and.returnValue(of(mockTodos)); // Initial load
+    const newTodo: Todo = { id: '3', content: 'New Todo', completed: false }; // Use id and completed
+    const initialMockTodos: Todo[] = [
+      { id: '1', content: 'Todo 1', completed: false },
+      { id: '2', content: 'Todo 2', completed: true }
+    ];
+    mockTodoService.getTodos.and.returnValue(of(initialMockTodos)); // Initial load
     fixture.detectChanges();
 
     mockTodoService.getTodos.calls.reset(); // Reset spy for the next call
-    mockTodoService.getTodos.and.returnValue(of([...mockTodos, newTodo])); // Simulate list refresh
+    mockTodoService.getTodos.and.returnValue(of([...initialMockTodos, newTodo])); // Simulate list refresh
     spyOn(console, 'log'); // to acknowledge the log in handleTodoAdded
 
     component.handleTodoAdded(newTodo);
     expect(console.log).toHaveBeenCalledWith('TodoListComponent: todoAdded event received, reloading todos.', newTodo);
     expect(mockTodoService.getTodos).toHaveBeenCalled();
-    expect(component.todos.length).toBe(3);
+    // Check against the new combined list length
+    const expectedLength = initialMockTodos.length + 1;
+    expect(component.todos.length).toBe(expectedLength);
   });
 
-  it('should optimistically remove todo and log when handleDeleteTodo is called', () => {
-    mockTodoService.getTodos.and.returnValue(of(mockTodos));
-    fixture.detectChanges();
-    expect(component.todos.length).toBe(2);
-    spyOn(console, 'log');
+  it('handleToggleComplete should toggle the completed status of a todo', () => {
+    const initialTodos: Todo[] = [
+      { id: '1', content: 'Todo 1', completed: false },
+      { id: '2', content: 'Todo 2', completed: true },
+    ];
+    component.todos = [...initialTodos]; // Set directly for this test
 
-    const todoIdToDelete = mockTodos[0]._id!;
-    component.handleDeleteTodo(todoIdToDelete);
+    // Toggle first todo
+    component.handleToggleComplete(initialTodos[0]);
+    expect(component.todos[0].completed).toBeTrue();
 
-    expect(console.log).toHaveBeenCalledWith('TodoListComponent received delete request for ID (frontend only):', todoIdToDelete);
+    // Toggle first todo again
+    component.handleToggleComplete(initialTodos[0]);
+    expect(component.todos[0].completed).toBeFalse();
+  });
+
+  it('handleDeleteTodo should remove the todo from the list (front-end behavior)', () => {
+    const initialTodosForDelete: Todo[] = [ // Renamed to avoid conflict
+      { id: 'del1', content: 'Todo Delete 1', completed: false },
+      { id: 'del2', content: 'Todo Delete 2', completed: false },
+    ];
+    component.todos = [...initialTodosForDelete];
+    // For current implementation, service is not called in handleDeleteTodo
+    // If it were: spyOn(component['todoService'], 'deleteTodo').and.returnValue(of(null));
+
+    spyOn(console, 'log'); // To acknowledge the log
+
+    component.handleDeleteTodo('del1'); // Pass the ID
+
+    expect(console.log).toHaveBeenCalledWith('TodoListComponent received delete request for ID (frontend only):', 'del1');
     expect(component.todos.length).toBe(1);
-    expect(component.todos.find(t => t._id === todoIdToDelete)).toBeUndefined();
-    // expect(mockTodoService.deleteTodo).toHaveBeenCalledWith(todoIdToDelete); // If backend delete was implemented
+    expect(component.todos[0].id).toBe('del2');
+  });
+
+  it('trackById should return todo.id or empty string', () => {
+      const todoWithId: Todo = { id: 'testId', content: 'Test', completed: false };
+      const todoWithoutId: Todo = { content: 'Test No ID', completed: false }; // id is optional
+      expect(component.trackById(0, todoWithId)).toBe('testId');
+      expect(component.trackById(0, todoWithoutId)).toBe('');
   });
 });

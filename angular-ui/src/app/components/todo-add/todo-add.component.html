@@ -3,8 +3,8 @@
     <label for="content">New Todo:</label>
     <input id="content" formControlName="content" placeholder="What needs to be done?">
     <div *ngIf="todoForm.controls['content'].invalid && (todoForm.controls['content'].dirty || todoForm.controls['content'].touched)">
-      <small *ngIf="todoForm.controls['content'].errors?.['required']">Content is required.</small>
+      <small class="error-message" *ngIf="todoForm.controls['content'].errors?.['required']">Content is required.</small>
     </div>
   </div>
-  <button type="submit" [disabled]="todoForm.invalid">Add Todo</button>
+  <button type="submit" [disabled]="todoForm.invalid" [class.adding]="isAdding">Add Todo</button>
 </form>

@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common'; // Added CommonModule for *ngIf 
 export class TodoAddComponent {
   @Output() todoAdded = new EventEmitter<Todo>();
   todoForm: FormGroup;
+  isAdding: boolean = false; // For button animation
   private todoService = inject(TodoService);
   private fb = inject(FormBuilder);
 
@@ -31,6 +32,8 @@ export class TodoAddComponent {
         next: (newTodo) => {
           this.todoAdded.emit(newTodo);
           this.todoForm.reset();
+          this.isAdding = true;
+          setTimeout(() => { this.isAdding = false; }, 500); // Duration of animation
         },
         error: (err) => console.error('Error adding todo:', err)
       });

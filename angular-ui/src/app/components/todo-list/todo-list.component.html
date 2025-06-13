@@ -1,9 +1,11 @@
-<div *ngIf="todos.length === 0">
-  No todos yet! Add one above.
+<div *ngIf="todos.length === 0" class="no-todos-message">
+  No todos yet! Add one above. <br> Maybe plan your day? :)
 </div>
-<app-todo-item
-  *ngFor="let todo of todos"
-  [todo]="todo"
-  (delete)="handleDeleteTodo($event)"
+<div *ngIf="todos.length > 0" [@listAnimation]="todos.length">
+  <app-todo-item
+    *ngFor="let todo of todos; trackBy: trackById"
+    [todo]="todo"
+    (delete)="handleDeleteTodo($event)"
+    (toggleComplete)="handleToggleComplete($event)"
   ></app-todo-item>
-  <!-- (toggleComplete)="handleToggleComplete($event)" -->
+</div>

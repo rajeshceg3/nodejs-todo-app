@@ -1,12 +1,21 @@
-.no-todos {
-  color: #777;
+.no-todos-message {
   text-align: center;
-  padding: 20px;
-  border: 1px dashed #ddd;
-  border-radius: 4px;
+  padding: 40px 20px; /* More padding */
+  color: #7f8c8d; /* Soft, neutral color */
+  font-size: 1.2em;
+  background-color: #fdfdfd; /* Slightly off-white */
+  border: 2px dashed #ecf0f1; /* Dashed border */
+  border-radius: 8px;
+  margin-top: 20px; /* Keep or adjust as needed */
+  margin-bottom: 20px; /* Add some margin at the bottom too */
 }
 
-/* Container for todo items if needed, but app-todo-item will handle its own style mostly */
-div { /* Referring to the div that wraps app-todo-item in todo-list.html */
+/* Removed generic div styling as todo-item handles its own margins now.
+   The :host selector in todo-item.component.css has margin-bottom: 10px;
+   which should provide adequate spacing between items.
+*/
+/*
+div {
   margin-top: 10px;
 }
+*/
