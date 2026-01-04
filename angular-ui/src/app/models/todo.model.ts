@@ -1,6 +1,10 @@
 export interface Todo {
-  id?: string; // Optional because it's assigned by the backend
+  _id: string;
   content: string;
-  completed: boolean;
-  // We might add 'completed: boolean' later if PUT functionality is added
+  rawContent?: string;
+  priority?: 'critical' | 'high' | 'medium' | 'low';
+  tags?: string[];
+  dueDate?: string;
+  status?: 'pending' | 'completed';
+  createdAt?: string;
 }

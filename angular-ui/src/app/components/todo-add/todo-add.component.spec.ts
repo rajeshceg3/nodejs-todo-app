@@ -49,7 +49,7 @@ describe('TodoAddComponent', () => {
   });
 
   it('should call TodoService.addTodo, emit todoAdded, and reset form on valid submission', () => {
-    const newTodo: Todo = { id: '1', content: 'New Task', completed: false }; // Use id and completed
+    const newTodo: Todo = { _id: '1', content: 'New Task', status: 'pending' };
     mockTodoService.addTodo.and.returnValue(of(newTodo));
     spyOn(component.todoAdded, 'emit');
 
@@ -62,7 +62,7 @@ describe('TodoAddComponent', () => {
   });
 
   it('should set isAdding to true and then false after onSubmit', (done) => {
-    const newTodo: Todo = { id: '1', content: 'Test Todo', completed: false };
+    const newTodo: Todo = { _id: '1', content: 'Test Todo', status: 'pending' };
     mockTodoService.addTodo.and.returnValue(of(newTodo));
     component.todoForm.setValue({ content: 'Test Todo' });
 

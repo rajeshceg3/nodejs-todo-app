@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component'; // Corrected import to app.component from app
+import { AppComponent } from './app';
 import { TodoAddComponent } from './components/todo-add/todo-add.component';
 import { TodoListComponent } from './components/todo-list/todo-list.component';
 import { RouterOutlet } from '@angular/router';
@@ -55,7 +55,7 @@ describe('AppComponent', () => {
   });
 
   it('onTodoAdded should call todoListComponent.handleTodoAdded if todoListComponent is available', () => {
-    const newTodo: Todo = { content: 'Test' }; // No _id needed as it's a new todo from user input.
+    const newTodo: Todo = { _id: 'mock-id', content: 'Test', status: 'pending' };
 
     // Manually ensure todoListComponent is defined for this test if ViewChild might not be ready
     // or if direct interaction is simpler for the test.

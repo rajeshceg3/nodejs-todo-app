@@ -50,23 +50,23 @@ export class TodoListComponent implements OnInit {
   }
 
   handleDeleteTodo(todoId: string): void {
-    console.log('TodoListComponent received delete request for ID (frontend only):', todoId);
-    // Implement actual deletion when service method is ready
-    // this.todoService.deleteTodo(todoId).subscribe(() => this.loadTodos());
-    // For now, filter out optimistically if needed, or just log
-    this.todos = this.todos.filter(todo => todo.id !== todoId); // Optimistic UI update
+    this.todoService.deleteTodo(todoId).subscribe({
+      next: () => this.loadTodos(),
+      error: (err) => console.error('Error deleting todo:', err)
+    });
   }
 
   handleToggleComplete(todoToToggle: Todo): void {
-    console.log('TodoListComponent received toggle complete request (frontend only):', todoToToggle);
-    // this.todoService.updateTodo(todo).subscribe(() => this.loadTodos());
-    const todo = this.todos.find(t => t.id === todoToToggle.id);
-    if (todo) {
-      todo.completed = !todo.completed;
-    }
+    const updatedStatus: 'completed' | 'pending' = todoToToggle.status === 'completed' ? 'pending' : 'completed';
+    const updatedTodo: Todo = { ...todoToToggle, status: updatedStatus };
+
+    this.todoService.updateTodo(updatedTodo).subscribe({
+      next: () => this.loadTodos(),
+      error: (err) => console.error('Error updating todo:', err)
+    });
   }
 
   trackById(index: number, item: Todo): string {
-    return item.id || ''; // Assuming 'id' is unique, fallback for items without id
+    return item._id || '';
   }
 }
