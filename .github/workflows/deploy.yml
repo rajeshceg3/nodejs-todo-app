@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      # Cache for Angular directory dependencies as well, since setup-node cache only covers root package-lock by default unless configured
+      # But setup-node cache supports 'npm' which usually looks at root.
+      # We will just run install. Caching node_modules manually can be tricky with two package.jsons.
+      # setup-node with cache: 'npm' looks at package-lock.json. We have one in root and one in angular-ui.
+      # We will rely on npm cache for speed or let setup-node handle the root one.
+
+      - name: Install Root Dependencies
+        run: npm ci
+
+      - name: Install Angular Dependencies
+        run: |
+          cd angular-ui
+          npm ci --legacy-peer-deps
+
+      - name: Test Angular UI
+        run: |
+          cd angular-ui
+          npm test -- --watch=false --browsers=ChromeHeadless
+
+      - name: Build Angular UI
+        run: npm run build:ui
+
+      # In a real deployment, we would archive the build artifacts or deploy them.
+      # For Render, we often just push the code and Render builds it.
+      # However, if we want to build in CI and deploy artifacts, we'd need a Docker container or similar.
+      # Given the "Simplicity" requirement and typical Render Node setup:
+      # Render usually rebuilds the app. But we can also use a "Deploy Hook" after tests pass.
+      # We will assume we trigger a deploy hook if on main branch and tests passed.
+
+  deploy:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Deployment
+        # Using a simple curl to trigger the deploy hook is the standard, simplest way for Render.
+        # This requires a RENDER_DEPLOY_HOOK_URL secret to be set in the repo.
+        run: |
+          if [ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
+            curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+          else
+            echo "RENDER_DEPLOY_HOOK_URL not set. Skipping deployment trigger."
+          fi
