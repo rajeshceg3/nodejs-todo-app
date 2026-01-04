@@ -7,23 +7,25 @@ import { TodoItemComponent } from '../todo-item/todo-item.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common'; // For *ngIf, *ngFor
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('TodoListComponent', () => {
   let component: TodoListComponent;
   let fixture: ComponentFixture<TodoListComponent>;
   let mockTodoService: jasmine.SpyObj<TodoService>;
   const mockTodos: Todo[] = [
-    { id: '1', content: 'Todo 1', completed: false },
-    { id: '2', content: 'Todo 2', completed: true }
+    { _id: '1', content: 'Todo 1', status: 'pending' },
+    { _id: '2', content: 'Todo 2', status: 'completed' }
   ];
 
   beforeEach(async () => {
-    mockTodoService = jasmine.createSpyObj('TodoService', ['getTodos', 'deleteTodo']);
+    mockTodoService = jasmine.createSpyObj('TodoService', ['getTodos', 'deleteTodo', 'updateTodo']);
 
     await TestBed.configureTestingModule({
       imports: [
         CommonModule, // For *ngIf, *ngFor in TodoListComponent's template
         HttpClientTestingModule,
+        NoopAnimationsModule,
         TodoListComponent, // Standalone component being tested
         TodoItemComponent  // Standalone component used by TodoListComponent
       ],
@@ -67,10 +69,10 @@ describe('TodoListComponent', () => {
   });
 
   it('should reload todos when handleTodoAdded is called', () => {
-    const newTodo: Todo = { id: '3', content: 'New Todo', completed: false }; // Use id and completed
+    const newTodo: Todo = { _id: '3', content: 'New Todo', status: 'pending' };
     const initialMockTodos: Todo[] = [
-      { id: '1', content: 'Todo 1', completed: false },
-      { id: '2', content: 'Todo 2', completed: true }
+      { _id: '1', content: 'Todo 1', status: 'pending' },
+      { _id: '2', content: 'Todo 2', status: 'completed' }
     ];
     mockTodoService.getTodos.and.returnValue(of(initialMockTodos)); // Initial load
     fixture.detectChanges();
@@ -89,41 +91,41 @@ describe('TodoListComponent', () => {
 
   it('handleToggleComplete should toggle the completed status of a todo', () => {
     const initialTodos: Todo[] = [
-      { id: '1', content: 'Todo 1', completed: false },
-      { id: '2', content: 'Todo 2', completed: true },
+      { _id: '1', content: 'Todo 1', status: 'pending' },
+      { _id: '2', content: 'Todo 2', status: 'completed' },
     ];
-    component.todos = [...initialTodos]; // Set directly for this test
+    component.todos = [...initialTodos];
+
+    // Setup updateTodo spy to return success (can return modified or null, since we reload)
+    mockTodoService.updateTodo.and.returnValue(of({ ...initialTodos[0], status: 'completed' }));
+    mockTodoService.getTodos.and.returnValue(of([{ ...initialTodos[0], status: 'completed' }, initialTodos[1]]));
 
     // Toggle first todo
     component.handleToggleComplete(initialTodos[0]);
-    expect(component.todos[0].completed).toBeTrue();
 
-    // Toggle first todo again
-    component.handleToggleComplete(initialTodos[0]);
-    expect(component.todos[0].completed).toBeFalse();
+    expect(mockTodoService.updateTodo).toHaveBeenCalled();
+    expect(mockTodoService.getTodos).toHaveBeenCalled();
   });
 
-  it('handleDeleteTodo should remove the todo from the list (front-end behavior)', () => {
-    const initialTodosForDelete: Todo[] = [ // Renamed to avoid conflict
-      { id: 'del1', content: 'Todo Delete 1', completed: false },
-      { id: 'del2', content: 'Todo Delete 2', completed: false },
+  it('handleDeleteTodo should remove the todo from the list', () => {
+    const initialTodosForDelete: Todo[] = [
+      { _id: 'del1', content: 'Todo Delete 1', status: 'pending' },
+      { _id: 'del2', content: 'Todo Delete 2', status: 'pending' },
     ];
     component.todos = [...initialTodosForDelete];
-    // For current implementation, service is not called in handleDeleteTodo
-    // If it were: spyOn(component['todoService'], 'deleteTodo').and.returnValue(of(null));
 
-    spyOn(console, 'log'); // To acknowledge the log
+    mockTodoService.deleteTodo.and.returnValue(of(null));
+    mockTodoService.getTodos.and.returnValue(of([initialTodosForDelete[1]]));
 
-    component.handleDeleteTodo('del1'); // Pass the ID
+    component.handleDeleteTodo('del1');
 
-    expect(console.log).toHaveBeenCalledWith('TodoListComponent received delete request for ID (frontend only):', 'del1');
-    expect(component.todos.length).toBe(1);
-    expect(component.todos[0].id).toBe('del2');
+    expect(mockTodoService.deleteTodo).toHaveBeenCalledWith('del1');
+    expect(mockTodoService.getTodos).toHaveBeenCalled();
   });
 
-  it('trackById should return todo.id or empty string', () => {
-      const todoWithId: Todo = { id: 'testId', content: 'Test', completed: false };
-      const todoWithoutId: Todo = { content: 'Test No ID', completed: false }; // id is optional
+  it('trackById should return todo._id or empty string', () => {
+      const todoWithId: Todo = { _id: 'testId', content: 'Test', status: 'pending' };
+      const todoWithoutId: Todo = { content: 'Test No ID', status: 'pending' } as Todo; // id is optional
       expect(component.trackById(0, todoWithId)).toBe('testId');
       expect(component.trackById(0, todoWithoutId)).toBe('');
   });

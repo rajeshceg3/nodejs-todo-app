@@ -8,7 +8,7 @@ describe('TodoItemComponent', () => {
   let component: TodoItemComponent;
   let fixture: ComponentFixture<TodoItemComponent>;
   // Updated mockTodo to use id and completed status
-  const mockTodo: Todo = { id: '1', content: 'Test Todo Item', completed: false };
+  const mockTodo: Todo = { _id: '1', content: 'Test Todo Item', status: 'pending' };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -26,17 +26,17 @@ describe('TodoItemComponent', () => {
   });
 
   it('should display the todo content', () => {
-    const contentElement = fixture.debugElement.query(By.css('.content'));
+    const contentElement = fixture.debugElement.query(By.css('.todo-content')); // Updated class
     expect(contentElement.nativeElement.textContent).toContain(mockTodo.content);
   });
 
   it('isCompleted HostBinding should reflect todo.completed state', () => {
-    component.todo = { id: '1', content: 'Test', completed: false };
+    component.todo = { _id: '1', content: 'Test', status: 'pending' };
     fixture.detectChanges();
     expect(component.isCompleted).toBeFalse();
     expect(fixture.nativeElement.classList.contains('completed-item')).toBeFalse();
 
-    component.todo.completed = true;
+    component.todo.status = 'completed';
     fixture.detectChanges();
     expect(component.isCompleted).toBeTrue();
     expect(fixture.nativeElement.classList.contains('completed-item')).toBeTrue();
@@ -46,20 +46,18 @@ describe('TodoItemComponent', () => {
     // Use the component's already set todo or set a new one
     // component.todo is already set with mockTodo in beforeEach
     spyOn(component.toggleComplete, 'emit');
-    spyOn(console, 'log'); // Keep spy for existing console log
+    // spyOn(console, 'log'); // Removed log spy as logs were cleaned up
 
     component.onToggleComplete();
 
-    expect(console.log).toHaveBeenCalledWith('Toggle complete requested for (frontend only):', component.todo);
     expect(component.toggleComplete.emit).toHaveBeenCalledWith(component.todo);
   });
 
   it('should emit delete event with todo id when onDelete is called', () => {
     // component.todo is already set with mockTodo in beforeEach
     spyOn(component.delete, 'emit');
-    spyOn(console, 'log'); // Keep spy for existing console log
+    // spyOn(console, 'log'); // Removed log spy
     component.onDelete();
-    expect(console.log).toHaveBeenCalledWith('Delete requested for (frontend only):', component.todo.id);
-    expect(component.delete.emit).toHaveBeenCalledWith(component.todo.id); // Ensure it's todo.id
+    expect(component.delete.emit).toHaveBeenCalledWith(component.todo._id);
   });
 });

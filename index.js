@@ -40,22 +40,113 @@ async function wrapper() {
         // The catch-all route below will handle serving Angular's index.html.
 
         app.post('/list', (req, res) => {
-          const content = req.body.text;
+          const rawContent = req.body.text;
           // Ensure content is provided
-          if (!content) {
+          if (!rawContent) {
             return res.status(400).send({ error: 'Content cannot be empty' });
           }
-          req.db.collection('list').insertOne({ content: content }) // Ensure content is correctly passed
+
+          // Smart Parsing Logic
+          const priorityRegex = /!(critical|high|medium|low)/i;
+          const tagRegex = /#(\w+)/g;
+          const dueDateRegex = /@(\d{4}-\d{2}-\d{2})/;
+
+          let priority = 'medium';
+          const priorityMatch = rawContent.match(priorityRegex);
+          if (priorityMatch) {
+            priority = priorityMatch[1].toLowerCase();
+          }
+
+          const tags = [];
+          let tagMatch;
+          while ((tagMatch = tagRegex.exec(rawContent)) !== null) {
+            tags.push(tagMatch[1]);
+          }
+
+          let dueDate = null;
+          const dateMatch = rawContent.match(dueDateRegex);
+          if (dateMatch) {
+            dueDate = new Date(dateMatch[1]);
+          }
+
+          // Clean content by removing metadata markers
+          let content = rawContent
+            .replace(priorityRegex, '')
+            .replace(tagRegex, '')
+            .replace(dueDateRegex, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+          // Fallback if cleaning removed everything
+          if (!content) content = rawContent;
+
+          const newTodo = {
+            content,
+            rawContent,
+            priority,
+            tags,
+            dueDate,
+            status: 'pending',
+            createdAt: new Date()
+          };
+
+          req.db.collection('list').insertOne(newTodo)
             .then(result => {
-              // Send back the inserted document, or at least its ID
               res.status(201).send({
-                todo: { _id: result.insertedId, content: content },
+                todo: { ...newTodo, _id: result.insertedId },
               });
             })
             .catch(err => {
               console.error("Error inserting document:", err);
               res.status(500).send({ error: 'Failed to add item to list' });
             });
+        });
+
+        app.patch('/list/:id', (req, res) => {
+          const id = req.params.id;
+          const updates = req.body;
+
+          if (!mongodb.ObjectId.isValid(id)) {
+             return res.status(400).send({ error: 'Invalid ID format' });
+          }
+
+          delete updates._id; // Prevent updating _id
+
+          req.db.collection('list').findOneAndUpdate(
+            { _id: new mongodb.ObjectId(id) },
+            { $set: updates },
+            { returnDocument: 'after' }
+          )
+          .then(result => {
+            if (!result.value) {
+              return res.status(404).send({ error: 'Todo not found' });
+            }
+            res.status(200).send({ todo: result.value });
+          })
+          .catch(err => {
+            console.error("Error updating document:", err);
+            res.status(500).send({ error: 'Failed to update item' });
+          });
+        });
+
+        app.delete('/list/:id', (req, res) => {
+          const id = req.params.id;
+
+          if (!mongodb.ObjectId.isValid(id)) {
+             return res.status(400).send({ error: 'Invalid ID format' });
+          }
+
+          req.db.collection('list').deleteOne({ _id: new mongodb.ObjectId(id) })
+          .then(result => {
+             if (result.deletedCount === 0) {
+               return res.status(404).send({ error: 'Todo not found' });
+             }
+             res.status(200).send({ message: 'Todo deleted successfully' });
+          })
+          .catch(err => {
+             console.error("Error deleting document:", err);
+             res.status(500).send({ error: 'Failed to delete item' });
+          });
         });
 
         app.get('/list', (req, res) => {

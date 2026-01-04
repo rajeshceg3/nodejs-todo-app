@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Todo } from '../models/todo.model';
+import { Todo } from '../../models/todo.model';
 
 interface GetTodosResponse {
   todos: Todo[];
@@ -30,13 +30,14 @@ export class TodoService {
       .pipe(map(response => response.todo));
   }
 
-  // Placeholder for deleteTodo - will require backend endpoint
-  // deleteTodo(id: string): Observable<any> {
-  //   return this.http.delete(\`\${this.apiUrl}/\${id}\`);
-  // }
+  deleteTodo(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 
-  // Placeholder for updateTodo (e.g., mark as complete) - will require backend endpoint
-  // updateTodo(todo: Todo): Observable<any> {
-  //   return this.http.put(\`\${this.apiUrl}/\${todo._id}\`, todo);
-  // }
+  updateTodo(todo: Todo): Observable<Todo> {
+    // We send only the updates, but for now sending the whole object is fine as patch handles it
+    const { _id, ...updates } = todo;
+    return this.http.patch<{todo: Todo}>(`${this.apiUrl}/${_id}`, updates)
+       .pipe(map(response => response.todo));
+  }
 }
