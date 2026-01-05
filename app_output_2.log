@@ -1,0 +1,33 @@
+
+> node-starter@0.0.0 start
+> npm run build:ui && node index.js
+
+
+> node-starter@0.0.0 build:ui
+> npm run build --prefix angular-ui
+
+
+> angular-ui@0.0.0 build
+> ng build
+
+❯ Building...
+✔ Building...
+Initial chunk files   | Names         |  Raw size | Estimated transfer size
+main-3FGIUFVL.js      | main          | 356.17 kB |                93.06 kB
+polyfills-B6TNHZQ6.js | polyfills     |  34.58 kB |                11.32 kB
+styles-4CAG5XGS.css   | styles        |   1.17 kB |               479 bytes
+
+                      | Initial total | 391.92 kB |               104.86 kB
+
+Application bundle generation complete. [3.814 seconds]
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mTS-998113: RouterOutlet is not used within the template of AppComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.ts:10:12:
+[37m      10 │   imports: [[32mRouterOutlet[37m, TodoListComponent, TodoAddComponent],
+         ╵             [32m~~~~~~~~~~~~[0m
+
+
+Output location: /app/angular-ui/dist/angular-ui
+
+App listening at http://localhost:3000
