@@ -3,6 +3,34 @@ const bodyParser = require('body-parser');
 const mongodb = require('mongodb');
 const mongodbMemoryServer = require('mongodb-memory-server');
 const path = require('path'); // Ensure path is at the top level
+const crypto = require('crypto');
+
+async function createAuditLog(db, action, entityId, payload) {
+  const auditCollection = db.collection('audit_log');
+  // Simple "last one wins" approach for prototype.
+  // In a real high-concurrency environment, we would use a queue or transaction
+  // to ensure the chain is strictly linear without race conditions.
+  const lastLog = await auditCollection.find().sort({ timestamp: -1 }).limit(1).toArray();
+  const previousHash = lastLog.length > 0 ? lastLog[0].hash : 'GENESIS_HASH_0000000000000000000000000000';
+  const timestamp = new Date();
+
+  // Normalize payload to string for hashing to ensure consistency
+  const payloadStr = JSON.stringify(payload);
+
+  const dataToHash = timestamp.toISOString() + action + entityId + payloadStr + previousHash;
+  const hash = crypto.createHash('sha256').update(dataToHash).digest('hex');
+
+  const newLog = {
+    action,
+    entityId,
+    payload, // Storing full payload for audit visibility
+    timestamp,
+    previousHash,
+    hash
+  };
+
+  await auditCollection.insertOne(newLog);
+}
 
 async function wrapper() {
   const mongoServer = new mongodbMemoryServer.MongoMemoryServer();
@@ -91,7 +119,10 @@ async function wrapper() {
           };
 
           req.db.collection('list').insertOne(newTodo)
-            .then(result => {
+            .then(async result => {
+              // SOTL: Log the creation
+              await createAuditLog(req.db, 'CREATE_TASK', result.insertedId.toString(), newTodo);
+
               res.status(201).send({
                 todo: { ...newTodo, _id: result.insertedId },
               });
@@ -117,10 +148,14 @@ async function wrapper() {
             { $set: updates },
             { returnDocument: 'after' }
           )
-          .then(result => {
+          .then(async result => {
             if (!result.value) {
               return res.status(404).send({ error: 'Todo not found' });
             }
+
+            // SOTL: Log the update
+            await createAuditLog(req.db, 'UPDATE_TASK', id, updates);
+
             res.status(200).send({ todo: result.value });
           })
           .catch(err => {
@@ -137,16 +172,75 @@ async function wrapper() {
           }
 
           req.db.collection('list').deleteOne({ _id: new mongodb.ObjectId(id) })
-          .then(result => {
+          .then(async result => {
              if (result.deletedCount === 0) {
                return res.status(404).send({ error: 'Todo not found' });
              }
+
+             // SOTL: Log the deletion
+             await createAuditLog(req.db, 'DELETE_TASK', id, { deleted: true });
+
              res.status(200).send({ message: 'Todo deleted successfully' });
           })
           .catch(err => {
              console.error("Error deleting document:", err);
              res.status(500).send({ error: 'Failed to delete item' });
           });
+        });
+
+        // SOTL: Fetch Audit Logs
+        app.get('/audit-logs', (req, res) => {
+          req.db.collection('audit_log').find({}).sort({ timestamp: -1 }).toArray()
+            .then(logs => {
+              res.status(200).send({ logs });
+            })
+            .catch(err => {
+              console.error("Error fetching audit logs:", err);
+              res.status(500).send({ error: 'Failed to fetch audit logs' });
+            });
+        });
+
+        // SOTL: Verify Integrity
+        app.get('/audit-logs/verify', (req, res) => {
+          req.db.collection('audit_log').find({}).sort({ timestamp: 1 }).toArray()
+            .then(logs => {
+              let isValid = true;
+              let previousHash = 'GENESIS_HASH_0000000000000000000000000000';
+              const brokenIndices = [];
+
+              for (let i = 0; i < logs.length; i++) {
+                const log = logs[i];
+                const expectedPreviousHash = log.previousHash;
+
+                // Check chain link
+                if (expectedPreviousHash !== previousHash) {
+                   isValid = false;
+                   brokenIndices.push({ index: i, reason: 'Previous hash mismatch' });
+                }
+
+                // Re-calculate hash
+                const payloadStr = JSON.stringify(log.payload);
+                const dataToHash = new Date(log.timestamp).toISOString() + log.action + log.entityId + payloadStr + previousHash;
+                const calculatedHash = crypto.createHash('sha256').update(dataToHash).digest('hex');
+
+                if (calculatedHash !== log.hash) {
+                   isValid = false;
+                   brokenIndices.push({ index: i, reason: 'Hash mismatch' });
+                }
+
+                previousHash = log.hash;
+              }
+
+              res.status(200).send({
+                status: isValid ? 'INTEGRITY_VERIFIED' : 'INTEGRITY_COMPROMISED',
+                count: logs.length,
+                brokenIndices
+              });
+            })
+            .catch(err => {
+              console.error("Error verifying audit logs:", err);
+              res.status(500).send({ error: 'Failed to verify logs' });
+            });
         });
 
         app.get('/list', (req, res) => {
@@ -164,10 +258,9 @@ async function wrapper() {
 
         // Handle all other routes by serving the Angular app
         app.get('*', (req, res, next) => {
-          // Check if the request is for an API endpoint (e.g., /list, or other future API routes)
-          // Add all your API prefixes here
-          if (req.path.startsWith('/list')) {
-            return next(); // Pass to the next Express middleware (could be a 404 if no API route matches)
+          // Check if the request is for an API endpoint
+          if (req.path.startsWith('/list') || req.path.startsWith('/audit-logs')) {
+            return next();
           }
           // Serve Angular's index.html for UI routes
           res.sendFile(path.join(__dirname, 'angular-ui', 'dist', 'angular-ui', 'browser', 'index.html'));
