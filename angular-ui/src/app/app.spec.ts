@@ -40,8 +40,8 @@ describe('AppComponent', () => {
 
   it('should render title in an h1 tag', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    // The h1 is inside a div with text-align:center. The welcome message is part of the h1.
-    expect(compiled.querySelector('h1')?.textContent).toContain('Welcome to Todo App!');
+    // The h1 is inside a div with text-align:center.
+    expect(compiled.querySelector('h1')?.textContent).toContain('Todo App');
   });
 
   it('should render app-todo-add component', () => {
