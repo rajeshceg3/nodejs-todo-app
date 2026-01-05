@@ -1,27 +1,38 @@
-/* General app layout */
 :host {
   display: block;
-  max-width: 700px; /* Adjusted max-width */
-  margin: 30px auto; /* Increased margin for better spacing */
-  padding: 25px; /* Slightly increased padding */
-  font-family: 'Roboto', sans-serif; /* Ensure Roboto is applied if not inherited globally */
-  background-color: #ffffff; /* White background for the card */
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Modern box-shadow */
-  color: #333333; /* Default text color for the app container */
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.container {
+  /* No card background for the main container anymore,
+     keeping it open and airy like a dashboard */
 }
 
 h1 {
   text-align: center;
-  color: #2ecc71; /* Primary Accent - Emerald Green */
-  font-weight: 500; /* Adjusted font-weight for h1 */
-  margin-bottom: 20px; /* Added margin for spacing */
+  color: var(--color-text-primary);
+  font-size: 2.5rem;
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
 }
 
-h2 {
-  color: #555555; /* Darker gray for subheadings */
-  border-bottom: 1px solid rgba(0,0,0,0.1); /* Lighter, subtle border */
-  padding-bottom: 10px;
-  margin-top: 30px;
-  font-weight: 400; /* Adjusted font-weight for h2 */
+.subtitle {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 600px) {
+  :host {
+    margin: 30px auto;
+    padding: 0 16px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
 }

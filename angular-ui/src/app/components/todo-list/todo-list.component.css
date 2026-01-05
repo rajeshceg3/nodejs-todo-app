@@ -1,21 +1,23 @@
 .no-todos-message {
   text-align: center;
-  padding: 40px 20px; /* More padding */
-  color: #7f8c8d; /* Soft, neutral color */
-  font-size: 1.2em;
-  background-color: #fdfdfd; /* Slightly off-white */
-  border: 2px dashed #ecf0f1; /* Dashed border */
-  border-radius: 8px;
-  margin-top: 20px; /* Keep or adjust as needed */
-  margin-bottom: 20px; /* Add some margin at the bottom too */
+  padding: 60px 20px;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-top: 20px;
+  border: 1px dashed #e3e8ee;
 }
 
-/* Removed generic div styling as todo-item handles its own margins now.
-   The :host selector in todo-item.component.css has margin-bottom: 10px;
-   which should provide adequate spacing between items.
-*/
-/*
-div {
-  margin-top: 10px;
+.no-todos-message br {
+  margin-bottom: 8px;
+  display: block;
+  content: "";
 }
-*/
+
+/* Ensure list items track nicely */
+div[class*="ng-trigger"] {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

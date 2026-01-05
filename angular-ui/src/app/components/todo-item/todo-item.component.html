@@ -1,23 +1,23 @@
 <div class="todo-card" [ngClass]="todo.priority || 'medium'">
-  <div class="todo-header">
-    <span class="priority-badge" [class.critical]="todo.priority === 'critical'" [class.high]="todo.priority === 'high'">
-      {{ todo.priority || 'medium' | uppercase }}
-    </span>
-    <span class="date" *ngIf="todo.dueDate">{{ todo.dueDate | date:'shortDate' }}</span>
-  </div>
+  <div class="card-body">
+    <div class="todo-header">
+      <div class="badges">
+        <span class="priority-dot" [class.critical]="todo.priority === 'critical'" [class.high]="todo.priority === 'high'" [class.medium]="!todo.priority || todo.priority === 'medium'" [class.low]="todo.priority === 'low'"></span>
+        <span class="priority-text">{{ todo.priority || 'medium' }}</span>
+        <span class="tag" *ngFor="let tag of todo.tags">#{{ tag }}</span>
+      </div>
+      <span class="date" *ngIf="todo.dueDate">{{ todo.dueDate | date:'MMM d' }}</span>
+    </div>
 
-  <div class="todo-content" [class.completed]="todo.status === 'completed'">
-    {{ todo.content }}
-  </div>
-
-  <div class="tags" *ngIf="todo.tags && todo.tags.length > 0">
-    <span class="tag" *ngFor="let tag of todo.tags">#{{ tag }}</span>
+    <div class="todo-content" [class.completed]="todo.status === 'completed'">
+      {{ todo.content }}
+    </div>
   </div>
 
   <div class="actions">
-    <button class="complete-button" [class.undo-button]="todo.status === 'completed'" (click)="onToggleComplete()">
-      {{ todo.status === 'completed' ? 'Undo' : 'Complete' }}
+    <button class="action-btn complete-btn" [class.undo]="todo.status === 'completed'" (click)="onToggleComplete()">
+      {{ todo.status === 'completed' ? 'Undo' : 'Done' }}
     </button>
-    <button class="delete-button" (click)="onDelete()">Delete</button>
+    <button class="action-btn delete-btn" (click)="onDelete()">Delete</button>
   </div>
 </div>
