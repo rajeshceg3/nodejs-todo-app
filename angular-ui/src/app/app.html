@@ -2,16 +2,11 @@
   <nav class="nav-bar">
     <a routerLink="/" class="nav-link">Mission Tasks</a>
     <a routerLink="/audit" class="nav-link">Operations Log</a>
+    <a routerLink="/toc" class="nav-link">Temporal Ops Center</a>
   </nav>
 
   <h1>{{ title }}</h1>
   <p class="subtitle">Stay organized and get things done.</p>
 
   <router-outlet></router-outlet>
-
-  <!-- We only show these if we are on the home route.
-       However, since we just added router-outlet, we should probably move the existing content
-       into a HomeComponent or use a hack with *ngIf logic based on router state,
-       BUT the cleanest way is to create a HomeComponent.
-  -->
 </div>
