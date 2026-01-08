@@ -1,10 +1,21 @@
-<form [formGroup]="todoForm" (ngSubmit)="onSubmit()">
-  <div>
-    <label for="content">New Todo:</label>
-    <input id="content" formControlName="content" placeholder="What needs to be done?">
-    <div *ngIf="todoForm.controls['content'].invalid && (todoForm.controls['content'].dirty || todoForm.controls['content'].touched)">
-      <small class="error-message" *ngIf="todoForm.controls['content'].errors?.['required']">Content is required.</small>
+<form [formGroup]="todoForm" (ngSubmit)="onSubmit()" class="add-task-form">
+  <div class="input-group">
+    <div class="input-wrapper">
+      <input
+        id="content"
+        formControlName="content"
+        placeholder="What needs to be done?"
+        autocomplete="off"
+        class="task-input">
+
+      <button type="submit" [disabled]="todoForm.invalid" class="add-btn" [class.adding]="isAdding">
+        <span *ngIf="!isAdding">Add</span>
+        <span *ngIf="isAdding">...</span>
+      </button>
+    </div>
+
+    <div class="input-error" *ngIf="todoForm.controls['content'].invalid && (todoForm.controls['content'].dirty || todoForm.controls['content'].touched)">
+      <span *ngIf="todoForm.controls['content'].errors?.['required']">Content is required.</span>
     </div>
   </div>
-  <button type="submit" [disabled]="todoForm.invalid" [class.adding]="isAdding">Add Todo</button>
 </form>
