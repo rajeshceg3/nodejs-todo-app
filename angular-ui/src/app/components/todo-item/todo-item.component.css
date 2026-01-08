@@ -1,81 +1,78 @@
 .todo-card {
   background-color: var(--color-surface);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  transition: all 0.2s ease;
-  border: 1px solid transparent;
+  align-items: flex-start;
+  padding: 16px;
+  transition: all var(--transition-normal);
+  border: 1px solid var(--color-border);
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
 }
 
 .todo-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-  border-color: #e3e8ee;
+  border-color: #dbe3ed;
+}
+
+.checkbox-container {
+  margin-right: 16px;
+  padding-top: 2px;
+}
+
+.custom-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid #cfd7df;
+  background: white;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: white;
+}
+
+.custom-checkbox:hover {
+  border-color: var(--color-primary);
+}
+
+.custom-checkbox.checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: scale(1.05);
+}
+
+.check-icon {
+  width: 14px;
+  height: 14px;
+  stroke-dasharray: 24;
+  stroke-dashoffset: 0;
+  animation: draw 0.3s ease-in-out;
+}
+
+@keyframes draw {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
 }
 
 .card-body {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-/* Priority Indicators */
-.priority-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 6px;
-}
-.priority-dot.critical { background-color: var(--color-danger); }
-.priority-dot.high { background-color: var(--color-warning); }
-.priority-dot.medium { background-color: var(--color-primary); }
-.priority-dot.low { background-color: var(--color-success); }
-
-.priority-text {
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--color-text-tertiary);
-  margin-right: 12px;
-  letter-spacing: 0.5px;
-}
-
-.todo-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 4px;
-}
-
-.badges {
-  display: flex;
-  align-items: center;
-}
-
-.tag {
-  background-color: #f0f4f8;
-  color: var(--color-text-secondary);
-  border-radius: 12px;
-  padding: 2px 8px;
-  font-size: 0.7rem;
-  font-weight: 500;
-  margin-right: 6px;
-}
-
-.date {
-  font-size: 0.75rem;
-  color: var(--color-text-tertiary);
-  margin-left: auto; /* Push date to right if needed, but badges are pushing it */
+  gap: 8px;
 }
 
 .todo-content {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--color-text-primary);
+  line-height: 1.5;
   transition: color 0.2s;
 }
 
@@ -84,12 +81,54 @@
   color: var(--color-text-tertiary);
 }
 
+.todo-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.priority-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+}
+
+.priority-badge.critical { background: #fee2e2; color: var(--color-danger); }
+.priority-badge.high { background: #fef3c7; color: #b45309; }
+.priority-badge.medium { background: #e0e7ff; color: var(--color-primary); }
+.priority-badge.low { background: #d1fae5; color: #059669; }
+
+.tag {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.date {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+  font-weight: 500;
+  margin-left: auto;
+}
+
 /* Actions */
 .actions {
-  display: flex;
-  gap: 12px;
-  margin-left: 20px;
-  opacity: 0.7; /* Subtle by default */
+  margin-left: 12px;
+  opacity: 0;
   transition: opacity 0.2s;
 }
 
@@ -97,67 +136,44 @@
   opacity: 1;
 }
 
-.action-btn {
+.icon-btn {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 8px 12px;
+  padding: 8px;
   border-radius: var(--radius-sm);
-  transition: all 0.2s;
-}
-
-.complete-btn {
-  color: var(--color-success);
-  background-color: rgba(62, 207, 142, 0.1);
-}
-
-.complete-btn:hover {
-  background-color: rgba(62, 207, 142, 0.2);
-}
-
-.complete-btn.undo {
-  color: var(--color-warning);
-  background-color: rgba(247, 185, 85, 0.1);
-}
-
-.complete-btn.undo:hover {
-  background-color: rgba(247, 185, 85, 0.2);
-}
-
-.delete-btn {
   color: var(--color-text-tertiary);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.delete-btn:hover {
+.icon-btn:hover {
+  background-color: #fee2e2;
   color: var(--color-danger);
-  background-color: rgba(226, 37, 37, 0.05);
 }
 
 /* Mobile Optimizations */
 @media (max-width: 600px) {
   .todo-card {
-    flex-direction: column;
+    padding: 14px;
     align-items: flex-start;
-    padding: 16px;
   }
 
-  .card-body {
-    width: 100%;
-    margin-bottom: 12px;
+  .custom-checkbox {
+    width: 24px;
+    height: 24px; /* Larger target */
   }
 
   .actions {
-    width: 100%;
-    margin-left: 0;
-    justify-content: flex-end;
     opacity: 1; /* Always visible on mobile */
-    border-top: 1px solid #f0f4f8;
-    padding-top: 12px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
   }
 
-  .action-btn {
-    padding: 10px 16px; /* Larger touch targets */
+  .todo-content {
+    padding-right: 24px; /* Space for delete button */
   }
 }

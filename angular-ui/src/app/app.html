@@ -1,12 +1,57 @@
-<div class="container">
-  <nav class="nav-bar">
-    <a routerLink="/" class="nav-link">Mission Tasks</a>
-    <a routerLink="/audit" class="nav-link">Operations Log</a>
-    <a routerLink="/toc" class="nav-link">Temporal Ops Center</a>
-  </nav>
+<header class="app-header">
+  <div class="header-content">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">MissionControl</span>
+    </div>
 
-  <h1>{{ title }}</h1>
-  <p class="subtitle">Stay organized and get things done.</p>
+    <nav class="desktop-nav">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+        Tasks
+      </a>
+      <a routerLink="/audit" routerLinkActive="active" class="nav-link">
+        Audit Log
+      </a>
+      <a routerLink="/toc" routerLinkActive="active" class="nav-link">
+        Temporal Center
+      </a>
+    </nav>
+  </div>
+</header>
 
+<main class="main-content">
   <router-outlet></router-outlet>
-</div>
+</main>
+
+<nav class="mobile-nav">
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="mobile-nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <span>Tasks</span>
+  </a>
+  <a routerLink="/audit" routerLinkActive="active" class="mobile-nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
+      <path d="M14 2v6h6"></path>
+      <path d="M16 13H8"></path>
+      <path d="M16 17H8"></path>
+      <path d="M10 9H8"></path>
+    </svg>
+    <span>Log</span>
+  </a>
+  <a routerLink="/toc" routerLinkActive="active" class="mobile-nav-item">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <polyline points="12 6 12 12 16 14"></polyline>
+    </svg>
+    <span>Time</span>
+  </a>
+</nav>

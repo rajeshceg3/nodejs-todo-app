@@ -11,20 +11,25 @@ import { Todo } from '../../models/todo.model';
   imports: [CommonModule, FormsModule, DatePipe],
   template: `
     <div class="toc-container">
-      <header class="toc-header">
-        <h1>Temporal Operations Center (TOC)</h1>
-        <div class="status-badge" [class.secure]="integrityStatus === 'VERIFIED'">
-          System Integrity: {{ integrityStatus }}
+      <header class="page-header">
+        <div class="header-content">
+          <h1>Temporal Operations Center</h1>
+          <p class="subtitle">Replay system state from immutable audit logs.</p>
+        </div>
+
+        <div class="status-badge secure">
+           <span class="indicator"></span>
+           System Integrity: {{ integrityStatus }}
         </div>
       </header>
 
-      <div class="controls-panel">
-        <div class="time-display">
-          <span class="label">Replay Time:</span>
-          <span class="value">{{ currentReplayTime | date:'medium' }}</span>
+      <div class="controls-card">
+        <div class="time-display-large">
+          {{ currentReplayTime | date:'mediumTime' }}
+          <span class="date-small">{{ currentReplayTime | date:'mediumDate' }}</span>
         </div>
 
-        <div class="slider-container">
+        <div class="slider-wrapper">
           <input
             type="range"
             [min]="0"
@@ -33,221 +38,376 @@ import { Todo } from '../../models/todo.model';
             (input)="onSliderChange($event)"
             class="time-slider"
           >
-          <div class="slider-labels">
-            <span>Genesis</span>
-            <span>Now</span>
-          </div>
+          <div class="slider-track-fill" [style.width.%]="(currentTick/totalTicks)*100"></div>
         </div>
 
-        <div class="playback-controls">
-          <button (click)="togglePlayback()" class="btn-primary">
+        <div class="slider-labels">
+          <span>Start of Log</span>
+          <span>Now</span>
+        </div>
+
+        <div class="playback-actions">
+          <button (click)="togglePlayback()" class="play-btn" [class.playing]="isPlaying">
+            <svg *ngIf="!isPlaying" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <svg *ngIf="isPlaying" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
             {{ isPlaying ? 'Pause Replay' : 'Start Replay' }}
           </button>
-          <button (click)="jumpToNow()" class="btn-secondary">
-            Jump to Present
+
+          <button (click)="jumpToNow()" class="secondary-btn">
+            Live
           </button>
         </div>
       </div>
 
-      <div class="visualization-grid">
+      <div class="metrics-grid">
         <div class="metric-card">
-          <h3>Active Tasks</h3>
+          <div class="metric-label">Active Tasks</div>
           <div class="metric-value">{{ reconstructedTodos.length }}</div>
         </div>
         <div class="metric-card">
-          <h3>Audit Events Processed</h3>
-          <div class="metric-value">{{ currentLogIndex + 1 }} / {{ logs.length }}</div>
+          <div class="metric-label">Events Processed</div>
+          <div class="metric-value">{{ currentLogIndex }} <span class="metric-total">/ {{ logs.length }}</span></div>
         </div>
       </div>
 
       <div class="reconstructed-view">
-        <h2>State Reconstruction</h2>
-        <div class="todo-list" *ngIf="reconstructedTodos.length > 0; else noTasks">
-          <div *ngFor="let todo of reconstructedTodos" class="todo-item" [class.priority-critical]="todo.priority === 'critical'">
-            <div class="todo-header">
-              <span class="priority-badge" [class]="todo.priority">{{ todo.priority }}</span>
-              <span class="created-at">{{ todo.createdAt | date:'short' }}</span>
+        <h3 class="view-title">System State at {{ currentReplayTime | date:'shortTime' }}</h3>
+
+        <div class="todo-grid" *ngIf="reconstructedTodos.length > 0; else noTasks">
+          <div *ngFor="let todo of reconstructedTodos" class="mini-card" [class]="todo.priority || 'medium'">
+            <div class="mini-card-header">
+               <span class="mini-priority-dot" [class]="todo.priority || 'medium'"></span>
+               <span class="mini-date">{{ todo.createdAt | date:'MMM d' }}</span>
             </div>
-            <div class="todo-content">{{ todo.content }}</div>
-            <div class="todo-tags" *ngIf="todo.tags?.length">
-              <span *ngFor="let tag of todo.tags">#{{ tag }}</span>
-            </div>
+            <div class="mini-content">{{ todo.content }}</div>
           </div>
         </div>
+
         <ng-template #noTasks>
-          <div class="empty-state">No active tasks at this point in time.</div>
+          <div class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="empty-icon">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <p>No active tasks at this point in time.</p>
+          </div>
         </ng-template>
       </div>
     </div>
   `,
   styles: [`
     .toc-container {
-      padding: 2rem;
       max-width: 800px;
       margin: 0 auto;
-      font-family: 'Inter', sans-serif; /* Fallback to global var if needed */
     }
 
-    .toc-header {
+    .page-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
-      border-bottom: 2px solid var(--color-text-tertiary);
-      padding-bottom: 1rem;
+      margin-bottom: 24px;
     }
+
+    h1 { font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { color: var(--color-text-secondary); margin: 0; font-size: 0.9rem; }
 
     .status-badge {
-      background-color: var(--color-bg);
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius-sm);
-      font-weight: bold;
-      border: 1px solid var(--color-text-tertiary);
-    }
-    .status-badge.secure {
+      display: flex;
+      align-items: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: rgba(62, 207, 142, 0.1);
       color: var(--color-success);
-      border-color: var(--color-success);
+      border: 1px solid rgba(62, 207, 142, 0.2);
     }
 
-    .controls-panel {
-      background: var(--color-surface);
-      padding: 1.5rem;
-      border-radius: var(--radius-md);
+    .indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      margin-right: 8px;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    /* Controls */
+    .controls-card {
+      background: linear-gradient(135deg, var(--color-surface), #f8fafc);
+      padding: 24px;
+      border-radius: var(--radius-lg);
       box-shadow: var(--shadow-md);
-      margin-bottom: 2rem;
-    }
-
-    .time-display {
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
+      border: 1px solid var(--color-border);
+      margin-bottom: 24px;
       text-align: center;
     }
-    .time-display .value {
-      font-weight: bold;
-      color: var(--color-primary);
-      margin-left: 0.5rem;
+
+    .time-display-large {
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-primary);
+      margin-bottom: 8px;
+      line-height: 1;
     }
 
-    .slider-container {
-      margin-bottom: 1.5rem;
+    .date-small {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-text-tertiary);
+      margin-top: 4px;
+    }
+
+    /* Custom Slider */
+    .slider-wrapper {
+      position: relative;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      margin: 32px 0 12px;
+    }
+
+    .slider-track-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      background: var(--color-primary);
+      border-radius: 3px;
+      pointer-events: none;
     }
 
     .time-slider {
+      position: absolute;
+      top: -7px;
+      left: 0;
       width: 100%;
+      height: 20px;
+      opacity: 0; /* Hide default, but keep functional */
       cursor: pointer;
+      z-index: 2;
+    }
+
+    /* Thumb (needs explicit styling if not hiding default) -
+       For "ultrathink" visual, we can make a custom thumb using a pseudo-element on wrapper
+       that moves with left%, but simple native slider with good track is robust.
+       Let's stick to native slider but styled for now for robustness across browsers without complex JS.
+    */
+    .time-slider {
+      -webkit-appearance: none;
+      opacity: 1;
+      background: transparent;
+    }
+    .time-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      border: 2px solid var(--color-primary);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      margin-top: -7px; /* Align with track */
+    }
+    .time-slider::-webkit-slider-runnable-track {
+      height: 6px;
+      background: transparent; /* Handled by wrapper */
     }
 
     .slider-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 0.875rem;
-      color: var(--color-text-secondary);
-      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--color-text-tertiary);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 24px;
     }
 
-    .playback-controls {
+    .playback-actions {
       display: flex;
-      gap: 1rem;
       justify-content: center;
+      gap: 12px;
     }
 
-    .btn-primary {
-      background-color: var(--color-primary);
+    .play-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-primary);
       color: white;
       border: none;
-      padding: 0.5rem 1.5rem;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
+      padding: 10px 24px;
+      border-radius: 30px;
       font-weight: 600;
-    }
-
-    .btn-secondary {
-      background-color: transparent;
-      border: 1px solid var(--color-text-secondary);
-      color: var(--color-text-secondary);
-      padding: 0.5rem 1.5rem;
-      border-radius: var(--radius-sm);
+      font-size: 1rem;
       cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
     }
 
-    .visualization-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 2rem;
+    .play-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(99, 91, 255, 0.4);
     }
 
-    .metric-card {
-      background: var(--color-surface);
-      padding: 1rem;
-      border-radius: var(--radius-sm);
-      text-align: center;
-      box-shadow: var(--shadow-sm);
+    .play-btn.playing {
+      background: var(--color-text-primary);
+      box-shadow: 0 4px 12px rgba(10, 37, 64, 0.3);
     }
 
-    .metric-value {
-      font-size: 2rem;
-      font-weight: bold;
+    .secondary-btn {
+      background: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .secondary-btn:hover {
+      background: var(--color-bg);
       color: var(--color-text-primary);
     }
 
-    .reconstructed-view {
-      background: var(--color-surface);
-      padding: 1.5rem;
+    /* Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: white;
+      padding: 16px;
       border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .todo-item {
-      border: 1px solid #e0e6ed;
-      border-radius: var(--radius-sm);
-      padding: 1rem;
-      margin-bottom: 0.75rem;
-      background: #fff;
+    .metric-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: var(--color-text-tertiary);
+      font-weight: 600;
+      margin-bottom: 4px;
     }
 
-    .priority-critical {
-      border-left: 4px solid var(--color-danger);
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
     }
 
-    .todo-header {
+    .metric-total {
+      font-size: 1rem;
+      color: var(--color-text-tertiary);
+      font-weight: 500;
+    }
+
+    /* Reconstructed View */
+    .reconstructed-view {
+      margin-bottom: 40px;
+    }
+
+    .view-title {
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .todo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .mini-card {
+      background: white;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s;
+    }
+
+    .mini-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .mini-card-header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-size: 0.875rem;
+      align-items: center;
+      margin-bottom: 8px;
     }
 
-    .priority-badge {
-      text-transform: uppercase;
-      font-weight: bold;
+    .mini-priority-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .mini-priority-dot.critical { background: var(--color-danger); }
+    .mini-priority-dot.high { background: #d97706; }
+    .mini-priority-dot.medium { background: var(--color-primary); }
+    .mini-priority-dot.low { background: var(--color-success); }
+
+    .mini-date {
       font-size: 0.7rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-
-    .priority-badge.critical { color: var(--color-danger); background: #ffebeb; }
-    .priority-badge.high { color: var(--color-warning); background: #fff8e6; }
-    .priority-badge.medium { color: var(--color-primary); background: #ebe9ff; }
-    .priority-badge.low { color: var(--color-success); background: #e6fffa; }
-
-    .created-at {
       color: var(--color-text-tertiary);
     }
 
-    .todo-tags {
-      margin-top: 0.5rem;
-      color: var(--color-primary);
-      font-size: 0.875rem;
-    }
-
-    .todo-tags span {
-      margin-right: 0.5rem;
+    .mini-content {
+      font-size: 0.9rem;
+      color: var(--color-text-primary);
+      font-weight: 500;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .empty-state {
       text-align: center;
+      padding: 40px;
+      background: #f8fafc;
+      border-radius: var(--radius-md);
+      border: 2px dashed var(--color-border);
       color: var(--color-text-tertiary);
-      padding: 2rem;
+    }
+
+    .empty-icon {
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 600px) {
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .time-display-large {
+        font-size: 2rem;
+      }
+
+      .playback-actions {
+        flex-direction: column;
+      }
+
+      .todo-grid {
+        grid-template-columns: 1fr;
+      }
     }
   `]
 })
