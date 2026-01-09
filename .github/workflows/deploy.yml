@@ -44,12 +44,10 @@ jobs:
       # Note: If the Angular project had a lint script, we would run it here.
 
       - name: Test Angular UI
-        env:
-          CHROME_BIN: /usr/bin/google-chrome
         run: |
           cd angular-ui
           # using npx to ensure we use the local ng binary
-          npx ng test --watch=false --browsers=ChromeHeadless
+          npx ng test --watch=false --browsers=ChromeHeadlessCI
 
       - name: Build Angular UI
         run: npm run build:ui

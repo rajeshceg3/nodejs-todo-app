@@ -128,7 +128,7 @@ async function wrapper() {
               });
             })
             .catch(err => {
-              console.error("Error inserting document:", err);
+              console.error('Error inserting document:', err);
               res.status(500).send({ error: 'Failed to add item to list' });
             });
         });
@@ -138,7 +138,7 @@ async function wrapper() {
           const updates = req.body;
 
           if (!mongodb.ObjectId.isValid(id)) {
-             return res.status(400).send({ error: 'Invalid ID format' });
+            return res.status(400).send({ error: 'Invalid ID format' });
           }
 
           delete updates._id; // Prevent updating _id
@@ -148,44 +148,44 @@ async function wrapper() {
             { $set: updates },
             { returnDocument: 'after' }
           )
-          .then(async result => {
-            if (!result.value) {
-              return res.status(404).send({ error: 'Todo not found' });
-            }
+            .then(async result => {
+              if (!result.value) {
+                return res.status(404).send({ error: 'Todo not found' });
+              }
 
-            // SOTL: Log the update
-            await createAuditLog(req.db, 'UPDATE_TASK', id, updates);
+              // SOTL: Log the update
+              await createAuditLog(req.db, 'UPDATE_TASK', id, updates);
 
-            res.status(200).send({ todo: result.value });
-          })
-          .catch(err => {
-            console.error("Error updating document:", err);
-            res.status(500).send({ error: 'Failed to update item' });
-          });
+              res.status(200).send({ todo: result.value });
+            })
+            .catch(err => {
+              console.error('Error updating document:', err);
+              res.status(500).send({ error: 'Failed to update item' });
+            });
         });
 
         app.delete('/list/:id', (req, res) => {
           const id = req.params.id;
 
           if (!mongodb.ObjectId.isValid(id)) {
-             return res.status(400).send({ error: 'Invalid ID format' });
+            return res.status(400).send({ error: 'Invalid ID format' });
           }
 
           req.db.collection('list').deleteOne({ _id: new mongodb.ObjectId(id) })
-          .then(async result => {
-             if (result.deletedCount === 0) {
-               return res.status(404).send({ error: 'Todo not found' });
-             }
+            .then(async result => {
+              if (result.deletedCount === 0) {
+                return res.status(404).send({ error: 'Todo not found' });
+              }
 
-             // SOTL: Log the deletion
-             await createAuditLog(req.db, 'DELETE_TASK', id, { deleted: true });
+              // SOTL: Log the deletion
+              await createAuditLog(req.db, 'DELETE_TASK', id, { deleted: true });
 
-             res.status(200).send({ message: 'Todo deleted successfully' });
-          })
-          .catch(err => {
-             console.error("Error deleting document:", err);
-             res.status(500).send({ error: 'Failed to delete item' });
-          });
+              res.status(200).send({ message: 'Todo deleted successfully' });
+            })
+            .catch(err => {
+              console.error('Error deleting document:', err);
+              res.status(500).send({ error: 'Failed to delete item' });
+            });
         });
 
         // SOTL: Fetch Audit Logs
@@ -195,7 +195,7 @@ async function wrapper() {
               res.status(200).send({ logs });
             })
             .catch(err => {
-              console.error("Error fetching audit logs:", err);
+              console.error('Error fetching audit logs:', err);
               res.status(500).send({ error: 'Failed to fetch audit logs' });
             });
         });
@@ -214,8 +214,8 @@ async function wrapper() {
 
                 // Check chain link
                 if (expectedPreviousHash !== previousHash) {
-                   isValid = false;
-                   brokenIndices.push({ index: i, reason: 'Previous hash mismatch' });
+                  isValid = false;
+                  brokenIndices.push({ index: i, reason: 'Previous hash mismatch' });
                 }
 
                 // Re-calculate hash
@@ -224,8 +224,8 @@ async function wrapper() {
                 const calculatedHash = crypto.createHash('sha256').update(dataToHash).digest('hex');
 
                 if (calculatedHash !== log.hash) {
-                   isValid = false;
-                   brokenIndices.push({ index: i, reason: 'Hash mismatch' });
+                  isValid = false;
+                  brokenIndices.push({ index: i, reason: 'Hash mismatch' });
                 }
 
                 previousHash = log.hash;
@@ -238,7 +238,7 @@ async function wrapper() {
               });
             })
             .catch(err => {
-              console.error("Error verifying audit logs:", err);
+              console.error('Error verifying audit logs:', err);
               res.status(500).send({ error: 'Failed to verify logs' });
             });
         });
@@ -251,7 +251,7 @@ async function wrapper() {
               });
             })
             .catch(err => {
-              console.error("Error fetching documents:", err);
+              console.error('Error fetching documents:', err);
               res.status(500).send({ error: 'Failed to fetch list' });
             });
         });
