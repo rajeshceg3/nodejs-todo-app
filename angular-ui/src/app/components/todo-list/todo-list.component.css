@@ -1,23 +1,68 @@
 .no-todos-message {
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 20px;
   color: var(--color-text-secondary);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  margin-top: 20px;
-  border: 1px dashed #e3e8ee;
-}
-
-.no-todos-message br {
-  margin-bottom: 8px;
-  display: block;
-  content: "";
-}
-
-/* Ensure list items track nicely */
-div[class*="ng-trigger"] {
+  background: radial-gradient(circle at center, white 0%, rgba(255,255,255,0) 70%);
+  border-radius: var(--radius-xl);
+  margin-top: 40px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 16px;
+}
+
+.illustration {
+  color: var(--color-primary-light);
+  opacity: 0.5;
+  margin-bottom: 8px;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.no-todos-message h3 {
+  font-size: 1.5rem;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.no-todos-message p {
+  font-size: 1rem;
+  color: var(--color-text-tertiary);
+  margin: 0;
+  max-width: 300px;
+  line-height: 1.5;
+}
+
+/* Grid Layout for potential future use, currently stack */
+.todo-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Gap handled by card margin, but this ensures safety */
+}
+
+.todo-item-wrapper {
+  animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+/* Stagger animations for first few items */
+.todo-item-wrapper:nth-child(1) { animation-delay: 0.05s; }
+.todo-item-wrapper:nth-child(2) { animation-delay: 0.1s; }
+.todo-item-wrapper:nth-child(3) { animation-delay: 0.15s; }
+.todo-item-wrapper:nth-child(4) { animation-delay: 0.2s; }
+.todo-item-wrapper:nth-child(5) { animation-delay: 0.25s; }
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

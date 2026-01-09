@@ -1,0 +1,29 @@
+
+> node-starter@0.0.0 start
+> npm run build:ui && node index.js
+
+
+> node-starter@0.0.0 build:ui
+> npm run build --prefix angular-ui
+
+
+> angular-ui@0.0.0 build
+> ng build
+
+❯ Building...
+✔ Building...
+Initial chunk files   | Names         |  Raw size | Estimated transfer size
+main-QOXXYUWJ.js      | main          | 398.39 kB |               102.03 kB
+polyfills-B6TNHZQ6.js | polyfills     |  34.58 kB |                11.32 kB
+styles-5Z23HVJE.css   | styles        |   3.45 kB |                 1.14 kB
+
+                      | Initial total | 436.41 kB |               114.50 kB
+
+Application bundle generation complete. [4.473 seconds]
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mangular:styles/component:css;88e95a961887ad8efdfd5a0c8671fd8feb8d48cfe0f1491585b6908e311b9951;/app/angular-ui/src/app/components/temporal-operations-center/temporal-operations-center.component.ts exceeded maximum budget. Budget 4.00 kB was not met by 653 bytes with a total of 4.65 kB.[0m
+
+
+Output location: /app/angular-ui/dist/angular-ui
+
+App listening at http://localhost:3000

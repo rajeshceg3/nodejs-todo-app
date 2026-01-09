@@ -1,11 +1,20 @@
-<div *ngIf="todos.length === 0" class="no-todos-message">
-  No todos yet! Add one above. <br> Maybe plan your day? :)
+<div *ngIf="todos.length === 0" class="no-todos-message fade-in">
+  <div class="illustration">
+    <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+  </div>
+  <h3>All caught up!</h3>
+  <p>You have no pending tasks. Enjoy your day or add a new mission above.</p>
 </div>
-<div *ngIf="todos.length > 0" [@listAnimation]="todos.length">
+
+<div *ngIf="todos.length > 0" class="todo-grid">
   <app-todo-item
     *ngFor="let todo of todos; trackBy: trackById"
     [todo]="todo"
     (delete)="handleDeleteTodo($event)"
     (toggleComplete)="handleToggleComplete($event)"
+    class="todo-item-wrapper"
   ></app-todo-item>
 </div>
