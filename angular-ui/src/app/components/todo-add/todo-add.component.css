@@ -111,15 +111,31 @@
 
 @media (max-width: 600px) {
   .add-task-form {
-    margin-bottom: 24px;
+    position: fixed;
+    bottom: 100px; /* Safe gap above floating nav bar (88px top edge + 12px gap) */
+    left: 16px;
+    right: 16px;
+    margin-bottom: 0;
+    z-index: 900; /* Below nav but above content */
+  }
+
+  .input-wrapper {
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.1);
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.8);
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.95);
   }
 
   .task-input {
     font-size: 1rem;
-    padding: 14px 16px;
+    padding: 14px 20px;
   }
 
   .add-btn {
-    padding: 0 16px;
+    padding: 0 20px;
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    background: transparent;
   }
 }
