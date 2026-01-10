@@ -11,11 +11,11 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: var(--glass-bg);
-  backdrop-filter: blur(var(--blur-amt));
-  -webkit-backdrop-filter: blur(var(--blur-amt));
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(0,0,0,0.05);
-  height: 64px;
+  height: 60px; /* Sleeker height */
   display: flex;
   align-items: center;
   transition: all 0.3s ease;
@@ -127,9 +127,9 @@
   }
 
   .main-content {
-    margin-top: 24px;
-    margin-bottom: 24px;
-    padding: 0 20px;
+    margin-top: 20px;
+    margin-bottom: 120px; /* More space for floating bottom input + nav */
+    padding: 0 16px;
   }
 
   /* Floating Bottom Bar */
@@ -137,19 +137,19 @@
     display: flex;
     position: fixed;
     bottom: 20px;
-    left: 20px;
-    right: 20px;
-    height: 64px;
-    background-color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 24px;
+    left: 16px;
+    right: 16px;
+    height: 68px; /* Slightly taller for better touch targets */
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 28px;
     justify-content: space-evenly;
     align-items: center;
     z-index: 1000;
-    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.15);
-    padding-bottom: 0; /* Override safe area padding since it floats */
+    box-shadow: 0 20px 40px -10px rgba(50, 50, 93, 0.15), 0 10px 20px -10px rgba(0, 0, 0, 0.1); /* Deep shadow */
+    padding-bottom: 0;
   }
 
   .mobile-nav-item {
@@ -159,16 +159,20 @@
     justify-content: center;
     text-decoration: none;
     color: var(--color-text-tertiary);
-    gap: 4px;
-    width: 60px;
+    gap: 5px;
+    width: 64px;
     height: 100%;
     position: relative;
     transition: all 0.3s var(--ease-spring);
   }
 
+  .mobile-nav-item:active {
+    transform: scale(0.9);
+  }
+
   .nav-icon {
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     transition: transform 0.3s var(--ease-spring), stroke 0.2s;
   }
 

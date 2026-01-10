@@ -159,13 +159,28 @@
 .actions {
   margin-left: 16px;
   opacity: 0;
-  transition: opacity 0.2s, transform 0.2s;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
   transform: translateX(10px);
 }
 
 .todo-card:hover .actions {
   opacity: 1;
   transform: translateX(0);
+}
+
+/* Ensure actions don't interfere with swipe on mobile */
+@media (max-width: 600px) {
+  .actions {
+    display: none; /* Hide default delete button on mobile to rely on swipe? Or keep as fallback? */
+    /* Let's keep it but make it static */
+    opacity: 1;
+    transform: none;
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    pointer-events: auto; /* Ensure clickable */
+  }
 }
 
 .icon-btn {
