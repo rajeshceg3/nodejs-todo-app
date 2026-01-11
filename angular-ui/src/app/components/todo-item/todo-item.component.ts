@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostBinding, HostListener, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostBinding, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Todo } from '../../models/todo.model';
 
@@ -14,14 +14,15 @@ export class TodoItemComponent {
   @Output() delete = new EventEmitter<string>();
   @Output() toggleComplete = new EventEmitter<Todo>();
 
+  @ViewChild('slideLayer') slideLayer!: ElementRef;
+
   @HostBinding('class.completed-item') get isCompleted() {
     return this.todo.status === 'completed';
   }
 
   // Swipe logic properties
   private touchStartX = 0;
-  private touchEndX = 0;
-  swipeOffset = 0;
+  private touchCurrentX = 0;
   isSwiping = false;
 
   constructor(private el: ElementRef) {}
@@ -40,47 +41,52 @@ export class TodoItemComponent {
   @HostListener('touchstart', ['$event'])
   onTouchStart(event: TouchEvent) {
     this.touchStartX = event.changedTouches[0].screenX;
+    this.touchCurrentX = this.touchStartX;
     this.isSwiping = true;
-    this.el.nativeElement.style.transition = 'none'; // Disable transition for direct follow
+
+    // Remove transition for instant follow
+    if (this.slideLayer) {
+      this.slideLayer.nativeElement.style.transition = 'none';
+    }
   }
 
   @HostListener('touchmove', ['$event'])
   onTouchMove(event: TouchEvent) {
-    if (!this.isSwiping) return;
-    const currentX = event.changedTouches[0].screenX;
-    const diff = currentX - this.touchStartX;
+    if (!this.isSwiping || !this.slideLayer) return;
 
-    // Only allow left swipe
+    this.touchCurrentX = event.changedTouches[0].screenX;
+    const diff = this.touchCurrentX - this.touchStartX;
+
+    // Only handle left swipe
     if (diff < 0) {
-      this.swipeOffset = Math.max(diff, -100); // Limit swipe distance
-      // We can apply transform here directly or use a bound variable in template?
-      // Since we are in the component, let's use style binding via HostBinding or template.
-      // But for performance, updating style directly is better.
-      // Actually, we should probably transform the card content, not the host, to reveal a background.
-      // But the current CSS structure has the background on the card.
-      // Let's transform the host for now.
-      this.el.nativeElement.style.transform = `translateX(${this.swipeOffset}px)`;
+      // Add resistance
+      const resistance = 1.0;
+      const translateX = Math.max(diff * resistance, -120); // Limit swipe
+
+      this.slideLayer.nativeElement.style.transform = `translateX(${translateX}px)`;
+
+      // Scale trash icon if swipe is deep (optional, would need ViewChild for icon)
     }
   }
 
   @HostListener('touchend', ['$event'])
   onTouchEnd(event: TouchEvent) {
+    if (!this.isSwiping || !this.slideLayer) return;
     this.isSwiping = false;
-    this.touchEndX = event.changedTouches[0].screenX;
-    this.handleSwipeGesture();
-  }
 
-  private handleSwipeGesture() {
-    this.el.nativeElement.style.transition = 'transform 0.3s ease-out';
-    if (this.touchStartX - this.touchEndX > 100) { // Threshold for delete
-      // Swiped left enough
-      this.el.nativeElement.style.transform = `translateX(-100%)`;
-      // Wait for animation then delete
+    const diff = this.touchCurrentX - this.touchStartX;
+
+    // Restore transition
+    this.slideLayer.nativeElement.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
+
+    if (diff < -80) { // Threshold to trigger delete
+      // Slide all the way out
+      this.slideLayer.nativeElement.style.transform = `translateX(-100%)`;
+      // Trigger delete after animation
       setTimeout(() => this.onDelete(), 300);
     } else {
       // Snap back
-      this.swipeOffset = 0;
-      this.el.nativeElement.style.transform = `translateX(0)`;
+      this.slideLayer.nativeElement.style.transform = `translateX(0)`;
     }
   }
 }

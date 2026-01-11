@@ -1,42 +1,57 @@
-<div class="todo-card" [ngClass]="todo.priority || 'medium'">
-  <div class="checkbox-container">
-    <button class="custom-checkbox"
-            [class.checked]="todo.status === 'completed'"
-            (click)="onToggleComplete()"
-            aria-label="Toggle task completion">
-      <svg *ngIf="todo.status === 'completed'" class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-        <polyline points="20 6 9 17 4 12"></polyline>
-      </svg>
-    </button>
+<div class="todo-wrapper">
+  <!-- Background Action Layer (Revealed on Swipe) -->
+  <div class="background-action delete-action">
+    <svg class="action-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 6 5 6 21 6"></polyline>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+    </svg>
   </div>
 
-  <div class="card-body">
-    <div class="todo-content" [class.completed]="todo.status === 'completed'">
-      {{ todo.content }}
-    </div>
+  <!-- Foreground Content Layer (Slides) -->
+  <div class="todo-card-content"
+       [ngClass]="todo.priority || 'medium'"
+       [class.swiping]="isSwiping"
+       #slideLayer>
 
-    <div class="todo-meta">
-      <div class="badge-group">
-        <span class="priority-badge" [class.critical]="todo.priority === 'critical'" [class.high]="todo.priority === 'high'" [class.medium]="!todo.priority || todo.priority === 'medium'" [class.low]="todo.priority === 'low'">
-          {{ todo.priority || 'medium' }}
-        </span>
-        <span class="tag" *ngFor="let tag of todo.tags">#{{ tag }}</span>
-      </div>
-      <span class="date" *ngIf="todo.dueDate">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px; vertical-align:middle;">
-          <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+    <div class="checkbox-container">
+      <button class="custom-checkbox"
+              [class.checked]="todo.status === 'completed'"
+              (click)="onToggleComplete(); $event.stopPropagation()"
+              aria-label="Toggle task completion">
+        <svg *ngIf="todo.status === 'completed'" class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
-        {{ todo.dueDate | date:'MMM d' }}
-      </span>
+      </button>
     </div>
-  </div>
 
-  <div class="actions">
-    <button class="icon-btn delete-btn" (click)="onDelete()" aria-label="Delete task">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="3 6 5 6 21 6"></polyline>
-        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-      </svg>
-    </button>
+    <div class="card-body">
+      <div class="todo-content" [class.completed]="todo.status === 'completed'">
+        {{ todo.content }}
+      </div>
+
+      <div class="todo-meta">
+        <div class="badge-group">
+          <span class="priority-badge" [class.critical]="todo.priority === 'critical'" [class.high]="todo.priority === 'high'" [class.medium]="!todo.priority || todo.priority === 'medium'" [class.low]="todo.priority === 'low'">
+            {{ todo.priority || 'medium' }}
+          </span>
+          <span class="tag" *ngFor="let tag of todo.tags">#{{ tag }}</span>
+        </div>
+        <span class="date" *ngIf="todo.dueDate">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px; vertical-align:middle;">
+            <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          {{ todo.dueDate | date:'MMM d' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="icon-btn delete-btn" (click)="onDelete(); $event.stopPropagation()" aria-label="Delete task">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+      </button>
+    </div>
   </div>
 </div>

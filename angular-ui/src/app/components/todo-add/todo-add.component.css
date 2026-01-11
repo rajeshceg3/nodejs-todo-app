@@ -1,7 +1,7 @@
 .add-task-form {
   margin-bottom: 32px;
   position: relative;
-  z-index: 10;
+  z-index: 100;
 }
 
 .input-group {
@@ -10,36 +10,53 @@
 
 .input-wrapper {
   display: flex;
+  align-items: center;
   position: relative;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   border-radius: var(--radius-lg);
   background: white;
   transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-  border: 1px solid transparent;
+  border: 1px solid var(--color-border);
+  padding: 4px;
 }
 
-/* Hover lift effect for the whole input bar */
+/* Hover lift effect */
 .input-wrapper:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(99, 91, 255, 0.3);
 }
 
-.input-wrapper:focus-within {
+.input-wrapper.focused {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-xl), 0 0 0 4px rgba(99, 91, 255, 0.15);
-  border-color: rgba(99, 91, 255, 0.3);
+  box-shadow: var(--shadow-lg), 0 0 0 4px rgba(99, 91, 255, 0.15);
+  border-color: var(--color-primary);
+}
+
+.input-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: var(--color-text-tertiary);
+  transition: color 0.3s;
+}
+
+.input-wrapper.focused .input-icon {
+  color: var(--color-primary);
 }
 
 .task-input {
   flex-grow: 1;
   border: none;
   background: transparent;
-  border-radius: var(--radius-lg);
-  padding: 16px 20px;
-  font-size: 1.1rem;
+  padding: 12px 0;
+  font-size: 1.05rem;
   font-weight: 500;
   color: var(--color-text-primary);
   box-shadow: none;
+  min-width: 0;
 }
 
 .task-input::placeholder {
@@ -53,46 +70,83 @@
   outline: none;
 }
 
-.add-btn {
-  background-color: white;
-  color: var(--color-primary);
-  border: none;
-  border-left: 1px solid var(--color-border);
-  border-top-right-radius: var(--radius-lg);
-  border-bottom-right-radius: var(--radius-lg);
-  padding: 0 24px;
+/* Shortcut Hint (Desktop) */
+.shortcut-hint {
+  display: flex;
+  align-items: center;
+  padding-right: 16px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.key {
+  font-size: 0.8rem;
   font-weight: 600;
-  font-size: 1rem;
+  color: var(--color-text-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  background: #f8fafc;
+}
+
+.add-btn {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 80px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-right: 4px;
+
+  /* Hidden by default, slides in when typing */
+  opacity: 0;
+  transform: translateX(10px) scale(0.9);
+  pointer-events: none;
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.add-btn.visible {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+  width: auto;
+  padding: 8px 20px;
+  margin-left: 8px;
 }
 
 .add-btn:hover:not(:disabled) {
-  background-color: var(--color-bg);
-  color: var(--color-primary-dark);
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
 }
 
 .add-btn:active:not(:disabled) {
-  background-color: #eef2f6;
+  transform: translateY(0);
 }
 
 .add-btn:disabled {
-  color: var(--color-text-tertiary);
+  background-color: #cbd5e1;
   cursor: not-allowed;
-  background-color: #f8fafc;
+  box-shadow: none;
 }
 
-/* Loading Animation on Button Text */
-.adding {
-  color: var(--color-text-tertiary);
-  animation: pulse 1s infinite;
+/* Spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
 }
 
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .input-error {
@@ -112,30 +166,36 @@
 @media (max-width: 600px) {
   .add-task-form {
     position: fixed;
-    bottom: 100px; /* Safe gap above floating nav bar (88px top edge + 12px gap) */
+    bottom: 96px; /* Position above nav */
     left: 16px;
     right: 16px;
     margin-bottom: 0;
-    z-index: 900; /* Below nav but above content */
+    z-index: 900;
   }
 
   .input-wrapper {
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.1);
-    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    border-radius: 28px;
     border: 1px solid rgba(255,255,255,0.8);
-    backdrop-filter: blur(10px);
-    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.9);
+    padding: 6px;
   }
 
   .task-input {
     font-size: 1rem;
-    padding: 14px 20px;
+    padding: 10px 0;
   }
 
-  .add-btn {
-    padding: 0 20px;
-    border-top-right-radius: 24px;
-    border-bottom-right-radius: 24px;
-    background: transparent;
+  .shortcut-hint {
+    display: none;
   }
+
+  .add-btn.visible {
+    border-radius: 24px;
+    padding: 10px 20px;
+  }
+
+  /* When keyboard is open, we might need adjustments via viewport units,
+     but standard fixed positioning usually handles it if viewport resizes. */
 }
