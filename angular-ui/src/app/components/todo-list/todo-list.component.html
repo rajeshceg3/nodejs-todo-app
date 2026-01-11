@@ -1,12 +1,15 @@
 <div *ngIf="todos.length === 0" class="no-todos-message fade-in">
-  <div class="illustration">
-    <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-    </svg>
+  <div class="illustration-container">
+    <div class="illustration-ring"></div>
+    <div class="illustration-core">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
   </div>
   <h3>All caught up!</h3>
-  <p>You have no pending tasks. Enjoy your day or add a new mission above.</p>
+  <p>Your mission log is empty. Enjoy the calm or initialize a new objective.</p>
 </div>
 
 <div *ngIf="todos.length > 0" class="todo-grid">
@@ -17,4 +20,7 @@
     (toggleComplete)="handleToggleComplete($event)"
     class="todo-item-wrapper"
   ></app-todo-item>
+
+  <!-- Spacer for mobile scrolling behind fixed elements -->
+  <div class="list-spacer"></div>
 </div>

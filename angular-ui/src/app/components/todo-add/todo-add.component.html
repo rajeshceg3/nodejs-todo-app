@@ -1,16 +1,35 @@
 <form [formGroup]="todoForm" (ngSubmit)="onSubmit()" class="add-task-form">
   <div class="input-group">
-    <div class="input-wrapper">
+    <div class="input-wrapper" [class.focused]="isFocused">
+      <!-- Search/Plus Icon -->
+      <div class="input-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </div>
+
       <input
         id="content"
         formControlName="content"
-        placeholder="What needs to be done?"
+        placeholder="Add a new mission..."
         autocomplete="off"
-        class="task-input">
+        class="task-input"
+        (focus)="onFocus()"
+        (blur)="onBlur()">
 
-      <button type="submit" [disabled]="todoForm.invalid" class="add-btn" [class.adding]="isAdding">
+      <!-- Desktop Shortcut Hint -->
+      <div class="shortcut-hint" *ngIf="!isAdding && !todoForm.value.content">
+        <span class="key">↵</span>
+      </div>
+
+      <button type="submit"
+              [disabled]="todoForm.invalid"
+              class="add-btn"
+              [class.adding]="isAdding"
+              [class.visible]="todoForm.value.content || isAdding">
         <span *ngIf="!isAdding">Add</span>
-        <span *ngIf="isAdding">...</span>
+        <div *ngIf="isAdding" class="spinner"></div>
       </button>
     </div>
 

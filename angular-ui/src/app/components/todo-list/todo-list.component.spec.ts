@@ -58,7 +58,7 @@ describe('TodoListComponent', () => {
     const noTodosEl = fixture.debugElement.query(By.css('.no-todos-message')); // Updated selector
     expect(noTodosEl).toBeTruthy();
     // The text content check can be made more robust if needed, e.g. by trimming whitespace
-    expect(noTodosEl.nativeElement.textContent).toContain('You have no pending tasks.');
+    expect(noTodosEl.nativeElement.textContent).toContain('Your mission log is empty.');
   });
 
   it('should log error if getTodos fails', () => {

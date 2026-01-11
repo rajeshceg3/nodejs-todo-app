@@ -16,6 +16,7 @@ export class TodoAddComponent {
   @Output() todoAdded = new EventEmitter<Todo>();
   todoForm: FormGroup;
   isAdding: boolean = false; // For button animation
+  isFocused = false;
   private todoService = inject(TodoService);
   private fb = inject(FormBuilder);
 
@@ -25,8 +26,17 @@ export class TodoAddComponent {
     });
   }
 
+  onFocus() {
+    this.isFocused = true;
+  }
+
+  onBlur() {
+    this.isFocused = false;
+  }
+
   onSubmit(): void {
     if (this.todoForm.valid) {
+      this.isAdding = true;
       const content = this.todoForm.value.content;
       this.todoService.addTodo(content).subscribe({
         next: (newTodo) => {
