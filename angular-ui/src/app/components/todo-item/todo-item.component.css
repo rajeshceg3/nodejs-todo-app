@@ -2,8 +2,10 @@
   display: block;
   position: relative;
   overflow: hidden; /* Contain swipe actions */
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   border-radius: var(--radius-lg);
+  /* Fix for mobile swipe bleed */
+  transform: translate3d(0,0,0);
 }
 
 .todo-wrapper {
@@ -24,15 +26,15 @@
   display: flex;
   align-items: center;
   justify-content: flex-end; /* Icon on the right */
-  padding-right: 24px;
+  padding-right: 32px;
   z-index: 0;
 }
 
 .action-icon {
   color: white;
-  width: 32px; /* Large icon for swipe context */
-  height: 32px;
-  transform: scale(0.8);
+  width: 28px;
+  height: 28px;
+  transform: scale(0.9);
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -45,53 +47,61 @@
   box-shadow: var(--shadow-sm);
   display: flex;
   align-items: flex-start;
-  padding: 18px 24px;
+  padding: 16px 20px;
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s, background-color 0.2s;
-  border: 1px solid rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.04);
   will-change: transform;
 }
 
 /* Desktop Hover */
 @media (min-width: 601px) {
+  .todo-card-content {
+    padding: 18px 24px; /* More breathing room */
+  }
+
   .todo-card-content:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
-    border-color: rgba(99, 91, 255, 0.15);
+    border-color: rgba(99, 91, 255, 0.2);
   }
 }
 
 /* Mobile Active State (Visual Haptics) */
 .todo-card-content:active {
   background-color: #fafafa;
+  transform: scale(0.995);
 }
 .todo-card-content.swiping {
-  box-shadow: var(--shadow-sm); /* Reduce shadow while swiping */
+  box-shadow: none; /* Flatten while swiping */
+  transition: none; /* Direct control */
 }
 
-/* Priority Borders */
-.todo-card-content.critical { border-left: 4px solid var(--color-danger); }
-.todo-card-content.high { border-left: 4px solid var(--color-warning); }
-.todo-card-content.medium { border-left: 4px solid var(--color-primary); }
-.todo-card-content.low { border-left: 4px solid var(--color-success); }
-
-.todo-card-content.critical,
-.todo-card-content.high,
-.todo-card-content.medium,
-.todo-card-content.low {
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
+/* Priority Borders - More subtle */
+.todo-card-content::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
 }
+
+.todo-card-content.critical::before { background-color: var(--color-danger); }
+.todo-card-content.high::before { background-color: var(--color-warning); }
+.todo-card-content.medium::before { background-color: var(--color-primary); }
+.todo-card-content.low::before { background-color: var(--color-success); }
 
 /* Content Layout */
 .checkbox-container {
-  margin-right: 20px;
+  margin-right: 16px;
   padding-top: 2px;
   flex-shrink: 0;
 }
 
 .custom-checkbox {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 2px solid #cbd5e1;
   background: white;
@@ -102,12 +112,17 @@
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   color: white;
-  /* Disable browser touch actions on checkbox to prevent swipe interference? No, we want click */
+  outline: none;
 }
 
 .custom-checkbox:hover {
   border-color: var(--color-primary);
   background-color: #f8fafc;
+  transform: scale(1.1);
+}
+
+.custom-checkbox:focus-visible {
+  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.2);
 }
 
 .custom-checkbox.checked {
@@ -148,8 +163,8 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 4px;
+  gap: 10px;
+  margin-top: 6px;
 }
 
 .badge-group {
@@ -162,7 +177,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  padding: 4px 8px;
+  padding: 3px 8px;
   border-radius: 6px;
   letter-spacing: 0.05em;
   background-color: #f1f5f9;
@@ -182,6 +197,7 @@
   border: 1px solid var(--color-border);
   padding: 2px 8px;
   border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
 
 .date {
@@ -223,7 +239,8 @@
   background-color: #fee2e2;
   color: var(--color-danger);
   border-color: #fee2e2;
-  transform: scale(1.1);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.15);
 }
 
 /* Mobile Optimizations */
@@ -243,15 +260,19 @@
   }
 
   .checkbox-container {
-    margin-right: 16px;
+    margin-right: 14px;
   }
 
   .custom-checkbox {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
   }
 
   .todo-content {
     font-size: 1rem;
+  }
+
+  .badge-group {
+    gap: 6px;
   }
 }

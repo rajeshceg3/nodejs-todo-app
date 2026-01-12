@@ -16,13 +16,13 @@ import { TodoItemComponent } from '../todo-item/todo-item.component';
     trigger('listAnimation', [
       transition('* => *', [ // Animate on any state change (items added/removed)
         query(':enter', [
-          style({ opacity: 0, transform: 'translateY(-20px)' }),
-          stagger(100, [ // Apply a delay between entering items
-            animate('0.3s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+          style({ opacity: 0, transform: 'translateY(-15px) scale(0.98)' }),
+          stagger(40, [ // Snappier delay
+            animate('0.25s cubic-bezier(0.2, 0.8, 0.2, 1)', style({ opacity: 1, transform: 'translateY(0) scale(1)' }))
           ])
         ], { optional: true }),
         query(':leave', [
-          animate('0.3s ease-in', style({ opacity: 0, transform: 'scale(0.8)' }))
+          animate('0.2s ease-in', style({ opacity: 0, transform: 'scale(0.95)', height: 0, margin: 0 }))
         ], { optional: true })
       ])
     ])

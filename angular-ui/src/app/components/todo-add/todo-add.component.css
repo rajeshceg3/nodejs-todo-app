@@ -1,5 +1,5 @@
 .add-task-form {
-  margin-bottom: 32px;
+  margin-bottom: 40px;
   position: relative;
   z-index: 100;
 }
@@ -13,11 +13,12 @@
   align-items: center;
   position: relative;
   box-shadow: var(--shadow-sm);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   background: white;
   transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
   border: 1px solid var(--color-border);
-  padding: 4px;
+  padding: 6px;
+  height: 56px;
 }
 
 /* Hover lift effect */
@@ -37,8 +38,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 100%;
   color: var(--color-text-tertiary);
   transition: color 0.3s;
 }
@@ -51,7 +52,8 @@
   flex-grow: 1;
   border: none;
   background: transparent;
-  padding: 12px 0;
+  padding: 0;
+  height: 100%;
   font-size: 1.05rem;
   font-weight: 500;
   color: var(--color-text-primary);
@@ -84,19 +86,21 @@
   font-weight: 600;
   color: var(--color-text-tertiary);
   border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 2px 6px;
-  background: #f8fafc;
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: #f1f5f9;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.05);
 }
 
 .add-btn {
   background-color: var(--color-primary);
   color: white;
   border: none;
-  border-radius: 12px;
-  padding: 8px 16px;
+  border-radius: 14px;
+  padding: 0;
+  height: 40px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   margin-right: 4px;
@@ -106,8 +110,11 @@
   transform: translateX(10px) scale(0.9);
   pointer-events: none;
   width: 0;
-  padding: 0;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .add-btn.visible {
@@ -115,7 +122,7 @@
   transform: translateX(0) scale(1);
   pointer-events: auto;
   width: auto;
-  padding: 8px 20px;
+  padding: 0 20px;
   margin-left: 8px;
 }
 
@@ -137,8 +144,8 @@
 
 /* Spinner */
 .spinner {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border: 2px solid rgba(255,255,255,0.3);
   border-radius: 50%;
   border-top-color: white;
@@ -153,7 +160,7 @@
   margin-top: 8px;
   color: var(--color-danger);
   font-size: 0.9rem;
-  padding-left: 12px;
+  padding-left: 16px;
   font-weight: 500;
   animation: slideDown 0.3s ease-out;
 }
@@ -166,25 +173,25 @@
 @media (max-width: 600px) {
   .add-task-form {
     position: fixed;
-    bottom: 96px; /* Position above nav */
-    left: 16px;
-    right: 16px;
+    bottom: 100px; /* Position above nav */
+    left: 20px;
+    right: 20px;
     margin-bottom: 0;
     z-index: 900;
   }
 
   .input-wrapper {
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    border-radius: 28px;
-    border: 1px solid rgba(255,255,255,0.8);
-    backdrop-filter: blur(12px);
-    background: rgba(255,255,255,0.9);
-    padding: 6px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    border-radius: 32px;
+    border: 1px solid rgba(255,255,255,0.7);
+    backdrop-filter: blur(16px);
+    background: rgba(255,255,255,0.95); /* Slightly less transp for contrast */
+    padding: 6px 8px; /* Slightly tighter padding */
+    height: 60px; /* Taller touch target */
   }
 
   .task-input {
     font-size: 1rem;
-    padding: 10px 0;
   }
 
   .shortcut-hint {
@@ -193,9 +200,7 @@
 
   .add-btn.visible {
     border-radius: 24px;
-    padding: 10px 20px;
+    padding: 0 24px;
+    height: 44px; /* Match input height mostly */
   }
-
-  /* When keyboard is open, we might need adjustments via viewport units,
-     but standard fixed positioning usually handles it if viewport resizes. */
 }
