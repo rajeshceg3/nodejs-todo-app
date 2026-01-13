@@ -24,12 +24,18 @@ import { Todo } from '../../models/todo.model';
       </header>
 
       <div class="controls-card">
-        <div class="time-display-large">
-          {{ currentReplayTime | date:'mediumTime' }}
-          <span class="date-small">{{ currentReplayTime | date:'mediumDate' }}</span>
+        <!-- Main Time Display -->
+        <div class="time-display-wrapper">
+          <div class="time-display-large">
+            {{ currentReplayTime | date:'mediumTime' }}
+          </div>
+          <div class="date-small">{{ currentReplayTime | date:'fullDate' }}</div>
         </div>
 
-        <div class="slider-wrapper">
+        <!-- Custom Slider -->
+        <div class="slider-container">
+          <div class="slider-track-bg"></div>
+          <div class="slider-track-fill" [style.width.%]="(currentTick/totalTicks)*100"></div>
           <input
             type="range"
             [min]="0"
@@ -38,59 +44,75 @@ import { Todo } from '../../models/todo.model';
             (input)="onSliderChange($event)"
             class="time-slider"
           >
-          <div class="slider-track-fill" [style.width.%]="(currentTick/totalTicks)*100"></div>
+          <!-- Tick Marks -->
+          <div class="tick-marks">
+            <span class="tick start">START</span>
+            <span class="tick end">NOW</span>
+          </div>
         </div>
 
-        <div class="slider-labels">
-          <span>Start of Log</span>
-          <span>Now</span>
-        </div>
-
+        <!-- Playback Actions -->
         <div class="playback-actions">
           <button (click)="togglePlayback()" class="play-btn" [class.playing]="isPlaying">
-            <svg *ngIf="!isPlaying" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-            <svg *ngIf="isPlaying" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
-            {{ isPlaying ? 'Pause Replay' : 'Start Replay' }}
+            <div class="icon-wrapper">
+              <svg *ngIf="!isPlaying" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <svg *ngIf="isPlaying" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+            </div>
+            <span class="btn-text">{{ isPlaying ? 'Pause Simulation' : 'Replay History' }}</span>
           </button>
 
-          <button (click)="jumpToNow()" class="secondary-btn">
-            Live
+          <button (click)="jumpToNow()" class="secondary-btn" title="Jump to present">
+            Live State
           </button>
         </div>
       </div>
 
+      <!-- Live Metrics Dashboard -->
       <div class="metrics-grid">
         <div class="metric-card">
-          <div class="metric-label">Active Tasks</div>
-          <div class="metric-value">{{ reconstructedTodos.length }}</div>
+          <div class="metric-icon t-blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"></path></svg>
+          </div>
+          <div class="metric-content">
+            <div class="metric-label">Active Tasks</div>
+            <div class="metric-value">{{ reconstructedTodos.length }}</div>
+          </div>
         </div>
         <div class="metric-card">
-          <div class="metric-label">Events Processed</div>
-          <div class="metric-value">{{ currentLogIndex }} <span class="metric-total">/ {{ logs.length }}</span></div>
+          <div class="metric-icon t-purple">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </div>
+          <div class="metric-content">
+             <div class="metric-label">Events Processed</div>
+             <div class="metric-value">{{ currentLogIndex }} <span class="metric-total">/ {{ logs.length }}</span></div>
+          </div>
         </div>
       </div>
 
+      <!-- State Visualizer -->
       <div class="reconstructed-view">
-        <h3 class="view-title">System State at {{ currentReplayTime | date:'shortTime' }}</h3>
+        <div class="view-header">
+           <h3 class="view-title">System State Snapshot</h3>
+           <div class="live-dot" [class.active]="currentTick === totalTicks"></div>
+        </div>
 
-        <div class="todo-grid" *ngIf="reconstructedTodos.length > 0; else noTasks">
-          <div *ngFor="let todo of reconstructedTodos" class="mini-card" [class]="todo.priority || 'medium'">
-            <div class="mini-card-header">
-               <span class="mini-priority-dot" [class]="todo.priority || 'medium'"></span>
-               <span class="mini-date">{{ todo.createdAt | date:'MMM d' }}</span>
+        <div class="todo-grid-visual" *ngIf="reconstructedTodos.length > 0; else noTasks">
+          <div *ngFor="let todo of reconstructedTodos" class="visual-card" [ngClass]="todo.priority || 'medium'">
+            <div class="card-status-line"></div>
+            <div class="visual-content">
+              <div class="visual-header">
+                 <span class="visual-prio">{{ todo.priority || 'Medium' }}</span>
+                 <span class="visual-date">{{ todo.createdAt | date:'MMM d' }}</span>
+              </div>
+              <div class="visual-text">{{ todo.content }}</div>
             </div>
-            <div class="mini-content">{{ todo.content }}</div>
           </div>
         </div>
 
         <ng-template #noTasks>
           <div class="empty-state">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="empty-icon">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
-            <p>No active tasks at this point in time.</p>
+            <div class="radar-scan"></div>
+            <p>No active entities in this timeframe.</p>
           </div>
         </ng-template>
       </div>
@@ -98,316 +120,311 @@ import { Todo } from '../../models/todo.model';
   `,
   styles: [`
     .toc-container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
+      animation: fadeIn 0.6s ease-out;
     }
 
     .page-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
+      align-items: flex-end;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
     }
 
-    h1 { font-size: 1.5rem; margin-bottom: 4px; }
-    .subtitle { color: var(--color-text-secondary); margin: 0; font-size: 0.9rem; }
+    h1 { font-size: 2rem; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .subtitle { color: var(--color-text-secondary); margin: 0; font-size: 1.05rem; }
 
     .status-badge {
       display: flex;
       align-items: center;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 20px;
+      padding: 8px 16px;
+      border-radius: 30px;
       background: rgba(62, 207, 142, 0.1);
       color: var(--color-success);
       border: 1px solid rgba(62, 207, 142, 0.2);
     }
 
     .indicator {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: currentColor;
       margin-right: 8px;
       box-shadow: 0 0 8px currentColor;
+      animation: pulse 2s infinite;
     }
 
-    /* Controls */
+    @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+    /* Controls Card */
     .controls-card {
-      background: linear-gradient(135deg, var(--color-surface), #f8fafc);
-      padding: 24px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
-      border: 1px solid var(--color-border);
-      margin-bottom: 24px;
+      background: white;
+      padding: 32px;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(0,0,0,0.04);
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle background grid */
+    .controls-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
+      background-size: 20px 20px;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .time-display-wrapper {
       text-align: center;
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 2;
     }
 
     .time-display-large {
-      font-size: 2.5rem;
+      font-size: 3.5rem;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
       color: var(--color-text-primary);
-      margin-bottom: 8px;
       line-height: 1;
+      letter-spacing: -0.04em;
     }
 
     .date-small {
-      display: block;
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 500;
-      color: var(--color-text-tertiary);
-      margin-top: 4px;
+      color: var(--color-text-secondary);
+      margin-top: 8px;
     }
 
-    /* Custom Slider */
-    .slider-wrapper {
+    /* Slider */
+    .slider-container {
       position: relative;
+      height: 40px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .slider-track-bg {
+      position: absolute;
+      left: 0; right: 0; top: 50%;
       height: 6px;
       background: #e2e8f0;
       border-radius: 3px;
-      margin: 32px 0 12px;
+      transform: translateY(-50%);
     }
 
     .slider-track-fill {
       position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
+      left: 0; top: 50%;
+      height: 6px;
       background: var(--color-primary);
       border-radius: 3px;
+      transform: translateY(-50%);
       pointer-events: none;
+      box-shadow: 0 0 10px rgba(99, 91, 255, 0.4);
     }
 
     .time-slider {
       position: absolute;
-      top: -7px;
-      left: 0;
       width: 100%;
-      height: 20px;
-      opacity: 0; /* Hide default, but keep functional */
+      height: 100%;
+      opacity: 0;
       cursor: pointer;
-      z-index: 2;
+      z-index: 3;
+      margin: 0;
     }
 
-    /* Thumb (needs explicit styling if not hiding default) -
-       For "ultrathink" visual, we can make a custom thumb using a pseudo-element on wrapper
-       that moves with left%, but simple native slider with good track is robust.
-       Let's stick to native slider but styled for now for robustness across browsers without complex JS.
-    */
-    .time-slider {
-      -webkit-appearance: none;
-      opacity: 1;
-      background: transparent;
-    }
-    .time-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      height: 20px;
+    /* Custom Thumb Visual (Fake) */
+    .slider-track-fill::after {
+      content: '';
+      position: absolute;
+      right: -10px;
+      top: 50%;
       width: 20px;
+      height: 20px;
       border-radius: 50%;
-      background: var(--color-surface);
-      border: 2px solid var(--color-primary);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      margin-top: -7px; /* Align with track */
-    }
-    .time-slider::-webkit-slider-runnable-track {
-      height: 6px;
-      background: transparent; /* Handled by wrapper */
+      background: white;
+      border: 4px solid var(--color-primary);
+      transform: translateY(-50%);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
-    .slider-labels {
+    .tick-marks {
+      position: absolute;
+      bottom: -10px;
+      left: 0; right: 0;
       display: flex;
       justify-content: space-between;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
+      font-weight: 700;
       color: var(--color-text-tertiary);
-      font-weight: 600;
-      text-transform: uppercase;
-      margin-bottom: 24px;
     }
 
     .playback-actions {
       display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: 16px;
+      position: relative;
+      z-index: 2;
     }
 
     .play-btn {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: var(--color-primary);
+      gap: 12px;
+      background: var(--color-text-primary);
       color: white;
       border: none;
-      padding: 10px 24px;
-      border-radius: 30px;
+      padding: 12px 32px;
+      border-radius: 40px;
       font-weight: 600;
       font-size: 1rem;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      box-shadow: 0 10px 20px -5px rgba(26, 31, 54, 0.3);
     }
 
     .play-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(99, 91, 255, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px -5px rgba(26, 31, 54, 0.4);
     }
 
     .play-btn.playing {
-      background: var(--color-text-primary);
-      box-shadow: 0 4px 12px rgba(10, 37, 64, 0.3);
+      background: white;
+      color: var(--color-text-primary);
+      border: 2px solid var(--color-text-primary);
     }
 
     .secondary-btn {
-      background: transparent;
+      background: white;
       border: 1px solid var(--color-border);
       color: var(--color-text-secondary);
-      padding: 10px 20px;
-      border-radius: 30px;
+      padding: 12px 24px;
+      border-radius: 40px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .secondary-btn:hover {
-      background: var(--color-bg);
-      color: var(--color-text-primary);
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-2px);
     }
 
-    /* Metrics */
+    /* Metrics Grid */
     .metrics-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
+      gap: 20px;
+      margin-bottom: 32px;
     }
 
     .metric-card {
       background: white;
-      padding: 16px;
-      border-radius: var(--radius-md);
+      padding: 20px;
+      border-radius: var(--radius-lg);
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--color-border);
       display: flex;
-      flex-direction: column;
       align-items: center;
+      gap: 16px;
     }
 
-    .metric-label {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      color: var(--color-text-tertiary);
-      font-weight: 600;
-      margin-bottom: 4px;
+    .metric-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    .metric-icon.t-blue { background: #eff6ff; color: #3b82f6; }
+    .metric-icon.t-purple { background: #f5f3ff; color: #8b5cf6; }
 
-    .metric-value {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--color-text-primary);
-    }
+    .metric-label { font-size: 0.8rem; color: var(--color-text-secondary); font-weight: 600; margin-bottom: 2px; }
+    .metric-value { font-size: 1.5rem; font-weight: 800; color: var(--color-text-primary); }
+    .metric-total { font-size: 0.9rem; color: var(--color-text-tertiary); font-weight: 500; }
 
-    .metric-total {
-      font-size: 1rem;
-      color: var(--color-text-tertiary);
-      font-weight: 500;
-    }
-
-    /* Reconstructed View */
+    /* Visualizer */
     .reconstructed-view {
-      margin-bottom: 40px;
-    }
-
-    .view-title {
-      font-size: 1rem;
-      color: var(--color-text-secondary);
-      margin-bottom: 12px;
-      font-weight: 600;
-    }
-
-    .todo-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px;
-    }
-
-    .mini-card {
       background: white;
-      padding: 12px;
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-lg);
+      padding: 24px;
       border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.2s;
     }
 
-    .mini-card:hover {
-      transform: translateY(-2px);
-    }
-
-    .mini-card-header {
+    .view-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 20px;
     }
 
-    .mini-priority-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-    .mini-priority-dot.critical { background: var(--color-danger); }
-    .mini-priority-dot.high { background: #d97706; }
-    .mini-priority-dot.medium { background: var(--color-primary); }
-    .mini-priority-dot.low { background: var(--color-success); }
+    .view-title { font-size: 1.1rem; font-weight: 700; margin: 0; }
 
-    .mini-date {
-      font-size: 0.7rem;
-      color: var(--color-text-tertiary);
+    .live-dot {
+      width: 10px; height: 10px; border-radius: 50%; background: #cbd5e1;
+      transition: all 0.3s;
+    }
+    .live-dot.active { background: var(--color-danger); box-shadow: 0 0 8px var(--color-danger); }
+
+    .todo-grid-visual {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
     }
 
-    .mini-content {
-      font-size: 0.9rem;
-      color: var(--color-text-primary);
-      font-weight: 500;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
+    .visual-card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      position: relative;
       overflow: hidden;
+      transition: transform 0.2s;
     }
+    .visual-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+    .card-status-line { height: 4px; width: 100%; background: #e2e8f0; }
+    .critical .card-status-line { background: var(--color-danger); }
+    .high .card-status-line { background: #d97706; }
+    .medium .card-status-line { background: var(--color-primary); }
+    .low .card-status-line { background: var(--color-success); }
+
+    .visual-content { padding: 12px 16px; }
+
+    .visual-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.75rem; color: var(--color-text-tertiary); font-weight: 600; text-transform: uppercase; }
+
+    .visual-text { font-size: 0.95rem; font-weight: 500; color: var(--color-text-primary); line-height: 1.4; }
 
     .empty-state {
+      padding: 60px;
       text-align: center;
-      padding: 40px;
-      background: #f8fafc;
-      border-radius: var(--radius-md);
-      border: 2px dashed var(--color-border);
       color: var(--color-text-tertiary);
-    }
-
-    .empty-icon {
-      margin-bottom: 12px;
-      opacity: 0.5;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 2px dashed #e2e8f0;
     }
 
     @media (max-width: 600px) {
-      .page-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-      }
-
-      .time-display-large {
-        font-size: 2rem;
-      }
-
-      .playback-actions {
-        flex-direction: column;
-      }
-
-      .todo-grid {
-        grid-template-columns: 1fr;
-      }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .time-display-large { font-size: 2.5rem; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .playback-actions { flex-direction: column; }
     }
   `]
 })
@@ -428,7 +445,7 @@ export class TemporalOperationsCenterComponent implements OnInit, OnDestroy {
   isPlaying = false;
   playbackInterval: any;
 
-  integrityStatus = 'VERIFIED'; // Mock for now, or fetch from verify endpoint
+  integrityStatus = 'VERIFIED';
 
   currentLogIndex = 0;
 
@@ -436,19 +453,17 @@ export class TemporalOperationsCenterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.auditReplayService.fetchLogs().subscribe(logs => {
-      this.logs = logs; // API returns desc? Service sorts them?
-      // Service fetchLogs returns raw. Reconstruct sorts them.
-      // But we need them sorted here for time calculations.
+      this.logs = logs;
+      // Re-sort to ensure time order for playback
       this.logs.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
       if (this.logs.length > 0) {
         this.startTime = new Date(this.logs[0].timestamp).getTime();
-        this.endTime = new Date().getTime(); // Now
+        this.endTime = new Date().getTime();
 
-        // Add some padding to start time so we can see "before genesis"
-        this.startTime -= 1000 * 60; // 1 minute buffer
+        // Padding before first event
+        this.startTime -= 1000 * 60;
       } else {
-        // Fallback if empty
         this.startTime = new Date().getTime() - 1000 * 60 * 60;
       }
 
@@ -477,7 +492,7 @@ export class TemporalOperationsCenterComponent implements OnInit, OnDestroy {
   updateTickFromTime(): void {
     const range = this.endTime - this.startTime;
     if (range === 0) {
-      this.currentTick = 100;
+      this.currentTick = this.totalTicks;
       return;
     }
     const elapsed = this.currentReplayTime.getTime() - this.startTime;
@@ -486,8 +501,6 @@ export class TemporalOperationsCenterComponent implements OnInit, OnDestroy {
 
   updateState(): void {
     this.reconstructedTodos = this.auditReplayService.reconstructState(this.logs, this.currentReplayTime);
-
-    // Calculate how many logs we've passed
     this.currentLogIndex = this.logs.filter(l => new Date(l.timestamp) <= this.currentReplayTime).length;
   }
 
@@ -502,10 +515,10 @@ export class TemporalOperationsCenterComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.currentTick += 1; // Increment tick
+        this.currentTick += 1;
         this.updateTimeFromTick();
         this.updateState();
-      }, 100); // 100ms per step
+      }, 100);
     } else {
       clearInterval(this.playbackInterval);
     }
