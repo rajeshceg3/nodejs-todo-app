@@ -11,14 +11,25 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(0,0,0,0.05);
-  height: 60px; /* Sleeker height */
+  height: 64px; /* Standardized premium height */
   display: flex;
   align-items: center;
   transition: all 0.3s ease;
+}
+
+/* Premium noise texture overlay for header */
+.app-header::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: var(--bg-noise);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .header-content {
@@ -39,23 +50,25 @@
   color: var(--color-primary);
   text-decoration: none;
   cursor: pointer;
+  group: logo-group;
 }
 
 .logo-icon {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
   border-radius: 10px;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 10px rgba(99, 91, 255, 0.3);
-  transition: transform 0.4s var(--ease-spring);
+  box-shadow: 0 4px 10px rgba(99, 91, 255, 0.25);
+  transition: transform 0.5s var(--ease-spring), box-shadow 0.3s ease;
 }
 
 .logo-area:hover .logo-icon {
-  transform: rotate(15deg) scale(1.05);
+  transform: rotate(10deg) scale(1.05);
+  box-shadow: 0 8px 16px rgba(99, 91, 255, 0.35);
 }
 
 .logo-icon svg {
@@ -65,40 +78,42 @@
 
 .logo-text {
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: 1.125rem;
   color: var(--color-text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 /* Desktop Nav */
 .desktop-nav {
   display: flex;
-  gap: 4px;
-  background: rgba(0,0,0,0.03);
+  gap: 6px;
+  background: rgba(0,0,0,0.02);
   padding: 4px;
   border-radius: var(--radius-md);
+  border: 1px solid rgba(0,0,0,0.02);
 }
 
 .nav-link {
   text-decoration: none;
   color: var(--color-text-secondary);
   font-weight: 500;
-  padding: 6px 16px;
-  border-radius: 6px; /* Slightly smaller than container */
-  transition: all 0.2s ease;
+  padding: 8px 18px;
+  border-radius: 8px;
+  transition: all 0.25s var(--ease-smooth);
   font-size: 0.9rem;
   position: relative;
 }
 
 .nav-link:hover {
   color: var(--color-text-primary);
+  background-color: rgba(255,255,255,0.5);
 }
 
 .nav-link.active {
   color: var(--color-primary);
   background-color: white;
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
 }
 
 /* =========================================
@@ -128,7 +143,7 @@
 
   .main-content {
     margin-top: 20px;
-    margin-bottom: 120px; /* More space for floating bottom input + nav */
+    margin-bottom: 140px; /* Increased space for floating bottom input + nav */
     padding: 0 16px;
   }
 
@@ -136,19 +151,23 @@
   .mobile-nav {
     display: flex;
     position: fixed;
-    bottom: 20px;
-    left: 16px;
-    right: 16px;
-    height: 68px; /* Slightly taller for better touch targets */
+    bottom: 24px;
+    left: 20px;
+    right: 20px;
+    height: 72px;
     background-color: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 28px;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 36px;
     justify-content: space-evenly;
     align-items: center;
     z-index: 1000;
-    box-shadow: 0 20px 40px -10px rgba(50, 50, 93, 0.15), 0 10px 20px -10px rgba(0, 0, 0, 0.1); /* Deep shadow */
+    /* Deeper, more spread shadow for floating effect */
+    box-shadow:
+      0 20px 40px -10px rgba(50, 50, 93, 0.2),
+      0 10px 20px -10px rgba(0, 0, 0, 0.1),
+      inset 0 1px 1px rgba(255,255,255,0.6);
     padding-bottom: 0;
   }
 
@@ -159,7 +178,7 @@
     justify-content: center;
     text-decoration: none;
     color: var(--color-text-tertiary);
-    gap: 5px;
+    gap: 4px;
     width: 64px;
     height: 100%;
     position: relative;
@@ -171,17 +190,18 @@
   }
 
   .nav-icon {
-    width: 26px;
-    height: 26px;
-    transition: transform 0.3s var(--ease-spring), stroke 0.2s;
+    width: 28px;
+    height: 28px;
+    transition: transform 0.3s var(--ease-spring), stroke 0.2s, color 0.3s;
+    z-index: 2;
   }
 
   .nav-label {
-    font-size: 0.65rem;
+    font-size: 11px;
     font-weight: 600;
     opacity: 0.8;
-    transform: translateY(0);
-    transition: transform 0.2s, opacity 0.2s;
+    transition: transform 0.2s, opacity 0.2s, color 0.2s;
+    z-index: 2;
   }
 
   .mobile-nav-item.active {
@@ -189,18 +209,27 @@
   }
 
   .mobile-nav-item.active .nav-icon {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
     stroke-width: 2.5px;
   }
 
-  /* Active Indicator Dot */
+  .mobile-nav-item.active .nav-label {
+    transform: translateY(-2px);
+  }
+
+  /* Active Indicator Glow - replacing the simple dot */
   .mobile-nav-item.active::after {
     content: '';
     position: absolute;
-    bottom: 6px;
-    width: 4px;
-    height: 4px;
-    background-color: var(--color-primary);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    background-color: var(--color-primary-fade);
     border-radius: 50%;
+    z-index: 1;
+    filter: blur(4px);
+    animation: popIn 0.3s var(--ease-spring);
   }
 }

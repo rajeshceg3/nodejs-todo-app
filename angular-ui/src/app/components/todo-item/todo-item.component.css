@@ -1,10 +1,9 @@
 :host {
   display: block;
   position: relative;
-  overflow: hidden; /* Contain swipe actions */
+  overflow: visible; /* Allow hover scaling to overlap */
   margin-bottom: 12px;
   border-radius: var(--radius-lg);
-  /* Fix for mobile swipe bleed */
   transform: translate3d(0,0,0);
 }
 
@@ -48,7 +47,12 @@
   display: flex;
   align-items: flex-start;
   padding: 16px 20px;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s, background-color 0.2s;
+  /* World-class transition: transform and shadow decoupled for feel */
+  transition:
+    transform 0.4s var(--ease-spring),
+    box-shadow 0.3s ease,
+    background-color 0.2s,
+    border-color 0.2s;
   border: 1px solid rgba(0,0,0,0.04);
   will-change: transform;
 }
@@ -56,24 +60,25 @@
 /* Desktop Hover */
 @media (min-width: 601px) {
   .todo-card-content {
-    padding: 18px 24px; /* More breathing room */
+    padding: 18px 24px;
   }
 
   .todo-card-content:hover {
-    transform: translateY(-2px);
+    transform: scale(1.005) translateY(-2px); /* Slight scale breath */
     box-shadow: var(--shadow-md);
-    border-color: rgba(99, 91, 255, 0.2);
+    border-color: rgba(99, 91, 255, 0.3);
+    z-index: 2;
   }
 }
 
-/* Mobile Active State (Visual Haptics) */
+/* Mobile Active State */
 .todo-card-content:active {
   background-color: #fafafa;
-  transform: scale(0.995);
+  transform: scale(0.98); /* Satisfying squish */
 }
 .todo-card-content.swiping {
-  box-shadow: none; /* Flatten while swiping */
-  transition: none; /* Direct control */
+  box-shadow: none;
+  transition: none;
 }
 
 /* Priority Borders - More subtle */
@@ -100,8 +105,8 @@
 }
 
 .custom-checkbox {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 2px solid #cbd5e1;
   background: white;
@@ -110,7 +115,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Jelly pop */
   color: white;
   outline: none;
 }
@@ -128,12 +133,24 @@
 .custom-checkbox.checked {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
+  animation: jelly 0.5s linear;
+}
+
+@keyframes jelly {
+  0% { transform: scale(1, 1); }
+  30% { transform: scale(1.25, 0.75); }
+  40% { transform: scale(0.75, 1.25); }
+  50% { transform: scale(1.15, 0.85); }
+  65% { transform: scale(0.95, 1.05); }
+  75% { transform: scale(1.05, 0.95); }
+  100% { transform: scale(1, 1); }
 }
 
 .check-icon {
   width: 14px;
   height: 14px;
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* Stagger the icon appearance slightly after the jelly */
+  animation: popIn 0.3s 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
 }
 
 .card-body {
@@ -151,6 +168,7 @@
   line-height: 1.5;
   transition: color 0.2s;
   word-break: break-word;
+  letter-spacing: -0.01em;
 }
 
 .todo-content.completed {
@@ -251,10 +269,9 @@
 
   .todo-card-content {
     padding: 16px;
-    touch-action: pan-y; /* Allow vertical scroll, handle horizontal in JS */
+    touch-action: pan-y;
   }
 
-  /* Hide Desktop Actions on Mobile (Swipe is primary) */
   .actions {
     display: none;
   }
@@ -264,8 +281,8 @@
   }
 
   .custom-checkbox {
-    width: 26px;
-    height: 26px;
+    width: 28px; /* Larger target */
+    height: 28px;
   }
 
   .todo-content {
