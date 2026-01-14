@@ -18,7 +18,7 @@
   transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
   border: 1px solid var(--color-border);
   padding: 6px;
-  height: 56px;
+  height: 64px; /* Taller, more commanding */
 }
 
 /* Hover lift effect */
@@ -38,7 +38,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
+  width: 56px;
   height: 100%;
   color: var(--color-text-tertiary);
   transition: color 0.3s;
@@ -54,7 +54,7 @@
   background: transparent;
   padding: 0;
   height: 100%;
-  font-size: 1.05rem;
+  font-size: 1.1rem; /* Larger text */
   font-weight: 500;
   color: var(--color-text-primary);
   box-shadow: none;
@@ -89,7 +89,8 @@
   border-radius: 6px;
   padding: 4px 8px;
   background: #f1f5f9;
-  box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.05); /* Key cap effect */
+  font-family: monospace;
 }
 
 .add-btn {
@@ -98,7 +99,7 @@
   border: none;
   border-radius: 14px;
   padding: 0;
-  height: 40px;
+  height: 48px;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
@@ -122,8 +123,8 @@
   transform: translateX(0) scale(1);
   pointer-events: auto;
   width: auto;
-  padding: 0 20px;
-  margin-left: 8px;
+  padding: 0 24px;
+  margin-left: 12px;
 }
 
 .add-btn:hover:not(:disabled) {
@@ -173,25 +174,38 @@
 @media (max-width: 600px) {
   .add-task-form {
     position: fixed;
-    bottom: 100px; /* Position above nav */
+    bottom: 110px; /* Position above nav with breathing room */
     left: 20px;
     right: 20px;
     margin-bottom: 0;
     z-index: 900;
   }
 
+  /* Fade mask behind input so lists don't clash harshly */
+  .add-task-form::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    left: -20px;
+    right: -20px;
+    bottom: -100px; /* Extend down */
+    background: linear-gradient(to top, var(--color-bg) 60%, transparent);
+    z-index: -1;
+    pointer-events: none;
+  }
+
   .input-wrapper {
-    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.05);
     border-radius: 32px;
     border: 1px solid rgba(255,255,255,0.7);
     backdrop-filter: blur(16px);
-    background: rgba(255,255,255,0.95); /* Slightly less transp for contrast */
-    padding: 6px 8px; /* Slightly tighter padding */
-    height: 60px; /* Taller touch target */
+    background: rgba(255,255,255,0.95);
+    padding: 6px 8px;
+    height: 64px;
   }
 
   .task-input {
-    font-size: 1rem;
+    font-size: 1.05rem;
   }
 
   .shortcut-hint {
@@ -201,6 +215,6 @@
   .add-btn.visible {
     border-radius: 24px;
     padding: 0 24px;
-    height: 44px; /* Match input height mostly */
+    height: 48px;
   }
 }

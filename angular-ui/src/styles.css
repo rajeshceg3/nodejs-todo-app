@@ -4,9 +4,9 @@
   --color-bg: #f8f9fc;
   --color-surface: #ffffff;
 
-  /* Text Colors */
-  --color-text-primary: #1a1f36; /* Darker, more contrast */
-  --color-text-secondary: #4f566b;
+  /* Text Colors - High Contrast & Legibility */
+  --color-text-primary: #1a1f36; /* Deep Navy/Black */
+  --color-text-secondary: #4f566b; /* Cool Gray */
   --color-text-tertiary: #8792a2;
   --color-text-inverse: #ffffff;
 
@@ -24,7 +24,7 @@
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
 
-  /* Sophisticated Shadows (Tinted) - Multi-layer for realism */
+  /* Sophisticated Shadows (Tinted) */
   --shadow-color: 50, 50, 93;
   --shadow-secondary: 0, 0, 0;
 
@@ -81,7 +81,7 @@ body {
   margin: 0;
   font-family: var(--font-family);
   background-color: var(--color-bg);
-  /* Enhanced Mesh Gradient - More subtle and professional */
+  /* Enhanced Mesh Gradient - Subtle & Professional */
   background-image:
     radial-gradient(at 0% 0%, hsla(253,16%,95%,1) 0, transparent 50%),
     radial-gradient(at 50% 0%, hsla(225,39%,97%,1) 0, transparent 50%),
@@ -112,7 +112,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em; /* Tighter for display */
   line-height: 1.2;
 }
 
@@ -157,14 +157,19 @@ input:focus, textarea:focus, select:focus {
   100% { opacity: 1; transform: scale(1); }
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 .fade-in {
   animation: fadeIn 0.4s var(--ease-smooth) forwards;
 }
 
 /* Refined Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
