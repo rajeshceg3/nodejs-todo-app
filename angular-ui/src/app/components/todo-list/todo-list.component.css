@@ -1,28 +1,38 @@
 :host {
   display: block;
-  /* Ensure container takes full width/height as needed */
 }
 
 /* Empty State */
 .no-todos-message {
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 24px; /* More generous whitespace */
   color: var(--color-text-secondary);
-  background: white; /* Clean card background */
+  background: white;
   border-radius: var(--radius-xl);
   margin-top: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
   box-shadow: var(--shadow-sm);
   border: 1px solid rgba(0,0,0,0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient background effect for empty state */
+.no-todos-message::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at top right, rgba(99, 91, 255, 0.03), transparent 40%);
+  pointer-events: none;
 }
 
 .illustration-container {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -38,23 +48,38 @@
   animation: pulse-ring 3s infinite cubic-bezier(0.4, 0, 0.6, 1);
 }
 
+/* Second ring for complexity */
+.illustration-ring::after {
+  content: '';
+  position: absolute;
+  top: 15%; left: 15%; right: 15%; bottom: 15%;
+  border-radius: 50%;
+  border: 1px solid rgba(99, 91, 255, 0.1);
+  animation: spin-slow 10s linear infinite;
+}
+
 .illustration-core {
   position: relative;
   width: 80px;
   height: 80px;
-  background: #f1f5f9;
+  background: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-primary);
   z-index: 2;
-  box-shadow: var(--shadow-inner);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255,255,255,0.5);
 }
 
 @keyframes pulse-ring {
   0% { transform: scale(0.8); opacity: 0.5; }
   100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
 }
 
 .no-todos-message h3 {
@@ -68,7 +93,7 @@
   font-size: 1.05rem;
   color: var(--color-text-tertiary);
   margin: 0;
-  max-width: 320px;
+  max-width: 340px;
   line-height: 1.6;
 }
 
@@ -77,6 +102,7 @@
   display: flex;
   flex-direction: column;
   padding-bottom: 20px;
+  gap: 4px; /* Slight gap between items */
 }
 
 /* Mobile Spacer */
@@ -86,7 +112,8 @@
 
 @media (max-width: 600px) {
   .list-spacer {
-    height: 180px; /* Space for bottom input (approx 60px) + nav (80px) + padding */
+    /* Calculated: Nav(72) + Input(~60) + Spacing(24*2) */
+    height: 180px;
   }
 }
 
@@ -94,12 +121,12 @@
   animation: slideIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
 }
 
-/* Stagger animations */
+/* Refined Stagger animations - tighter */
 .todo-item-wrapper:nth-child(1) { animation-delay: 0.05s; }
-.todo-item-wrapper:nth-child(2) { animation-delay: 0.1s; }
-.todo-item-wrapper:nth-child(3) { animation-delay: 0.15s; }
-.todo-item-wrapper:nth-child(4) { animation-delay: 0.2s; }
-.todo-item-wrapper:nth-child(5) { animation-delay: 0.25s; }
+.todo-item-wrapper:nth-child(2) { animation-delay: 0.08s; }
+.todo-item-wrapper:nth-child(3) { animation-delay: 0.11s; }
+.todo-item-wrapper:nth-child(4) { animation-delay: 0.14s; }
+.todo-item-wrapper:nth-child(5) { animation-delay: 0.17s; }
 
 @keyframes slideIn {
   from {
