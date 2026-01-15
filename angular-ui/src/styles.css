@@ -1,16 +1,16 @@
 /* Global Styles & Variables */
 :root {
   /* Brand Palette - Deep & Polished */
-  --color-bg: #f8f9fc;
+  --color-bg: #f7f9fc;
   --color-surface: #ffffff;
 
   /* Text Colors - High Contrast & Legibility */
-  --color-text-primary: #1a1f36; /* Deep Navy/Black */
-  --color-text-secondary: #4f566b; /* Cool Gray */
-  --color-text-tertiary: #8792a2;
+  --color-text-primary: #0a2540; /* Stripe Navy */
+  --color-text-secondary: #425466; /* Cool Gray */
+  --color-text-tertiary: #8898aa;
   --color-text-inverse: #ffffff;
 
-  --color-border: rgba(224, 224, 224, 0.6);
+  --color-border: #e6ebf1;
 
   /* Primary Accent - "Stripe Blurple" inspired */
   --color-primary: #635bff;
@@ -20,22 +20,22 @@
 
   /* Functional Colors */
   --color-accent: #00d4ff;
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  --color-success: #3ecf8e;
+  --color-warning: #f5a623;
+  --color-danger: #f85149;
 
   /* Sophisticated Shadows (Tinted) */
   --shadow-color: 50, 50, 93;
   --shadow-secondary: 0, 0, 0;
 
-  --shadow-xs: 0 2px 5px -1px rgba(var(--shadow-color), 0.25), 0 1px 3px -1px rgba(var(--shadow-secondary), 0.3);
-  --shadow-sm: 0 6px 12px -2px rgba(var(--shadow-color), 0.15), 0 3px 7px -3px rgba(var(--shadow-secondary), 0.1);
+  --shadow-xs: 0 2px 5px -1px rgba(var(--shadow-color), 0.25), 0 1px 3px -1px rgba(var(--shadow-secondary), 0.1);
+  --shadow-sm: 0 6px 12px -2px rgba(var(--shadow-color), 0.1), 0 3px 7px -3px rgba(var(--shadow-secondary), 0.05);
   --shadow-md: 0 13px 27px -5px rgba(var(--shadow-color), 0.15), 0 8px 16px -8px rgba(var(--shadow-secondary), 0.1);
-  --shadow-lg: 0 30px 60px -12px rgba(var(--shadow-color), 0.15), 0 18px 36px -18px rgba(var(--shadow-secondary), 0.15);
-  --shadow-xl: 0 50px 100px -20px rgba(var(--shadow-color), 0.15), 0 30px 60px -30px rgba(var(--shadow-secondary), 0.2);
+  --shadow-lg: 0 30px 60px -12px rgba(var(--shadow-color), 0.15), 0 18px 36px -18px rgba(var(--shadow-secondary), 0.1);
+  --shadow-xl: 0 50px 100px -20px rgba(var(--shadow-color), 0.15), 0 30px 60px -30px rgba(var(--shadow-secondary), 0.15);
 
   /* Refined Focus Ring */
-  --shadow-focus: 0 0 0 4px rgba(99, 91, 255, 0.15), 0 1px 1px 0 rgba(0,0,0,0.1);
+  --shadow-focus: 0 0 0 4px rgba(99, 91, 255, 0.15), 0 1px 1px 0 rgba(0,0,0,0.05);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
 
   /* Typography */
@@ -57,7 +57,7 @@
   --radius-lg: 16px;
   --radius-xl: 24px;
 
-  --max-width-content: 860px;
+  --max-width-content: 920px; /* Slightly wider */
 
   /* Glassmorphism */
   --glass-bg: rgba(255, 255, 255, 0.7);
@@ -66,7 +66,7 @@
 
   /* Transitions */
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --ease-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-fast: 150ms var(--ease-smooth);
   --transition-normal: 250ms var(--ease-smooth);
   --transition-slow: 400ms var(--ease-smooth);
@@ -87,10 +87,10 @@ body {
     radial-gradient(at 50% 0%, hsla(225,39%,97%,1) 0, transparent 50%),
     radial-gradient(at 100% 0%, hsla(339,49%,97%,1) 0, transparent 50%);
   background:
-    radial-gradient(at 0% 0%, rgba(99, 91, 255, 0.05) 0px, transparent 50%),
-    radial-gradient(at 98% 1%, rgba(0, 212, 255, 0.05) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(255, 255, 255, 0.8) 0px, transparent 50%),
-    radial-gradient(at 98% 99%, rgba(244, 63, 94, 0.03) 0px, transparent 50%);
+    radial-gradient(at 10% 10%, rgba(99, 91, 255, 0.04) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(0, 212, 255, 0.04) 0px, transparent 50%),
+    radial-gradient(at 50% 90%, rgba(255, 255, 255, 0.6) 0px, transparent 50%),
+    radial-gradient(at 90% 90%, rgba(244, 63, 94, 0.02) 0px, transparent 50%);
 
   background-attachment: fixed;
   background-size: 100% 100%;
