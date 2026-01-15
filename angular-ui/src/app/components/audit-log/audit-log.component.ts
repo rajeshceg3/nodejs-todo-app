@@ -96,7 +96,7 @@ interface IntegrityReport {
   styles: [`
     :host {
       display: block;
-      animation: fadeIn 0.6s ease-out;
+      animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
     .page-header {
@@ -104,18 +104,19 @@ interface IntegrityReport {
       justify-content: space-between;
       align-items: center;
       margin-bottom: 40px;
-      gap: 20px;
+      gap: 24px;
       flex-wrap: wrap;
     }
 
     h2 {
-      font-size: 1.75rem;
+      font-size: 2rem;
       margin-bottom: 8px;
+      letter-spacing: -0.03em;
     }
 
     .subtitle {
       color: var(--color-text-secondary);
-      font-size: 1rem;
+      font-size: 1.05rem;
       margin: 0;
     }
 
@@ -124,26 +125,26 @@ interface IntegrityReport {
       display: flex;
       align-items: center;
       padding: 16px 24px;
-      background: white;
+      background: var(--color-surface);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-md);
       border: 1px solid var(--color-border);
-      min-width: 280px;
-      transition: all 0.3s ease;
+      min-width: 300px;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
     .status-card.secure { border-color: rgba(34, 197, 94, 0.3); background: linear-gradient(to right, white, #f0fdf4); }
     .status-card.compromised { border-color: rgba(239, 68, 68, 0.3); background: linear-gradient(to right, white, #fef2f2); }
 
     .status-icon {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 16px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      margin-right: 18px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
     .secure .status-icon { background: #dcfce7; color: var(--color-success); }
@@ -161,11 +162,11 @@ interface IntegrityReport {
       color: var(--color-text-tertiary);
       font-weight: 700;
       letter-spacing: 0.05em;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
 
     .status-value {
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       color: var(--color-text-primary);
     }
@@ -181,13 +182,15 @@ interface IntegrityReport {
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-left: 8px;
     }
 
     .verify-btn:hover {
       background: white;
       color: var(--color-primary);
       border-color: var(--color-primary);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transform: translateY(-1px);
     }
 
     .loading .refresh-icon {
@@ -205,7 +208,7 @@ interface IntegrityReport {
 
     .log-card {
       display: flex;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       position: relative;
     }
 
@@ -213,21 +216,21 @@ interface IntegrityReport {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-right: 24px;
+      margin-right: 28px;
       position: relative;
-      min-width: 40px;
+      min-width: 44px;
     }
 
     .log-icon-circle {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 2;
-      background: white;
-      border: 2px solid white; /* Gap from line */
+      background: var(--color-surface);
+      border: 4px solid var(--color-bg); /* Match bg color for gap effect */
       box-shadow: var(--shadow-sm);
     }
 
@@ -237,25 +240,25 @@ interface IntegrityReport {
 
     .connector-line {
       position: absolute;
-      top: 40px;
-      bottom: -30px; /* Connects to next card */
+      top: 44px;
+      bottom: -32px;
       width: 2px;
-      background-color: #e2e8f0;
+      background: linear-gradient(to bottom, #e2e8f0 50%, rgba(226, 232, 240, 0.2));
       z-index: 1;
     }
 
     .log-content-wrapper {
       flex-grow: 1;
-      min-width: 0; /* Flexbox trick */
+      min-width: 0;
     }
 
     .log-content-card {
-      background: white;
+      background: var(--color-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
-      padding: 20px;
+      padding: 24px;
       box-shadow: var(--shadow-sm);
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s;
     }
 
     .log-content-card:hover {
@@ -268,16 +271,16 @@ interface IntegrityReport {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 12px;
     }
 
     .action-badge {
       font-size: 0.8rem;
       font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 20px;
+      padding: 6px 14px;
+      border-radius: 99px;
       letter-spacing: 0.03em;
     }
 
@@ -286,7 +289,7 @@ interface IntegrityReport {
     .DELETE_TASK.action-badge { background: #fee2e2; color: #991b1b; }
 
     .timestamp {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: var(--color-text-tertiary);
       font-weight: 500;
       font-variant-numeric: tabular-nums;
@@ -296,55 +299,59 @@ interface IntegrityReport {
     .info-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 12px;
+      gap: 16px;
     }
 
     .info-item {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
     }
 
     .label {
       color: var(--color-text-secondary);
       font-size: 0.75rem;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
     .mono-code {
-      font-family: 'JetBrains Mono', 'Fira Code', 'Roboto Mono', monospace;
+      font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
       font-size: 0.85rem;
       color: var(--color-text-primary);
       background: #f8fafc;
-      padding: 6px 10px;
-      border-radius: 6px;
+      padding: 8px 12px;
+      border-radius: 8px;
       border: 1px solid #e2e8f0;
       word-break: break-all;
+      line-height: 1.5;
     }
 
     .hash-display {
       display: flex;
       align-items: stretch;
+      box-shadow: var(--shadow-xs);
+      border-radius: 8px;
     }
 
     .hash-prefix {
-      background: #e2e8f0;
+      background: #f1f5f9;
       color: var(--color-text-secondary);
       font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0 10px;
+      font-weight: 700;
+      padding: 0 12px;
       display: flex;
       align-items: center;
-      border-radius: 6px 0 0 6px;
-      border: 1px solid #cbd5e1;
+      border-radius: 8px 0 0 8px;
+      border: 1px solid #e2e8f0;
       border-right: none;
     }
 
     .hash-val {
-      border-radius: 0 6px 6px 0;
+      border-radius: 0 8px 8px 0;
       flex-grow: 1;
+      border-left: 1px solid #e2e8f0;
     }
 
     @media (max-width: 600px) {
@@ -354,17 +361,18 @@ interface IntegrityReport {
       }
       .status-card {
         width: 100%;
+        min-width: 0;
       }
       .log-connector {
         margin-right: 16px;
         min-width: 32px;
       }
       .log-icon-circle {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
       }
       .log-content-card {
-        padding: 16px;
+        padding: 20px;
       }
     }
   `]

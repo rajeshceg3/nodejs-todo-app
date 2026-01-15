@@ -10,12 +10,13 @@
 .app-header {
   position: sticky;
   top: 0;
-  z-index: 100;
-  background-color: rgba(255, 255, 255, 0.85); /* Slightly more opaque */
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-  height: 64px; /* Slightly taller for modern look */
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  height: 70px; /* Taller, more premium */
   display: flex;
   align-items: center;
   transition: all 0.3s ease;
@@ -25,7 +26,7 @@
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -39,24 +40,25 @@
   color: var(--color-primary);
   text-decoration: none;
   cursor: pointer;
+  group: logo;
 }
 
 .logo-icon {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
   border-radius: 10px;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(99, 91, 255, 0.25);
-  transition: transform 0.4s var(--ease-spring);
+  box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
+  transition: transform 0.5s var(--ease-spring), box-shadow 0.3s ease;
 }
 
 .logo-area:hover .logo-icon {
-  transform: rotate(12deg) scale(1.05);
-  box-shadow: 0 6px 16px rgba(99, 91, 255, 0.35);
+  transform: rotate(10deg) scale(1.1);
+  box-shadow: 0 8px 20px rgba(99, 91, 255, 0.4);
 }
 
 .logo-icon svg {
@@ -66,38 +68,41 @@
 
 .logo-text {
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: var(--color-text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  font-feature-settings: "cv11", "ss01";
 }
 
 /* Desktop Nav */
 .desktop-nav {
   display: flex;
-  gap: 6px;
-  background: transparent;
+  gap: 8px;
+  background: rgba(0,0,0,0.03); /* Subtle pill container */
   padding: 4px;
+  border-radius: 99px;
 }
 
 .nav-link {
   text-decoration: none;
   color: var(--color-text-secondary);
   font-weight: 500;
-  padding: 8px 18px;
-  border-radius: 20px; /* Pill shape */
+  padding: 8px 20px;
+  border-radius: 20px;
   transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
   font-size: 0.95rem;
   position: relative;
+  z-index: 1;
 }
 
 .nav-link:hover {
   color: var(--color-text-primary);
-  background-color: rgba(0,0,0,0.03);
 }
 
 .nav-link.active {
   color: var(--color-primary);
-  background-color: rgba(99, 91, 255, 0.08);
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   font-weight: 600;
 }
 
@@ -110,7 +115,7 @@
   margin: 48px auto;
   padding: 0 24px;
   flex: 1;
-  animation: fadeIn 0.6s ease-out;
+  animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* =========================================
@@ -128,8 +133,8 @@
 
   .main-content {
     margin-top: 24px;
-    margin-bottom: 120px; /* Space for fixed elements */
-    padding: 0 16px;
+    margin-bottom: 140px; /* Space for fixed elements */
+    padding: 0 20px;
   }
 
   /* Floating Bottom Bar */
@@ -140,15 +145,15 @@
     left: 20px;
     right: 20px;
     height: 72px; /* Comfortable touch target */
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 36px;
     justify-content: space-evenly;
     align-items: center;
     z-index: 1000;
-    box-shadow: 0 20px 40px -8px rgba(50, 50, 93, 0.2), 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px -8px rgba(50, 50, 93, 0.25), 0 12px 24px -8px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255,255,255,0.6);
     padding-bottom: 0;
   }
 
@@ -171,16 +176,16 @@
   }
 
   .nav-icon {
-    width: 28px;
-    height: 28px;
-    transition: transform 0.3s var(--ease-spring), stroke 0.2s, stroke-width 0.2s;
+    width: 26px;
+    height: 26px;
+    transition: transform 0.4s var(--ease-spring), stroke 0.3s, color 0.3s;
   }
 
   .nav-label {
     font-size: 0.7rem;
     font-weight: 600;
     opacity: 0.7;
-    transition: transform 0.2s, opacity 0.2s, color 0.2s;
+    transition: transform 0.3s, opacity 0.3s, color 0.3s;
   }
 
   .mobile-nav-item.active {
@@ -188,14 +193,15 @@
   }
 
   .mobile-nav-item.active .nav-icon {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
     stroke-width: 2.5px;
-    filter: drop-shadow(0 4px 6px rgba(99, 91, 255, 0.3));
+    filter: drop-shadow(0 4px 8px rgba(99, 91, 255, 0.4));
   }
 
   .mobile-nav-item.active .nav-label {
     opacity: 1;
     color: var(--color-primary);
+    transform: translateY(-2px);
   }
 
   /* Active Indicator Dot */
@@ -207,6 +213,7 @@
     height: 4px;
     background-color: var(--color-primary);
     border-radius: 50%;
-    box-shadow: 0 0 8px var(--color-primary);
+    box-shadow: 0 0 10px var(--color-primary);
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 }
