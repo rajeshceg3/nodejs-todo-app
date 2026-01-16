@@ -1,4 +1,4 @@
-name: Production Pipeline
+name: Secure Production Pipeline
 
 on:
   push:
@@ -6,16 +6,18 @@ on:
   pull_request:
     branches: [ "main" ]
 
+# Concurrency to prevent overlapping deployments
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# Principle of Least Privilege: Global read-only access
 permissions:
   contents: read
 
 jobs:
-  validate-and-test:
-    name: Validation & Integrity
+  security-and-quality:
+    name: Security & Quality Gate
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -32,58 +34,69 @@ jobs:
             package-lock.json
             angular-ui/package-lock.json
 
+      # --- ROOT DEPENDENCIES ---
       - name: Install Dependencies (Root)
+        # 'npm ci' ensures strict adherence to package-lock.json
         run: npm ci
 
       - name: Supply Chain Analysis (Root)
-        # Audit root dependencies
-        run: npm audit --audit-level=critical --omit=dev || echo "::warning::Critical vulnerabilities found in ROOT dependencies"
+        # Fail on critical vulnerabilities. Zero-tolerance for Critical.
+        # If this fails, run 'npm audit fix' locally.
+        run: npm audit --audit-level=critical --omit=dev
 
+      - name: Static Code Analysis (Root)
+        run: npm run lint
+
+      # --- FRONTEND DEPENDENCIES & TESTS ---
       - name: Install Dependencies (Frontend)
         working-directory: angular-ui
+        # legacy-peer-deps is required due to unmaintained angular packages
         run: npm ci --legacy-peer-deps
 
       - name: Supply Chain Analysis (Frontend)
         working-directory: angular-ui
-        # Audit frontend dependencies. Note: legacy-peer-deps might obscure some things, but audit should still run.
-        run: npm audit --audit-level=critical --omit=dev || echo "::warning::Critical vulnerabilities found in FRONTEND dependencies"
-
-      - name: Static Code Analysis (Lint)
-        run: npm run lint
+        # Audit frontend dependencies.
+        run: npm audit --audit-level=critical --omit=dev
 
       - name: Unit Verification (Frontend)
         working-directory: angular-ui
+        # Run tests in Headless Chrome
         run: npx ng test --watch=false --browsers=ChromeHeadlessCI
 
-      - name: Build Artifact (Frontend)
-        working-directory: angular-ui
-        run: npm run build
+  docker-verification:
+    name: Container Build Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: security-and-quality
 
-      - name: Archive Build Artifacts (Debug/Audit)
-        # Artifacts are preserved for verification, even though Render rebuilds from source.
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-dist
-          path: angular-ui/dist/
-          retention-days: 5
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        # Verifies that the application can be successfully containerized.
+        # This catches environment-specific build issues early.
+        run: docker build . -t app-candidate:latest
 
   deploy:
-    name: Deployment Execution
-    needs: validate-and-test
+    name: Production Deployment
+    needs: [docker-verification]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
     timeout-minutes: 5
-    # Minimal permissions for deployment trigger
     permissions:
       contents: read
 
     steps:
-      - name: Initiate Render Deployment
+      - name: Trigger Render Deployment
+        # Uses a webhook to trigger Render's build process.
+        # Render will pull the latest commit and rebuild.
+        # NOTE: Ideally, Render should build from the Dockerfile we verified.
         run: |
           if [ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
             curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
-            echo "::notice::Deployment trigger signal sent to Render."
+            echo "::notice::Deployment signal sent to Render."
           else
             echo "::error::Deployment Aborted: RENDER_DEPLOY_HOOK_URL is missing."
             exit 1
