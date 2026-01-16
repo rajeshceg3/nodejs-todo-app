@@ -15,6 +15,7 @@ export class TodoItemComponent {
   @Output() toggleComplete = new EventEmitter<Todo>();
 
   @ViewChild('slideLayer') slideLayer!: ElementRef;
+  @ViewChild('actionIcon') actionIcon!: ElementRef; // Reference to the trash icon if we add it
 
   @HostBinding('class.completed-item') get isCompleted() {
     return this.todo.status === 'completed';
@@ -59,13 +60,23 @@ export class TodoItemComponent {
 
     // Only handle left swipe
     if (diff < 0) {
-      // Add resistance
-      const resistance = 1.0;
-      const translateX = Math.max(diff * resistance, -120); // Limit swipe
+      // Rubber band resistance
+      // After -100px, applying heavy resistance
+      let translateX = diff;
+      const threshold = -100;
+
+      if (diff < threshold) {
+         const extra = diff - threshold;
+         translateX = threshold + (extra * 0.2); // 0.2 friction factor
+      }
+
+      // Cap the max swipe visually to prevent breaking layout
+      translateX = Math.max(translateX, -150);
 
       this.slideLayer.nativeElement.style.transform = `translateX(${translateX}px)`;
 
-      // Scale trash icon if swipe is deep (optional, would need ViewChild for icon)
+      // Optional: Scale the background icon based on pull depth
+      // We would need to reference the .action-icon
     }
   }
 
@@ -76,14 +87,17 @@ export class TodoItemComponent {
 
     const diff = this.touchCurrentX - this.touchStartX;
 
-    // Restore transition
-    this.slideLayer.nativeElement.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    // Restore transition with a nice spring-like curve
+    this.slideLayer.nativeElement.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
-    if (diff < -80) { // Threshold to trigger delete
+    const deleteThreshold = -80;
+
+    if (diff < deleteThreshold) {
       // Slide all the way out
       this.slideLayer.nativeElement.style.transform = `translateX(-100%)`;
+
       // Trigger delete after animation
-      setTimeout(() => this.onDelete(), 300);
+      setTimeout(() => this.onDelete(), 400);
     } else {
       // Snap back
       this.slideLayer.nativeElement.style.transform = `translateX(0)`;

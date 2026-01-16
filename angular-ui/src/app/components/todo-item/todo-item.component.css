@@ -1,9 +1,8 @@
 :host {
   display: block;
   position: relative;
-  overflow: visible; /* Allow hover scaling to overlap */
+  overflow: visible;
   margin-bottom: 0;
-  /* Fix for mobile swipe bleed */
   transform: translate3d(0,0,0);
 }
 
@@ -16,26 +15,27 @@
 /* Background Action Layer */
 .background-action {
   position: absolute;
-  top: 1px;
-  bottom: 1px;
-  right: 1px;
-  left: 1px;
+  top: 4px;
+  bottom: 4px;
+  right: 4px;
+  left: 4px;
   background-color: var(--color-danger);
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Icon on the right */
+  justify-content: flex-end;
   padding-right: 32px;
   z-index: 0;
-  box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.15);
+  transition: all 0.3s;
 }
 
 .action-icon {
   color: white;
   width: 28px;
   height: 28px;
-  transform: scale(0.9);
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: scale(1);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 /* Foreground Content Layer */
@@ -48,17 +48,17 @@
   display: flex;
   align-items: flex-start;
   padding: 22px 26px;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s;
-  border: 1px solid rgba(0,0,0,0.03);
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s var(--ease-spring), background-color 0.2s;
+  border: 1px solid rgba(255,255,255,0.8);
   will-change: transform;
 }
 
-/* Desktop Hover - Physical Lift */
+/* Desktop Hover - Physical Lift & Glow */
 @media (min-width: 601px) {
   .todo-card-content:hover {
     transform: translateY(-4px) scale(1.005);
-    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(99, 91, 255, 0.1);
-    border-color: rgba(99, 91, 255, 0.15);
+    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(99, 91, 255, 0.15);
+    border-color: rgba(99, 91, 255, 0.2);
     z-index: 10;
   }
 }
@@ -70,8 +70,8 @@
 }
 
 .todo-card-content.swiping {
-  box-shadow: none; /* Flatten while swiping */
-  transition: none; /* Direct control */
+  box-shadow: none;
+  transition: none;
   background: white;
 }
 
@@ -82,20 +82,20 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 5px;
+  width: 4px;
   border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-  opacity: 0.8;
-  transition: width 0.3s;
+  opacity: 1;
+  transition: width 0.3s var(--ease-spring);
 }
 
 .todo-card-content:hover::before {
-  width: 7px;
+  width: 6px;
 }
 
-.todo-card-content.critical::before { background-color: var(--color-danger); }
-.todo-card-content.high::before { background-color: var(--color-warning); }
-.todo-card-content.medium::before { background-color: var(--color-primary); }
-.todo-card-content.low::before { background-color: var(--color-success); }
+.todo-card-content.critical::before { background: linear-gradient(to bottom, var(--color-danger), #fdba74); }
+.todo-card-content.high::before { background: linear-gradient(to bottom, #f59e0b, #fcd34d); }
+.todo-card-content.medium::before { background: linear-gradient(to bottom, var(--color-primary), var(--color-primary-light)); }
+.todo-card-content.low::before { background: linear-gradient(to bottom, var(--color-success), #86efac); }
 
 /* Content Layout */
 .checkbox-container {
@@ -104,13 +104,13 @@
   flex-shrink: 0;
 }
 
-/* Custom Animated Checkbox */
+/* Ultra-Polished Checkbox */
 .custom-checkbox {
   width: 26px;
   height: 26px;
   border-radius: 50%;
   border: 2px solid #cbd5e1;
-  background: white;
+  background: white; /* Gradient hint could go here */
   padding: 0;
   display: flex;
   align-items: center;
@@ -121,12 +121,14 @@
   outline: none;
   position: relative;
   overflow: visible;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .custom-checkbox:hover {
   border-color: var(--color-primary);
-  background-color: #f8fafc;
-  transform: scale(1.15);
+  background-color: #f0fdfa; /* Very subtle tint */
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.1);
 }
 
 .custom-checkbox:focus-visible {
@@ -137,12 +139,13 @@
   background-color: var(--color-primary);
   border-color: var(--color-primary);
   transform: scale(1);
-  animation: elastic-check 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 10px rgba(99, 91, 255, 0.3);
+  animation: elastic-check 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @keyframes elastic-check {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.25); }
+  0% { transform: scale(0.8); }
+  40% { transform: scale(1.2); }
   100% { transform: scale(1); }
 }
 
@@ -152,7 +155,8 @@
   stroke-width: 3px;
   stroke-dasharray: 24;
   stroke-dashoffset: 24;
-  animation: draw-check 0.4s 0.1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation: draw-check 0.4s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
 }
 
 @keyframes draw-check {
@@ -163,7 +167,7 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -174,6 +178,7 @@
   line-height: 1.5;
   transition: color 0.3s;
   word-break: break-word;
+  letter-spacing: -0.01em;
 }
 
 .todo-content.completed {
@@ -181,7 +186,6 @@
   text-decoration-color: var(--color-primary-light);
   text-decoration-thickness: 2px;
   color: #94a3b8;
-  opacity: 1;
 }
 
 .todo-meta {
@@ -189,6 +193,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
+  margin-top: 4px;
 }
 
 .badge-group {
@@ -198,20 +203,21 @@
 }
 
 .priority-badge {
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-size: 0.65rem;
+  font-weight: 800;
   text-transform: uppercase;
-  padding: 5px 12px;
-  border-radius: 8px;
+  padding: 4px 10px;
+  border-radius: 6px;
   letter-spacing: 0.05em;
   background-color: #f1f5f9;
   color: var(--color-text-secondary);
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
-.priority-badge.critical { background: #fef2f2; color: var(--color-danger); box-shadow: 0 0 0 1px rgba(239,68,68,0.1); }
-.priority-badge.high { background: #fffbeb; color: #d97706; box-shadow: 0 0 0 1px rgba(245,158,11,0.1); }
-.priority-badge.medium { background: #eef2ff; color: var(--color-primary); box-shadow: 0 0 0 1px rgba(99,91,255,0.1); }
-.priority-badge.low { background: #f0fdf4; color: var(--color-success); box-shadow: 0 0 0 1px rgba(34,197,94,0.1); }
+.priority-badge.critical { background: #fef2f2; color: var(--color-danger); border-color: rgba(239,68,68,0.2); }
+.priority-badge.high { background: #fffbeb; color: #d97706; border-color: rgba(245,158,11,0.2); }
+.priority-badge.medium { background: #eef2ff; color: var(--color-primary); border-color: rgba(99,91,255,0.2); }
+.priority-badge.low { background: #f0fdf4; color: var(--color-success); border-color: rgba(34,197,94,0.2); }
 
 .tag {
   color: var(--color-text-secondary);
@@ -219,15 +225,15 @@
   font-weight: 600;
   background: white;
   border: 1px solid var(--color-border);
-  padding: 4px 10px;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  padding: 3px 8px;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
   transition: transform 0.2s;
 }
 .tag:hover { transform: translateY(-1px); border-color: #cbd5e1; }
 
 .date {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--color-text-tertiary);
   font-weight: 600;
   display: flex;
@@ -236,13 +242,14 @@
   background: #f8fafc;
   padding: 4px 8px;
   border-radius: 6px;
+  border: 1px solid transparent;
 }
 
 /* Actions Desktop */
 .actions {
   margin-left: 20px;
   opacity: 0;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   transform: translateX(10px);
 }
 
@@ -256,19 +263,20 @@
   border: 1px solid var(--color-border);
   cursor: pointer;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 12px;
   color: var(--color-text-tertiary);
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: var(--shadow-xs);
 }
 
 .icon-btn:hover {
   background-color: #fee2e2;
   color: var(--color-danger);
   border-color: #fee2e2;
-  transform: scale(1.15) rotate(5deg);
+  transform: scale(1.1) rotate(8deg);
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
 }
 
@@ -279,19 +287,19 @@
   }
 
   .todo-card-content {
-    padding: 20px 24px;
-    touch-action: pan-y;
-    border-radius: 20px; /* Rounder on mobile */
-    box-shadow: 0 4px 6px -1px rgba(50, 50, 93, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    padding: 18px 20px;
+    touch-action: pan-y; /* Important: allow vertical scroll */
+    border-radius: 20px;
+    box-shadow: 0 4px 8px -1px rgba(50, 50, 93, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
   }
 
-  /* Hide Desktop Actions on Mobile (Swipe is primary) */
+  /* Hide Desktop Actions on Mobile */
   .actions {
     display: none;
   }
 
   .checkbox-container {
-    margin-right: 18px;
+    margin-right: 16px;
   }
 
   .custom-checkbox {
@@ -301,10 +309,5 @@
 
   .todo-content {
     font-size: 1.1rem;
-  }
-
-  .badge-group {
-    gap: 8px;
-    flex-wrap: wrap;
   }
 }
