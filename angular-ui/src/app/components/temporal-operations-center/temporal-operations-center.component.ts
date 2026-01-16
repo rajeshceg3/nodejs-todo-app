@@ -202,7 +202,7 @@ import { Todo } from '../../models/todo.model';
       color: var(--color-text-primary);
       line-height: 1;
       letter-spacing: -0.05em;
-      text-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      text-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
     .date-small {
@@ -264,14 +264,15 @@ import { Todo } from '../../models/todo.model';
       height: 24px;
       border-radius: 50%;
       background: white;
+      background-image: linear-gradient(135deg, white, #f8fafc);
       border: 5px solid var(--color-primary);
       transform: translateY(-50%);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(99, 91, 255, 0.4);
       transition: transform 0.1s;
     }
 
     .slider-container:hover .slider-track-fill::after {
-      transform: translateY(-50%) scale(1.1);
+      transform: translateY(-50%) scale(1.15);
     }
 
     .tick-marks {

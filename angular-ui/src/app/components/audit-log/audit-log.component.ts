@@ -131,6 +131,8 @@ interface IntegrityReport {
       border: 1px solid var(--color-border);
       min-width: 300px;
       transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
 
     .status-card.secure { border-color: rgba(34, 197, 94, 0.3); background: linear-gradient(to right, white, #f0fdf4); }
@@ -242,8 +244,8 @@ interface IntegrityReport {
       position: absolute;
       top: 44px;
       bottom: -32px;
-      width: 2px;
-      background: linear-gradient(to bottom, #e2e8f0 50%, rgba(226, 232, 240, 0.2));
+      width: 0;
+      border-left: 2px dashed #cbd5e1;
       z-index: 1;
     }
 
