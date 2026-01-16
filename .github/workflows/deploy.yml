@@ -1,71 +1,90 @@
-name: CI/CD Pipeline
+name: Production Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
-# Cancel in-progress runs on pull requests
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+permissions:
+  contents: read
+
 jobs:
-  build-and-test:
-    name: Build and Test
+  validate-and-test:
+    name: Validation & Integrity
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Source
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Secure Runtime Setup
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          # Cache based on both root and angular-ui lockfiles to speed up installs
           cache-dependency-path: |
             package-lock.json
             angular-ui/package-lock.json
 
-      - name: Install Root Dependencies
+      - name: Install Dependencies (Root)
         run: npm ci
 
-      - name: Install Angular Dependencies
-        run: |
-          cd angular-ui
-          npm ci --legacy-peer-deps
+      - name: Supply Chain Analysis (Root)
+        # Audit root dependencies
+        run: npm audit --audit-level=critical --omit=dev || echo "::warning::Critical vulnerabilities found in ROOT dependencies"
 
-      - name: Lint Root
+      - name: Install Dependencies (Frontend)
+        working-directory: angular-ui
+        run: npm ci --legacy-peer-deps
+
+      - name: Supply Chain Analysis (Frontend)
+        working-directory: angular-ui
+        # Audit frontend dependencies. Note: legacy-peer-deps might obscure some things, but audit should still run.
+        run: npm audit --audit-level=critical --omit=dev || echo "::warning::Critical vulnerabilities found in FRONTEND dependencies"
+
+      - name: Static Code Analysis (Lint)
         run: npm run lint
 
-      # Note: If the Angular project had a lint script, we would run it here.
+      - name: Unit Verification (Frontend)
+        working-directory: angular-ui
+        run: npx ng test --watch=false --browsers=ChromeHeadlessCI
 
-      - name: Test Angular UI
-        run: |
-          cd angular-ui
-          # using npx to ensure we use the local ng binary
-          npx ng test --watch=false --browsers=ChromeHeadlessCI
+      - name: Build Artifact (Frontend)
+        working-directory: angular-ui
+        run: npm run build
 
-      - name: Build Angular UI
-        run: npm run build:ui
+      - name: Archive Build Artifacts (Debug/Audit)
+        # Artifacts are preserved for verification, even though Render rebuilds from source.
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: angular-ui/dist/
+          retention-days: 5
 
   deploy:
-    name: Trigger Deploy
-    needs: build-and-test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    name: Deployment Execution
+    needs: validate-and-test
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
+    timeout-minutes: 5
+    # Minimal permissions for deployment trigger
+    permissions:
+      contents: read
 
     steps:
-      - name: Trigger Render Deployment
+      - name: Initiate Render Deployment
         run: |
           if [ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
-            curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
-            echo "Deployment triggered successfully."
+            curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+            echo "::notice::Deployment trigger signal sent to Render."
           else
-            echo "::error::RENDER_DEPLOY_HOOK_URL is not set. Deployment cannot be triggered."
+            echo "::error::Deployment Aborted: RENDER_DEPLOY_HOOK_URL is missing."
             exit 1
           fi
