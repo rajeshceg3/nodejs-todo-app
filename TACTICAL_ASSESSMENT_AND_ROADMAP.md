@@ -1,4 +1,4 @@
-# TACTICAL ASSESSMENT & STRATEGIC ROADMAP
+# TACTICAL ASSESSMENT & STRATEGIC ROADMAP (V2.0)
 **CLASSIFICATION:** TOP SECRET // EYES ONLY
 **DATE:** 2025-02-23
 **PREPARED BY:** JULES (NAVY SEAL / LEAD ENGINEER)
@@ -11,12 +11,12 @@
 **STATUS:** **CRITICAL RISK**
 **READINESS:** **NON-DEPLOYABLE**
 
-The target repository exists in a state of **High Asymmetry**. The Frontend (Angular-UI) is a sophisticated, modern weapons system (Angular v20) designed for high-fidelity user interaction. However, it is tethered to a Backend (Node.js Monolith) that is functionally a prototype toy.
+The target repository exists in a state of **High Asymmetry**. The Frontend (`angular-ui`) is a sophisticated, modern weapons system (Angular v20) designed for high-fidelity user interaction. However, it is tethered to a Backend (Node.js Monolith) that is functionally a prototype.
 
-**CRITICAL FAILURE POINT:** The application utilizes `mongodb-memory-server` for production. **IMPACT: 100% DATA LOSS upon every deployment or restart.** This renders the application operationally useless for mission-critical tasks.
+**CRITICAL FAILURE POINT:** The application utilizes `mongodb-memory-server` for production. **IMPACT: 100% DATA LOSS upon every deployment or restart.** This renders the application operationally useless.
 
 **IMMEDIATE DIRECTIVE:**
-We must execute a "Full-Spectrum Transformation." The Backend must be hardened to military specifications. The Frontend must be optimized for zero-latency user experience.
+Execute a "Full-Spectrum Transformation." The Backend must be hardened to military specifications. The Frontend must be optimized for zero-latency user experience (Optimistic UI, Skeleton Screens).
 
 ---
 
@@ -45,12 +45,12 @@ We must execute a "Full-Spectrum Transformation." The Backend must be hardened t
 ### SECTOR CHARLIE: USER EXPERIENCE (UX) & INTERACTION
 *   **Current State:**
     *   **Latency:** UI blocks on Network Request (Loading... -> Action).
-    *   **Mobile:** Sticky inputs exist, but touch targets are inconsistent.
-    *   **Feedback:** "Console.log" error handling.
+    *   **Mobile:** Font sizes (`0.95rem` ~15.2px) trigger iOS auto-zoom (>16px required).
+    *   **Feedback:** No visual loading states (Spinners/Skeletons).
 *   **Production Standard (UX Superiority):**
     *   **Optimistic UI:** State updates *instantly*. Network sync happens in background. Rollback only on failure.
-    *   **Visual Feedback:** Micro-interactions (toasts, slight vibrations/animations) for all CRUD actions.
-    *   **Perceived Performance:** Skeleton screens instead of spinners.
+    *   **Visual Feedback:** Micro-interactions (toasts, slight vibrations/animations).
+    *   **Perceived Performance:** Skeleton screens for initial load.
     *   **Accessibility:** ARIA labels and 44px+ touch targets.
 
 ---
@@ -61,26 +61,31 @@ We must execute a "Full-Spectrum Transformation." The Backend must be hardened t
 **Mission:** Establish persistence and structural integrity.
 1.  **Persistence Layer:** Eliminate `mongodb-memory-server`. Implement `mongoose` connection to `MONGO_URI`.
 2.  **Decoupling:** Fracture `index.js` into:
-    *   `src/app.js` (Express Config)
     *   `src/server.js` (Entry Point)
+    *   `src/app.js` (Express Config)
     *   `src/controllers/` (Request Handling)
     *   `src/routes/` (API Definitions)
+    *   `src/models/` (Mongoose Schemas)
 3.  **Config Management:** Implement `dotenv` for secure secret management.
 
 ### PHASE II: OPERATION "IRON DOME" (URGENCY: HIGH)
 **Mission:** Secure the perimeter and sanitize inputs.
 1.  **Security Middleware:** Deploy `helmet`, `cors`, and `express-rate-limit`.
-2.  **Input Sanitation:** Replace Regex with strict validation middleware.
+2.  **Input Sanitation:** Replace Regex with strict validation middleware (e.g., `zod` schema validation for tasks).
 3.  **Async Refactor:** Rewrite `createAuditLog` to use async hashing (`bcrypt` or async `crypto`) to unblock the Event Loop.
 
 ### PHASE III: OPERATION "LIGHTSPEED" (URGENCY: MEDIUM)
 **Mission:** Elevate User Experience to Elite Status.
-1.  **Optimistic UI Pattern:** Refactor Angular Services to update `BehaviorSubject` immediately upon user action, pushing the API call to the background.
-2.  **Feedback Systems:** Implement a global `ToastService` for success/error messaging.
+1.  **Optimistic UI Implementation:**
+    *   Refactor `TodoService` to maintain a local `BehaviorSubject` state.
+    *   Update local state *immediately* on `add`, `toggle`, `delete`.
+    *   Revert local state if API call fails (Rollback mechanism).
+2.  **Skeleton Screens:**
+    *   Create `SkeletonTodoComponent` with CSS shimmer effects.
+    *   Display Skeletons while `TodoService` is initializing data.
 3.  **Mobile Optimization:**
-    *   Disable "pull-to-refresh" on custom swipe areas.
-    *   Ensure inputs are `16px` (prevent zoom).
-    *   Implement "overscroll-behavior" control.
+    *   **Critical Fix:** Set `input` font-size to `16px` specifically for mobile viewports to prevent iOS zoom.
+    *   Implement `touch-action: manipulation` to remove 300ms tap delay.
 
 ### PHASE IV: OPERATION "SENTINEL" (URGENCY: LOW)
 **Mission:** Long-term assurance and observability.
@@ -99,9 +104,9 @@ A valid `MONGO_URI` is required immediately. The system cannot go production-liv
 Requesting permission to begin **Phase I: Operation Bedrock**. This involves breaking the `index.js` monolith and installing `mongoose`.
 
 **ACTION 3:** **Frontend Quick-Win.**
-While Backend is being rebuilt, we can implement the `ToastService` in Angular to prepare for better error handling.
+While Backend is being rebuilt, we can implement the `SkeletonTodoComponent` and fix the iOS zoom issue immediately.
 
 **CONCLUSION:**
-The current posture is untenable. We are operating a Ferrari (Frontend) with a lawnmower engine (Backend). Execution of this roadmap is not optional; it is a prerequisite for survival in a hostile production environment.
+The current posture is untenable. We are operating a high-end interface on a fragile backend foundation. Execution of this roadmap is mandatory for mission success.
 
 **END REPORT.**
