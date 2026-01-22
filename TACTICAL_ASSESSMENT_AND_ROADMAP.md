@@ -1,4 +1,4 @@
-# TACTICAL ASSESSMENT & STRATEGIC ROADMAP (V3.0)
+# TACTICAL ASSESSMENT & STRATEGIC ROADMAP (V4.0)
 **CLASSIFICATION:** TOP SECRET // EYES ONLY
 **DATE:** 2025-05-21
 **PREPARED BY:** COMMANDER JULES (NAVY SEAL / LEAD ENGINEER)
@@ -6,105 +6,123 @@
 
 ---
 
-## 1. EXECUTIVE SUMMARY (SITREP)
+## 1. MISSION BRIEFING (EXECUTIVE SUMMARY)
 
-**STATUS:** **DEFCON 2 (SEVERE RISK)**
+**STATUS:** **DEFCON 1 (CRITICAL)**
 **READINESS:** **NON-DEPLOYABLE**
 
-The target repository represents a **high-value asset** with critical structural vulnerabilities. While the frontend (`angular-ui`) utilizes advanced weaponry (Angular 20+), the backend infrastructure is catastrophic.
+**SITREP:**
+The target repository is a prototype masquerading as a production system. While the frontend aesthetics show promise ("Stripe-class" design), the backend infrastructure is built on sand. The use of `mongodb-memory-server` ensures total data loss upon redeployment—a catastrophic failure mode for any operational system.
 
-**CRITICAL THREAT:** The application relies on `mongodb-memory-server` for production operations. **IMPACT:** 100% Data mortality rate upon server termination. This is unacceptable for mission-critical operations.
+**PRIMARY OBJECTIVE:**
+Execute a surgical transformation to elevate this asset to **Production-Ready Status**. We will prioritize data permanence, security hardening, and "Zero-Latency" user experience.
 
-**SECONDARY THREAT:** User Experience (UX) operates on a "Pessimistic" engagement protocol, forcing operators to wait for server roundtrips before confirming actions. This introduces unacceptable latency in combat scenarios.
-
-**DIRECTIVE:** Execute a "Total War" transformation strategy. We will fortify the backend, secure the perimeter, and upgrade the frontend interface to "Zero-Latency" standards.
-
----
-
-## 2. COMPREHENSIVE GAP ANALYSIS
-
-### SECTOR ALPHA: ARCHITECTURE & RELIABILITY
-*   **Current State:**
-    *   **Backend:** Monolithic `index.js`. Single point of failure.
-    *   **Persistence:** `mongodb-memory-server` (Ephemeral). **FAIL.**
-    *   **Scalability:** Synchronous cryptographic operations block the event loop.
-*   **Production Standard:**
-    *   **Architecture:** MVC (Model-View-Controller) separation.
-    *   **Persistence:** Persistent MongoDB Atlas Cluster.
-    *   **Scalability:** Asynchronous architecture with non-blocking I/O.
-
-### SECTOR BRAVO: SECURITY HARDENING (OWASP)
-*   **Current State:** **UNSECURED**
-    *   **Perimeter:** No `helmet`, no `cors` restrictions.
-    *   **Input Defense:** Regex-based parsing (Fragile). No schema validation.
-    *   **Traffic Control:** No rate limiting. Vulnerable to DDoS.
-*   **Production Standard:**
-    *   **Perimeter:** Full `helmet` suite. Strict `cors`.
-    *   **Input Defense:** `zod` or `joi` schema validation.
-    *   **Traffic Control:** `express-rate-limit` implemented.
-
-### SECTOR CHARLIE: USER EXPERIENCE (UX) SUPERIORITY
-*   **Current State:**
-    *   **Interaction:** Pessimistic Updates. UI blocks on `loadTodos()` after every action.
-    *   **Feedback:** No loading skeletons. Visual "jank" on data refresh.
-    *   **Mobile:** Input fields < 16px trigger iOS Zoom, disrupting flow.
-*   **Production Standard:**
-    *   **Interaction:** **Optimistic UI**. Instant feedback. Background sync.
-    *   **Feedback:** Skeleton screens during initialization. Fluid animations.
-    *   **Mobile:** Viewport-optimized typography and touch targets.
+**COMMANDER'S INTENT:**
+We will not just "fix bugs." We will re-engineer the system to be bulletproof. The end state is a resilient, scalable, and hyper-responsive application that adheres to the strictest military-grade software standards.
 
 ---
 
-## 3. STRATEGIC ROADMAP (MISSION PHASES)
+## 2. INTELLIGENCE REPORT (GAP ANALYSIS)
+
+### SECTOR ALPHA: BACKEND INFRASTRUCTURE
+*   **Current Status:**
+    *   **Persistence:** Relying on `mongodb-memory-server`. **CRITICAL FAILURE.** Data evaporates on process exit.
+    *   **Architecture:** Monolithic `index.js` (approx. 200 lines) mixing transport, business logic, and database connection.
+    *   **Performance:** `createAuditLog` uses synchronous `crypto.createHash`, blocking the Node.js event loop.
+    *   **Configuration:** Hardcoded values (Port 3000). No environment variable management.
+*   **Target State:**
+    *   **Persistence:** MongoDB Atlas (Cloud) or persistent local instance via `mongoose`.
+    *   **Architecture:** Modular layered architecture (Routes -> Controllers -> Services -> Models).
+    *   **Performance:** Asynchronous cryptographic operations.
+    *   **Configuration:** `dotenv` implementation for all secrets and config.
+
+### SECTOR BRAVO: SECURITY & DEFENSE (OWASP)
+*   **Current Status:** **UNFORTIFIED**
+    *   **Perimeter:** No `helmet` (HTTP headers exposed). No `cors` configuration.
+    *   **Input Validation:** Regex-based parsing in `/list` is fragile. No schema validation (`zod`/`joi`).
+    *   **Rate Limiting:** Non-existent. Susceptible to brute-force and DDoS.
+*   **Target State:**
+    *   **Perimeter:** `helmet` active. Strict `cors` policy.
+    *   **Input Validation:** Strict `zod` schemas for all API payloads.
+    *   **Rate Limiting:** `express-rate-limit` applied to all public routes.
+
+### SECTOR CHARLIE: USER EXPERIENCE (UX) & FRONTEND
+*   **Current Status:**
+    *   **Responsiveness:** Pessimistic updates (UI waits for server). High latency perception.
+    *   **Mobile:** Input font-size `0.95rem` triggers iOS auto-zoom, disrupting tactical flow.
+    *   **Visual Feedback:** No skeleton screens. Content "jumps" on load.
+*   **Target State:**
+    *   **Responsiveness:** **Optimistic UI**. Actions reflect immediately; background sync handles the rest.
+    *   **Mobile:** Force `16px` font-size on inputs to prevent zoom. Touch-optimized targets.
+    *   **Visual Feedback:** Skeleton loaders for initial state. Smooth transitions.
+
+### SECTOR DELTA: OPS & CI/CD
+*   **Current Status:**
+    *   **Pipeline:** Basic GitHub Actions.
+    *   **Testing:** Minimal.
+*   **Target State:**
+    *   **Pipeline:** Multi-stage build (Lint -> Test -> Build -> Deploy).
+    *   **Testing:** Integration tests for backend. End-to-End (Playwright) for critical user flows.
+
+---
+
+## 3. OPERATIONAL ROADMAP (EXECUTION PHASES)
 
 ### PHASE I: OPERATION "BEDROCK" (URGENCY: IMMEDIATE)
-**Objective:** Establish structural integrity and persistence.
-1.  **Persistence:** Replace `mongodb-memory-server` with `mongoose` connecting to a persistent `MONGO_URI`.
-2.  **Decoupling:** Fracture `index.js` into:
-    *   `src/server.js` (Entry)
-    *   `src/app.js` (Config)
-    *   `src/controllers/` (Logic)
-    *   `src/routes/` (API)
-    *   `src/models/` (Schema)
-3.  **Config:** Implement `dotenv` for secrets.
+**Mission:** Establish persistence and structural integrity.
+1.  **Ordnance:** Install `mongoose`, `dotenv`.
+2.  **Fortification:** Implement `src/` directory structure:
+    *   `src/server.js`: Entry point.
+    *   `src/app.js`: App configuration & middleware.
+    *   `src/config/database.js`: Robust MongoDB connection logic.
+    *   `src/routes/`: API route definitions.
+    *   `src/controllers/`: Business logic.
+    *   `src/models/`: Mongoose schemas (AuditLog, Todo).
+3.  **Execution:** Refactor `index.js` monolith into the new structure.
 
 ### PHASE II: OPERATION "IRON DOME" (URGENCY: HIGH)
-**Objective:** Secure the perimeter.
-1.  **Middleware:** Deploy `helmet`, `cors`, `express-rate-limit`.
-2.  **Validation:** Implement `zod` middleware for all incoming payloads.
-3.  **Sanitization:** Strict output encoding.
+**Mission:** Secure the perimeter and sanitize inputs.
+1.  **Shields:** Install and configure `helmet`, `cors`, `express-rate-limit`.
+2.  **Filter:** Implement `zod` middleware. Reject malformed payloads before they reach controllers.
+3.  **Sanitize:** Ensure all outputs are escaped to prevent XSS.
 
 ### PHASE III: OPERATION "LIGHTSPEED" (URGENCY: CRITICAL)
-**Objective:** Achieve "Zero-Latency" User Experience.
-1.  **State Management:** Refactor `TodoService` to use `BehaviorSubject`.
-2.  **Optimistic UI:**
-    *   **Add:** Push to local array immediately -> Sync API.
-    *   **Toggle:** Switch boolean immediately -> Sync API.
-    *   **Delete:** Remove from DOM immediately -> Sync API.
-    *   **Rollback:** Revert state if API fails.
-3.  **Visuals:** Implement `SkeletonTodoComponent` for loading states.
-4.  **Mobile:** Force 16px font-size on inputs for mobile viewports.
+**Mission:** Eliminate perceived latency.
+1.  **Frontend Tactics:**
+    *   **Optimistic Updates:** Update local arrays immediately on Add/Edit/Delete. Revert on error.
+    *   **Skeleton Screens:** Create `SkeletonTodoComponent` for "zero-jank" loading.
+    *   **Mobile Fix:** Update `styles.css` to enforce `font-size: 16px` on mobile inputs.
+2.  **Backend Tactics:**
+    *   Refactor `crypto.createHash` to be non-blocking (or offload to worker if load increases).
 
-### PHASE IV: OPERATION "SENTINEL" (URGENCY: MEDIUM)
-**Objective:** Long-term observability and testing.
-1.  **CI/CD:** Hardened pipeline with caching.
-2.  **Testing:** Integration tests for backend routes.
-3.  **Logs:** Structured logging with `winston`.
+### PHASE IV: OPERATION "VERIFY" (URGENCY: MEDIUM)
+**Mission:** automated verification and deployment.
+1.  **Automate:** Enhance CI pipeline to block builds on lint/test failure.
+2.  **Verify:** Write backend integration tests using `supertest`.
 
 ---
 
-## 4. IMMEDIATE TACTICAL ORDERS (NEXT 24 HOURS)
+## 4. UX OPTIMIZATION TACTICS (SPECIFIC)
 
-1.  **Execute Phase I (Bedrock):**
-    *   Install `mongoose`, `dotenv`.
-    *   Create `src/` directory structure.
-    *   Migrate `index.js` logic to Controllers/Routes.
+*   **Tactic A (Anti-Zoom):**
+    *   *Problem:* iOS zooms on inputs < 16px.
+    *   *Fix:* `@media screen and (max-width: 768px) { input { font-size: 16px; } }`.
+*   **Tactic B (Instant Feedback):**
+    *   *Problem:* User waits for network.
+    *   *Fix:* Use RxJS `startWith` or local array manipulation.
+    *   *Example:* `this.todos.update(todos => [newTodo, ...todos]); this.api.create(newTodo).subscribe({ error: () => revert() });`
+*   **Tactic C (Skeleton Loading):**
+    *   *Problem:* Blank screen -> Content jump.
+    *   *Fix:* Display gray placeholder blocks that match the dimensions of the task list items while data fetches.
 
-2.  **Execute Phase III (Lightspeed) - Partial:**
-    *   Patch `styles.css` for iOS Zoom fix.
-    *   Scaffold `SkeletonTodoComponent`.
+---
 
-**COMMANDER'S NOTE:**
-We do not ship broken code. We do not ship slow code. We ship victory.
+## 5. EXECUTION ORDERS
 
-**END TRANSMISSION.**
+**IMMEDIATE ACTION REQUIRED:**
+1.  Acknowledge this plan.
+2.  Begin **Phase I: Operation Bedrock**.
+3.  Report back upon completion of architecture refactor.
+
+**COMMANDER'S SIGN-OFF:**
+*Precision in code. Speed in execution. Victory in deployment.*
