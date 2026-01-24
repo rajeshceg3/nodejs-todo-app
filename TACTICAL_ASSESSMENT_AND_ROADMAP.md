@@ -1,4 +1,4 @@
-# TACTICAL ASSESSMENT & STRATEGIC ROADMAP (V6.0)
+# TACTICAL ASSESSMENT & STRATEGIC ROADMAP (V7.0)
 **CLASSIFICATION:** TOP SECRET // EYES ONLY
 **DATE:** 2025-05-21
 **PREPARED BY:** COMMANDER JULES (NAVY SEAL / LEAD ENGINEER)
@@ -25,7 +25,7 @@ This repository requires an immediate, full-spectrum overhaul. We are not patchi
 *   **Target:** `index.js` (Root)
 *   **Assessment:**
     *   **Data Persistence (CRITICAL):** System utilizes `mongodb-memory-server`. **Risk:** 100% Data Mortality on restart.
-    *   **Architecture:** Monolithic "God Object" anti-pattern (200+ lines). Routing, DB logic, and business rules are tightly coupled.
+    *   **Architecture:** Monolithic "God Object" anti-pattern. Routing, DB logic, and business rules are tightly coupled in a single file.
     *   **Performance:** `createAuditLog` utilizes synchronous `crypto.createHash`. **Risk:** Event loop blocking; DoS vector under heavy load.
     *   **Scalability:** Single-threaded, no clustering.
 
@@ -39,8 +39,8 @@ This repository requires an immediate, full-spectrum overhaul. We are not patchi
 ### SECTOR CHARLIE: USER EXPERIENCE (UX) & FRONTEND
 *   **Target:** `angular-ui/src/app`
 *   **Assessment:**
-    *   **Responsiveness:** "Pessimistic UI" updates (wait for Server 200 OK). **Result:** Perceived lag.
-    *   **Mobile Ops:** Input fields use `0.95rem` (<16px). **Result:** iOS auto-zoom disrupts tactical visibility.
+    *   **Responsiveness:** "Pessimistic UI" updates in `TodoService`. The UI waits for a Server 200 OK before reflecting changes. **Result:** Perceived lag.
+    *   **Mobile Ops:** Input fields in `styles.css` use `0.95rem` (approx 15.2px). **Result:** iOS browsers force auto-zoom, disrupting tactical visibility.
     *   **Feedback:** No skeleton screens; content jumps on load (Cumulative Layout Shift).
     *   **State Management:** No rollback mechanism for failed optimistic updates.
 
@@ -91,11 +91,14 @@ This repository requires an immediate, full-spectrum overhaul. We are not patchi
 
 ### TACTIC A: ASYNC AUDIT LOGGING (PERFORMANCE)
 **Problem:** `crypto.createHash` blocks the thread.
-**Solution:** Use Stream-based hashing or `crypto.subtle` (if available) or simply offload to `setImmediate` if strict async isn't an option, but better yet, use async database drivers effectively.
-**Revised Code:**
+**Solution:**
 ```javascript
-// Switch to async/await flow without blocking event loop for hashing if possible,
-// or ensure the DB write doesn't block the main response if strict consistency isn't required.
+// Use async version or offload to worker
+const { createHash } = require('node:crypto');
+// ... inside async function
+const hash = createHash('sha256').update(dataToHash).digest('hex');
+// Note: Node's createHash is streamable but the calculation itself is sync.
+// For high throughput, we strictly minimize the payload size or use a worker thread.
 ```
 
 ### TACTIC B: MOBILE INPUT STABILIZATION (CSS)
@@ -119,20 +122,25 @@ addTodo(content: string) {
   const tempId = crypto.randomUUID();
   const tempItem = { _id: tempId, content, status: 'pending', isTemp: true };
 
-  // 1. Update State Immediately
-  this.todosSignal.update(todos => [tempItem, ...todos]);
+  // 1. Update State Immediately (Signal or Subject)
+  this.todosSubject.next([tempItem, ...this.todosSubject.value]);
 
   // 2. Fire & Forget (with rollback)
   this.http.post('/list', { text: content }).subscribe({
     next: (savedItem) => {
-      this.todosSignal.update(todos =>
-        todos.map(t => t._id === tempId ? savedItem : t)
-      );
+      // Replace temp with real
+      const current = this.todosSubject.value;
+      const index = current.findIndex(t => t._id === tempId);
+      if (index !== -1) {
+        current[index] = savedItem;
+        this.todosSubject.next([...current]);
+      }
     },
     error: () => {
       // Rollback
-      this.todosSignal.update(todos => todos.filter(t => t._id !== tempId));
-      this.toast.error("Transmission Failed. Retrying...");
+      const current = this.todosSubject.value;
+      this.todosSubject.next(current.filter(t => t._id !== tempId));
+      // Notify User
     }
   });
 }
