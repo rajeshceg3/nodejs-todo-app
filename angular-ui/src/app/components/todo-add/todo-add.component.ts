@@ -2,20 +2,19 @@ import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TodoService } from '../../services/todo/todo.service';
 import { Todo } from '../../models/todo.model';
-import { CommonModule } from '@angular/common'; // Added CommonModule for *ngIf if needed in template
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-todo-add',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule], // Ensure CommonModule for directives like *ngIf
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './todo-add.component.html',
   styleUrls: ['./todo-add.component.css']
-  // changeDetection: ChangeDetectionStrategy.OnPush // Removed as it was not in the script for this update
 })
 export class TodoAddComponent {
   @Output() todoAdded = new EventEmitter<Todo>();
   todoForm: FormGroup;
-  isAdding: boolean = false; // For button animation
+  isAdding: boolean = false;
   isFocused = false;
   private todoService = inject(TodoService);
   private fb = inject(FormBuilder);
@@ -38,14 +37,21 @@ export class TodoAddComponent {
     if (this.todoForm.valid) {
       this.isAdding = true;
       const content = this.todoForm.value.content;
+
+      // Optimistic: Reset form immediately
+      this.todoForm.reset();
+
       this.todoService.addTodo(content).subscribe({
         next: (newTodo) => {
           this.todoAdded.emit(newTodo);
-          this.todoForm.reset();
-          this.isAdding = true;
-          setTimeout(() => { this.isAdding = false; }, 500); // Duration of animation
+          // Animation timing
+          setTimeout(() => { this.isAdding = false; }, 500);
         },
-        error: (err) => console.error('Error adding todo:', err)
+        error: (err) => {
+            console.error('Error adding todo:', err);
+            this.isAdding = false;
+            // Optionally restore form value here
+        }
       });
     }
   }

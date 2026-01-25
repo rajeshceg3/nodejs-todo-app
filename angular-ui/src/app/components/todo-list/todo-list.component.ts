@@ -11,13 +11,12 @@ import { TodoItemComponent } from '../todo-item/todo-item.component';
   imports: [CommonModule, TodoItemComponent],
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.css'],
-  // changeDetection: ChangeDetectionStrategy.OnPush // Removed as it was not in the script for this update
   animations: [
     trigger('listAnimation', [
-      transition('* => *', [ // Animate on any state change (items added/removed)
+      transition('* => *', [
         query(':enter', [
           style({ opacity: 0, transform: 'translateY(-15px) scale(0.98)' }),
-          stagger(40, [ // Snappier delay
+          stagger(40, [
             animate('0.25s cubic-bezier(0.2, 0.8, 0.2, 1)', style({ opacity: 1, transform: 'translateY(0) scale(1)' }))
           ])
         ], { optional: true }),
@@ -33,25 +32,21 @@ export class TodoListComponent implements OnInit {
   private todoService = inject(TodoService);
 
   ngOnInit(): void {
-    this.loadTodos();
-  }
-
-  loadTodos(): void {
+    // Subscribe to the stream of todos
     this.todoService.getTodos().subscribe({
       next: (todos) => this.todos = todos,
       error: (err) => console.error('Error loading todos:', err)
     });
+    // Trigger initial load
+    this.todoService.loadTodos();
   }
 
   handleTodoAdded(newTodo: Todo): void {
-    // Optimistically add to list, or reload
-    console.log('TodoListComponent: todoAdded event received, reloading todos.', newTodo);
-    this.loadTodos(); // Simplest way to refresh
+    // No-op: Service handles state now.
   }
 
   handleDeleteTodo(todoId: string): void {
     this.todoService.deleteTodo(todoId).subscribe({
-      next: () => this.loadTodos(),
       error: (err) => console.error('Error deleting todo:', err)
     });
   }
@@ -61,7 +56,6 @@ export class TodoListComponent implements OnInit {
     const updatedTodo: Todo = { ...todoToToggle, status: updatedStatus };
 
     this.todoService.updateTodo(updatedTodo).subscribe({
-      next: () => this.loadTodos(),
       error: (err) => console.error('Error updating todo:', err)
     });
   }

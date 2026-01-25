@@ -193,3 +193,10 @@ input:focus, textarea:focus, select:focus {
     padding-bottom: 0;
   }
 }
+
+/* Mobile Input Zoom Fix */
+@media screen and (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
