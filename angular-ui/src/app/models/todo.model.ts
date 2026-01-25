@@ -4,7 +4,8 @@ export interface Todo {
   rawContent?: string;
   priority?: 'critical' | 'high' | 'medium' | 'low';
   tags?: string[];
-  dueDate?: string;
+  dueDate?: string | Date;
   status?: 'pending' | 'completed';
-  createdAt?: string;
+  createdAt?: string | Date;
+  isTemp?: boolean;
 }
