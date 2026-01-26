@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const logger = require('./logger');
 
 let client;
 let db;
@@ -10,12 +11,12 @@ const connectDB = async () => {
     let uri = process.env.MONGODB_URI;
 
     if (!uri) {
-      console.log('No MONGODB_URI provided. Starting MongoMemoryServer...');
+      logger.info('No MONGODB_URI provided. Starting MongoMemoryServer...');
       mongod = await MongoMemoryServer.create();
       uri = mongod.getUri();
-      console.log(`MongoMemoryServer started at ${uri}`);
+      logger.info(`MongoMemoryServer started at ${uri}`);
     } else {
-        console.log('Connecting to provided MONGODB_URI...');
+        logger.info('Connecting to provided MONGODB_URI...');
     }
 
     client = new MongoClient(uri); // removed deprecated options
@@ -25,10 +26,10 @@ const connectDB = async () => {
     const dbName = process.env.DB_NAME || 'prod';
     db = client.db(dbName);
 
-    console.log(`Connected to database: ${dbName}`);
+    logger.info(`Connected to database: ${dbName}`);
     return db;
   } catch (err) {
-    console.error('Failed to connect to database:', err);
+    logger.error(`Failed to connect to database: ${err.message}`);
     process.exit(1);
   }
 };

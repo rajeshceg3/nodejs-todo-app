@@ -1,0 +1,6 @@
+{"level":"info","message":"No MONGODB_URI provided. Starting MongoMemoryServer...","timestamp":"2026-01-26 08:27:51:2751"}
+{"level":"info","message":"MongoMemoryServer started at mongodb://127.0.0.1:41579/","timestamp":"2026-01-26 08:27:51:2751"}
+{"level":"info","message":"Connected to database: prod","timestamp":"2026-01-26 08:27:51:2751"}
+{"level":"info","message":"No MONGODB_URI provided. Starting MongoMemoryServer...","timestamp":"2026-01-26 08:30:27:3027"}
+{"level":"info","message":"MongoMemoryServer started at mongodb://127.0.0.1:44479/","timestamp":"2026-01-26 08:30:27:3027"}
+{"level":"info","message":"Connected to database: prod","timestamp":"2026-01-26 08:30:27:3027"}
