@@ -13,7 +13,8 @@ module.exports = [
       globals: {
         ...globals.node,
         ...globals.es2021,
-        ...globals.commonjs
+        ...globals.commonjs,
+        ...globals.jest
       }
     },
     rules: {

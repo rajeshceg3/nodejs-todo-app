@@ -1,122 +1,81 @@
-# Node.js To-Do List Application
+# Node.js To-Do List Application (Production Ready)
 
-This is a simple To-Do List application built with Node.js, Express.js, and MongoDB (using an in-memory server for development). It allows users to add tasks and view their list of tasks.
+**CLASSIFICATION:** INTERNAL USE ONLY
+**VERSION:** 1.0.0
 
-## Features
+A mission-critical To-Do List application built with a Node.js/Express backend and an advanced Angular frontend. Designed for reliability, security, and high-performance user operations.
 
-- Add new tasks to the To-Do list.
-- View all tasks in the list.
-- Basic web interface to interact with the application.
-- RESTful API for programmatic access.
+## Architecture
+
+- **Backend:** Node.js, Express (Security Hardened with Helmet, RateLimiting)
+- **Database:** MongoDB (Dual-mode: Memory Server for Dev, Cloud URI for Prod)
+- **Frontend:** Angular 20+ (Stripe-inspired UX, Optimistic UI, Mobile Optimized)
+- **Logging:** Structured JSON logging via Winston
+- **Testing:** Jest (Backend), Karma/Jasmine (Frontend)
 
 ## Project Structure
 
 ```
 .
-├── index.js            # Main application logic
-├── package.json        # Project dependencies and scripts
-├── pages/
-│   └── index.html      # Basic HTML page for the web interface
-├── static/
-│   └── style.css       # Basic CSS for the web interface
-└── README.md           # This file
+├── src/                # Backend Source Code
+│   ├── config/         # Database & Logger Configuration
+│   ├── controllers/    # Business Logic
+│   ├── models/         # Data Models & Audit Logic
+│   ├── routes/         # API Route Definitions
+│   ├── tests/          # Integration Tests
+│   ├── app.js          # Express Application Setup
+│   └── server.js       # Entry Point
+├── angular-ui/         # Frontend Source Code
+├── logs/               # Application Logs
+└── package.json        # Root Dependencies & Scripts
 ```
-
-## Prerequisites
-
-- Node.js (v14 or higher recommended)
-- npm (usually comes with Node.js)
 
 ## Getting Started
 
-1.  **Clone the repository (if applicable):**
-    ```bash
-    git clone <repository-url>
-    cd <repository-directory>
-    ```
+### Prerequisites
 
-2.  **Install dependencies:**
-    Open your terminal in the project root directory and run:
+- Node.js (v20+ recommended)
+- npm
+
+### Installation
+
+1.  **Install Dependencies:**
     ```bash
     npm install
     ```
+    *Note: This will verify root dependencies.*
 
-3.  **Run the application:**
+### Operation
+
+1.  **Start the System (Dev/Prod):**
     ```bash
     npm start
     ```
-    This will start the server, typically on `http://localhost:3000`. You should see a message in the console like: `App listening at http://localhost:3000`.
+    This command performs the following sequence:
+    - Builds the Angular UI (`npm run build:ui`)
+    - Starts the Backend Server (`src/server.js`)
+    - Access the application at: `http://localhost:3000`
 
-## How to Use
-
-### Web Interface
-
-Once the application is running, open your web browser and navigate to `http://localhost:3000`. You will see a basic interface.
-*(Note: The current `index.html` is very basic and doesn't have functionality to add or display To-Dos yet. This would be a future enhancement.)*
-
-### API Endpoints
-
-You can also interact with the application using its API.
-
-#### 1. Add a To-Do item
-
--   **Method:** `POST`
--   **URL:** `/list`
--   **Headers:** `Content-Type: application/json`
--   **Body (JSON):**
-    ```json
-    {
-      "text": "My new To-Do item"
-    }
-    ```
--   **Success Response (201 Created):**
-    ```json
-    {
-      "todo": {
-        "content": "My new To-Do item"
-      }
-    }
-    ```
--   **Example using cURL:**
+2.  **Development Mode (Backend Watch):**
     ```bash
-    curl -X POST -H "Content-Type: application/json" -d '{"text":"Buy milk"}' http://localhost:3000/list
+    npm run dev
     ```
+    *Starts the backend with nodemon. Requires the UI to be built previously.*
 
-#### 2. Get all To-Do items
+## Testing Protocol
 
--   **Method:** `GET`
--   **URL:** `/list`
--   **Success Response (200 OK):**
-    ```json
-    {
-      "todos": [
-        {
-          "_id": "someMongoDbId",
-          "content": "Buy milk"
-        },
-        {
-          "_id": "anotherMongoDbId",
-          "content": "Learn Node.js"
-        }
-      ]
-    }
-    ```
--   **Example using cURL:**
+- **Backend Integration Tests:**
     ```bash
-    curl http://localhost:3000/list
+    npm test
     ```
 
-## Development
+## Features
 
-The application uses `mongodb-memory-server` for development, so you don't need to have a separate MongoDB instance running. The data will be lost when the server stops.
+- **Advanced Task Management:** Support for `!priority` (low, medium, high, critical), `#tags`, and `@YYYY-MM-DD` due dates.
+- **Audit Logging:** Cryptographically linked audit logs for all mutations.
+- **Mobile First:** Swipe-to-delete gestures and optimized touch targets.
+- **Secure:** Full security headers and input validation.
 
-## Future Enhancements
+## Deployment
 
--   Implement functionality in `index.html` to add and display To-Dos.
--   Add options to delete or update To-Do items.
--   Persist data using a permanent MongoDB instance.
--   Add input validation.
--   Implement user authentication.
-
-[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/express-simple-ez9fzi)
-*(Note: The StackBlitz link might need updating if significant changes are made that affect its compatibility.)*
+The application is Docker-ready and supports standard CI/CD pipelines. See `DEPLOY.md` for details.
