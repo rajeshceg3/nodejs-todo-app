@@ -14,10 +14,10 @@ app.use(cors());
 
 // Rate Limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 100, // Limit each IP to 100 requests per window
-    standardHeaders: true,
-    legacyHeaders: false,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per window
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // Apply rate limiting to API routes
@@ -35,10 +35,10 @@ app.use('/static', express.static(path.join(__dirname, '../static')));
 
 // Catch-all for Angular
 app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/list') || req.path.startsWith('/audit-logs')) {
-        return next();
-    }
-    res.sendFile(path.join(__dirname, '../angular-ui/dist/angular-ui/browser/index.html'));
+  if (req.path.startsWith('/list') || req.path.startsWith('/audit-logs')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, '../angular-ui/dist/angular-ui/browser/index.html'));
 });
 
 module.exports = app;

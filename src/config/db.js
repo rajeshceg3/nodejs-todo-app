@@ -16,7 +16,7 @@ const connectDB = async () => {
       uri = mongod.getUri();
       logger.info(`MongoMemoryServer started at ${uri}`);
     } else {
-        logger.info('Connecting to provided MONGODB_URI...');
+      logger.info('Connecting to provided MONGODB_URI...');
     }
 
     client = new MongoClient(uri); // removed deprecated options
@@ -42,8 +42,8 @@ const getDb = () => {
 };
 
 const closeDB = async () => {
-    if (client) await client.close();
-    if (mongod) await mongod.stop();
+  if (client) await client.close();
+  if (mongod) await mongod.stop();
 };
 
 module.exports = { connectDB, getDb, closeDB };
