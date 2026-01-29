@@ -31,7 +31,7 @@ COPY --from=backend-builder /app/package*.json ./
 COPY --from=frontend-builder /app/angular-ui/dist ./angular-ui/dist
 
 # Copy backend source code
-COPY index.js .
+COPY src ./src
 # Create a static directory if it exists, otherwise ignore (optional but good practice)
 COPY static ./static
 
@@ -43,4 +43,4 @@ USER node
 EXPOSE 3000
 
 # Start the application
-CMD ["dumb-init", "node", "index.js"]
+CMD ["dumb-init", "node", "src/server.js"]

@@ -3,8 +3,6 @@ const app = require('../app');
 const { connectDB, closeDB, getDb } = require('../config/db');
 
 describe('API Endpoints Integration Tests', () => {
-  let server;
-
   beforeAll(async () => {
     // Connect to the in-memory database
     await connectDB();
