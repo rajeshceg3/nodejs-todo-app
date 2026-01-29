@@ -10,7 +10,7 @@ async function calculateHash(data) {
   // Access webcrypto from the crypto module safely
   const subtle = crypto.webcrypto ? crypto.webcrypto.subtle : crypto.subtle;
   if (!subtle) {
-      throw new Error('WebCrypto Subtle API not available in this environment');
+    throw new Error('WebCrypto Subtle API not available in this environment');
   }
   const hashBuffer = await subtle.digest('SHA-256', dataBuffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
