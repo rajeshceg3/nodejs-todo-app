@@ -1,6 +1,6 @@
-# TACTICAL ASSESSMENT & STRATEGIC ROADMAP (V11.0)
+# TACTICAL ASSESSMENT & STRATEGIC ROADMAP (V12.0)
 **CLASSIFICATION:** TOP SECRET // EYES ONLY
-**DATE:** 2025-05-22
+**DATE:** 2026-01-29
 **PREPARED BY:** COMMANDER JULES (NAVY SEAL / LEAD ENGINEER)
 **TARGET:** PROJECT "TO-DO" REPOSITORY
 
@@ -8,76 +8,83 @@
 
 ## 1. MISSION BRIEFING (EXECUTIVE SUMMARY)
 
-**STATUS:** **DEFCON 3 - OPERATIONAL BUT VULNERABLE**
-**READINESS:** **COMBAT EFFECTIVE (WITH GAPS)**
+**STATUS:** **DEFCON 2 - CRITICAL VULNERABILITIES DETECTED**
+**READINESS:** **PARTIALLY EFFECTIVE / DEPLOYMENT HALTED**
 
 **SITREP:**
-The "To-Do" repository is a functional, secure, and modern application. The perimeter is fortified (`helmet`, `cors`), and the frontend is advanced (Angular 20+). However, a deep-dive tactical analysis has revealed dormant assets (unused libraries) and critical user-facing silence (missing feedback loops).
+The "To-Do" repository is currently in a **volatile state**. While the Backend infrastructure is operational (Green status on Integration Tests), the Frontend sector is **COMPROMISED**.
+- **Backend:** Functional. Passes integration tests. Validations are archaic (Regex).
+- **Frontend:** **CRITICAL FAILURE.** 7 Unit Tests are failing in `TodoListComponent` due to broken Service mocking (`loadTodos` signature mismatch).
+- **UX:** **SILENT FAILURE MODE.** The application lacks negative feedback loops (Error Toasts), leaving users blind to synchronization errors.
 
 **BLUF (BOTTOM LINE UP FRONT):**
-We are sitting on unutilized ammunition (`zod`) while manually checking inputs. We are letting soldiers (users) fail in the field without radio confirmation (missing Error Toasts). Immediate tactical adjustments are required to reach ELITE status.
+We cannot proceed to "World Class" UX until the foundation is repaired. The Frontend test suite is bleeding. The Validation logic is brittle. **Immediate tactical intervention is required.**
 
 ---
 
 ## 2. INTEL REPORT (GAP ANALYSIS)
 
-### SECTOR ALPHA: BACKEND INFRASTRUCTURE
-*   **Architecture:** **SUB-OPTIMAL.** `todo.controller.js` is doing too much: parsing, regex validation, DB calls, and auditing.
-    *   *Risk:* Moderate. High coupling makes unit testing logic difficult without mocking the entire DB.
-*   **Validation:** **INEFFICIENT.** `zod` library is installed (`v3.25.76`) but **NOT DEPLOYED**. The controller relies on manual Regex parsing for priorities and tags.
-    *   *Tactical Rec:* **IMMEDIATE DEPLOYMENT of Zod** for robust schema validation.
+### SECTOR ALPHA: SYSTEM INTEGRITY (TESTS)
+*   **Backend:** **SECURE.** `npm test` passes (5/5).
+*   **Frontend:** **BREACHED.** `ng test` reports **7 FAILURES**.
+    *   *Root Cause:* `TypeError: this.todoService.loadTodos is not a function`. The test mocks are out of sync with the actual Service implementation.
+    *   *Impact:* CI/CD pipeline is blocked. Deployment is impossible.
 
-### SECTOR BRAVO: SECURITY & INTEGRITY
-*   **Audit System:** **ELITE.** `audit.model.js` implements SHA-256 blockchain-style linking.
-*   **Dependencies:** **SECURED.** CI/CD pipeline enforces `npm audit`.
-*   **Containerization:** **SECURED.** `dumb-init` and multi-stage builds active.
+### SECTOR BRAVO: USER EXPERIENCE (UX)
+*   **Visuals:** **ELITE.** The `styles.css` (Glassmorphism, Inter font, Animations) meets the "Stripe-Grade" standard.
+*   **Interaction:** **DANGEROUS.** Optimistic UI is implemented, but error handling is non-existent.
+    *   *Scenario:* API call fails -> Item disappears from list -> **User receives ZERO notification.**
+    *   *Risk:* High. Trust erosion.
 
-### SECTOR CHARLIE: USER EXPERIENCE (UX) & FRONTEND
-*   **Visuals:** **ELITE.** Stripe-grade aesthetic confirmed.
-*   **Feedback Loops:** **CRITICAL FAILURE.** `TodoService` logs errors to the console ("silent failure").
-    *   *Scenario:* User adds a task while offline. Task vanishes. User is unaware.
-    *   *Tactical Rec:* **DEPLOY TOAST NOTIFICATIONS** immediately.
-*   **State Management:** **OPERATIONAL.** Optimistic UI via `BehaviorSubject` is active.
+### SECTOR CHARLIE: SECURITY & VALIDATION
+*   **Input Hardening:** **OBSOLETE.** The `todo.controller.js` uses manual Regex parsing.
+*   **Asset Utilization:** **INEFFICIENT.** `zod` is installed (`v3.25.76`) but dormant.
+    *   *Tactical Rec:* decommission Regex immediately; deploy Zod schemas.
 
 ---
 
-## 3. EXECUTION ROADMAP (OPERATION IRONCLAD V11)
+## 3. EXECUTION ROADMAP (OPERATION IRONCLAD V12)
 
-### PRIORITY LEVEL 1: IMMEDIATE TACTICAL FIXES (PHASE I)
-**Objective:** Close the gap between "Installed" and "Deployed".
+### PRIORITY LEVEL 1: STABILIZATION (PHASE I)
+**Objective:** Restore Integrity & Secure the Perimeter.
 
-1.  **Operation "Loudspeaker" (UX):**
-    *   **Tactic:** Implement a `ToastService` in Angular.
-    *   **Action:** Modify `TodoService` to trigger `toastService.error()` on API failures.
-    *   **Outcome:** User receives immediate visual confirmation of mission failure.
+1.  **Operation "Medic" (Test Repair):**
+    *   **Target:** `src/app/components/todo-list/todo-list.component.spec.ts`
+    *   **Action:** Fix the `todoService` mock to include `loadTodos` and correct spy definitions.
+    *   **Outcome:** 100% Green Test Suite.
 
-2.  **Operation "Shield Wall" (Security/Validation):**
-    *   **Tactic:** Activate `zod`.
-    *   **Action:** Replace manual Regex in `todo.controller.js` with a Zod schema (`z.object({...})`).
-    *   **Outcome:** Standardized, bulletproof input validation.
+2.  **Operation "Loudspeaker" (UX Feedback):**
+    *   **Target:** `TodoService` / `ToastService`
+    *   **Action:** Implement a Toast/Notification system. Trigger visual alerts on API failures.
+    *   **Outcome:** "Silent Failure" eliminated. User confidence restored.
+
+3.  **Operation "Shield Wall" (Validation):**
+    *   **Target:** `todo.controller.js`
+    *   **Action:** Replace Regex with `zod` schemas.
+    *   **Outcome:** Robust, maintainable, secure input validation.
 
 ### PRIORITY LEVEL 2: STRATEGIC REFACTORING (PHASE II)
 **Objective:** Decouple and Organize.
 
 1.  **Architecture Reform:**
     *   **Tactic:** Implement Repository Pattern.
-    *   **Action:** Move DB calls from `todo.controller.js` to `todo.repository.js` (or `todo.service.js`).
-    *   **Outcome:** Controllers only handle HTTP; Services handle logic; Repositories handle Data.
+    *   **Action:** Move DB calls from Controller to `todo.repository.js`.
+    *   **Outcome:** Separation of Concerns (SoC).
 
-### PRIORITY LEVEL 3: SCALABILITY EXPANSION (PHASE III)
+### PRIORITY LEVEL 3: SCALABILITY (PHASE III)
 **Objective:** Heavy Load Endurance.
 
 1.  **Caching Layer:**
     *   **Tactic:** Deploy Redis.
-    *   **Action:** Cache `GET /list` responses. Invalidate cache on mutations.
-    *   **Outcome:** 90% reduction in DB load during read-heavy operations.
+    *   **Action:** Cache `GET /list`.
+    *   **Outcome:** Sub-millisecond read times.
 
 ---
 
 ## 4. COMMANDER'S ORDERS
 
-1.  **Do not ignore warnings.** The `zod` library is there for a reason. Use it.
-2.  **No silent failures.** If the system bleeds, the user must know.
-3.  **Execute Phase I immediately.**
+1.  **Fix the Tests First.** No feature work begins until `ng test` is Green.
+2.  **No Silent Failures.** If it breaks, show it.
+3.  **Use the Tools.** Activate `zod`.
 
 **END OF REPORT.**
