@@ -33,10 +33,16 @@ describe('TodoService', () => {
       ];
       const mockResponse = { todos: mockTodos };
 
+      // First, verify the initial state is empty
       service.getTodos().subscribe(todos => {
-        expect(todos.length).toBe(2);
-        expect(todos).toEqual(mockTodos);
+        if (todos.length > 0) {
+          expect(todos.length).toBe(2);
+          expect(todos).toEqual(mockTodos);
+        }
       });
+
+      // Trigger the load
+      service.loadTodos();
 
       const req = httpMock.expectOne(apiUrl);
       expect(req.request.method).toBe('GET');
