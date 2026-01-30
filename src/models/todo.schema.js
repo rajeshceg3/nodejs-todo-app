@@ -1,7 +1,7 @@
 const z = require('zod');
 
 const createTodoSchema = z.object({
-  text: z.string().min(1, { message: "Content cannot be empty" })
+  text: z.string().min(1, { message: 'Content cannot be empty' })
 });
 
 const updateTodoSchema = z.object({
