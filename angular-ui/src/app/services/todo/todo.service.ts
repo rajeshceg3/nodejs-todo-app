@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Todo } from '../../models/todo.model';
+import { ToastService } from '../toast/toast.service';
 
 interface GetTodosResponse {
   todos: Todo[];
@@ -20,14 +21,17 @@ export class TodoService {
   private todosSubject = new BehaviorSubject<Todo[]>([]);
   public todos$ = this.todosSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastService: ToastService) { }
 
   loadTodos(): void {
     this.http.get<GetTodosResponse>(this.apiUrl)
       .pipe(map(response => response.todos))
       .subscribe({
         next: (todos) => this.todosSubject.next(todos),
-        error: (err) => console.error('Failed to load todos', err)
+        error: (err) => {
+          console.error('Failed to load todos', err);
+          this.toastService.showError('Failed to load tasks. Please check your connection.');
+        }
       });
   }
 
@@ -59,6 +63,7 @@ export class TodoService {
         catchError(err => {
           const reverted = this.todosSubject.value.filter(t => t._id !== tempId);
           this.todosSubject.next(reverted);
+          this.toastService.showError('Failed to add task.');
           return throwError(() => err);
         })
       );
@@ -72,6 +77,7 @@ export class TodoService {
     return this.http.delete(`${this.apiUrl}/${id}`).pipe(
       catchError(err => {
         this.todosSubject.next(previousTodos);
+        this.toastService.showError('Failed to delete task.');
         return throwError(() => err);
       })
     );
@@ -92,6 +98,7 @@ export class TodoService {
          }),
          catchError(err => {
            this.todosSubject.next(previousTodos);
+           this.toastService.showError('Failed to update task.');
            return throwError(() => err);
          })
        );

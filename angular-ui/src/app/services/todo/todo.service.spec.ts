@@ -2,16 +2,25 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TodoService } from './todo.service';
 import { Todo } from '../../models/todo.model';
+import { ToastService } from '../toast/toast.service';
 
 describe('TodoService', () => {
   let service: TodoService;
   let httpMock: HttpTestingController;
   const apiUrl = '/list';
 
+  // Mock ToastService
+  const toastServiceMock = {
+    showError: jasmine.createSpy('showError')
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [TodoService]
+      providers: [
+        TodoService,
+        { provide: ToastService, useValue: toastServiceMock }
+      ]
     });
     service = TestBed.inject(TodoService);
     httpMock = TestBed.inject(HttpTestingController);
