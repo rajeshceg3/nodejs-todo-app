@@ -2,13 +2,15 @@ const { getDb } = require('../config/db');
 const { ObjectId } = require('mongodb');
 const { createAuditLog } = require('../models/audit.model');
 const logger = require('../config/logger');
+const { createTodoSchema, updateTodoSchema } = require('../models/todo.schema');
 
 const createTodo = async (req, res) => {
   try {
-    const rawContent = req.body.text;
-    if (!rawContent) {
-      return res.status(400).send({ error: 'Content cannot be empty' });
+    const validation = createTodoSchema.safeParse(req.body);
+    if (!validation.success) {
+      return res.status(400).send({ error: validation.error.issues[0].message });
     }
+    const rawContent = validation.data.text;
 
     // Logic extracted from legacy index.js
     const priorityRegex = /!(critical|high|medium|low)/i;
@@ -69,13 +71,22 @@ const createTodo = async (req, res) => {
 const updateTodo = async (req, res) => {
   try {
     const id = req.params.id;
-    const updates = req.body;
+
+    const validation = updateTodoSchema.safeParse(req.body);
+    if (!validation.success) {
+      return res.status(400).send({ error: 'Invalid update data' });
+    }
+    const updates = validation.data;
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).send({ error: 'No valid fields to update' });
+    }
 
     if (!ObjectId.isValid(id)) {
       return res.status(400).send({ error: 'Invalid ID format' });
     }
 
-    delete updates._id;
+    // delete updates._id; // Zod handles stripping unknown keys
 
     const db = getDb();
     const result = await db.collection('list').findOneAndUpdate(
