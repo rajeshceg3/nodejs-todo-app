@@ -1,7 +1,7 @@
-# TACTICAL ASSESSMENT & STRATEGIC ROADMAP (V15.0)
+# TACTICAL ASSESSMENT & STRATEGIC ROADMAP (V16.0)
 **CLASSIFICATION:** TOP SECRET // EYES ONLY
-**DATE:** 2026-02-01
-**PREPARED BY:** LIEUTENANT JULES (NAVY SEAL / LEAD ENGINEER)
+**DATE:** 2026-05-21
+**PREPARED BY:** COMMANDER JULES (NAVY SEAL / CHIEF TECHNICAL STRATEGIST)
 **TARGET:** PROJECT "TO-DO" REPOSITORY
 
 ---
@@ -12,13 +12,13 @@
 **READINESS:** **COMBAT EFFECTIVE (REQUIRES UX & SECURITY AUGMENTATION)**
 
 **SITREP (SITUATION REPORT):**
-The repository is fully operational. Core backend logic is sound, and frontend unit tests are green (30/30). However, a tactical review reveals friction points in the User Experience (UX) that compromise the "Elite" status of the application. Furthermore, default security configurations leave the perimeter potentially exposed to advanced vectors (CSP bypass).
+The repository is currently operational with a stable core. Backend logic is functional, and frontend unit tests are green (30/30). However, a deep-dive tactical review reveals critical friction points in the User Experience (UX) and potential vulnerabilities in the security perimeter that compromise the "Elite" status of the application. The system is functional but not yet "Production Hardened."
 
 **BLUF (BOTTOM LINE UP FRONT):**
-We have a solid foundation, but it is not yet "Special Forces" grade. To achieve mission success, we must execute a three-pronged offensive:
-1.  **Eliminate Visual Friction:** Eradicate the "Flash of Empty State" (FOES).
-2.  **Fortify the Perimeter:** Harden CSP headers and upgrade supply chain logistics.
-3.  **Decouple Command:** Isolate database logic from controller logic.
+To achieve mission success and production readiness, we must execute **Operation Ironclad**:
+1.  **Eliminate Visual Friction:** Eradicate the "Flash of Empty State" (FOES) that confuses users.
+2.  **Fortify the Perimeter:** Harden Content Security Policy (CSP) and upgrade supply chain logistics.
+3.  **Decouple Command:** Isolate database logic from controller logic via the Repository Pattern.
 
 ---
 
@@ -26,72 +26,90 @@ We have a solid foundation, but it is not yet "Special Forces" grade. To achieve
 
 ### SECTOR ALPHA: USER EXPERIENCE (THE "HEARTS AND MINDS")
 *   **Flash of Empty State (FOES):** **CRITICAL.**
-    *   *Intel:* `TodoService` utilizes `BehaviorSubject` but lacks an explicit `isLoading$` signal.
-    *   *Observation:* Upon insertion, the user sees "All caught up!" for 300-800ms before data arrives. This causes cognitive dissonance.
-    *   *Threat Level:* High (User Churn).
+    *   *Intel:* `TodoService` initializes `todosSubject` with `[]`.
+    *   *Observation:* `TodoListComponent` immediately renders "All caught up!" (`*ngIf="todos.length === 0"`) while the HTTP request is in flight. This creates a 300-800ms false positive state.
+    *   *Impact:* User cognitive dissonance and perceived sluggishness.
 *   **Mobile Readiness:** **SUB-OPTIMAL.**
-    *   *Intel:* No PWA manifest detected. Touch targets in `TodoListComponent` rely on default padding.
-    *   *Threat Level:* Medium (Accessibility Failure).
+    *   *Intel:* `angular-ui/src/styles.css` handles font-size (16px) to prevent iOS zoom.
+    *   *Observation:* Touch targets (buttons, inputs) rely on padding `10px 14px`. On standard screens, this results in ~38px height.
+    *   *Requirement:* Minimum 44px height for all interactive elements to meet Apple/Google accessibility standards.
+    *   *Gap:* No PWA manifest detected.
 
 ### SECTOR BRAVO: SECURITY & INFRASTRUCTURE
 *   **Supply Chain:** **COMPROMISED.**
-    *   *Intel:* `mongodb` driver is v4.12.1 (Legacy). Current standard is v6+.
-    *   *Threat Level:* High (Potential unpatched CVEs).
+    *   *Intel:* `mongodb` driver is v4.12.1 (Legacy). Current LTS is v6+.
+    *   *Threat Level:* High (Potential unpatched CVEs and deprecated API usage).
 *   **Perimeter Defense:** **STANDARD.**
-    *   *Intel:* `helmet()` is initialized with defaults in `src/app.js`.
-    *   *Observation:* Angular requires strict Content Security Policy (CSP) tuning to prevent XSS while allowing legitimate scripts.
+    *   *Intel:* `src/app.js` initializes `helmet()` with defaults.
+    *   *Observation:* Angular requires strict Content Security Policy (CSP) tuning to allow specific scripts/styles while blocking XSS. Default Helmet might block legitimate Angular resources or be too permissive.
     *   *Threat Level:* Medium.
 
 ### SECTOR CHARLIE: ARCHITECTURE
 *   **Coupling:** **HIGH.**
     *   *Intel:* `src/controllers/todo.controller.js` directly invokes `getDb().collection('list')`.
-    *   *Risk:* Vendor lock-in and testing difficulty.
+    *   *Risk:* Vendor lock-in, testing difficulty, and violation of Separation of Concerns.
     *   *Action:* Repository Pattern implementation is mandatory for Phase III.
 
 ---
 
-## 3. EXECUTION ROADMAP (OPERATION IRONCLAD V15)
+## 3. EXECUTION ROADMAP (OPERATION IRONCLAD V16)
 
 ### PHASE I: OPERATION "SMOOTH OPERATOR" (UX SUPREMACY)
+**Priority:** **IMMEDIATE**
 **Objective:** Deliver a fluid, zero-latency perceived experience.
 
-**Tactical Maneuver 1: Skeleton Integration**
+**Tactical Maneuver 1: Skeleton Integration (Fix FOES)**
 *   **Target:** `angular-ui/src/app/services/todo/todo.service.ts`
-*   **Action:** Implement `isLoading$` BehaviorSubject.
+    *   Add `private isLoadingSubject = new BehaviorSubject<boolean>(true);`
+    *   Expose `isLoading$ = this.isLoadingSubject.asObservable();`
+    *   Update `loadTodos()` to manage this state (set false on `next/error`).
 *   **Target:** `angular-ui/src/app/components/todo-list/todo-list.component.html`
-*   **Action:** Deploy Skeleton Loader component (shimmer effect) when `isLoading$ | async` is true.
-*   **Success Metric:** Zero occurrences of "All caught up!" during initial load.
+    *   Add `<app-skeleton-loader *ngIf="isLoading$ | async"></app-skeleton-loader>` (Create component if missing, or inline SVG).
+    *   Change "All caught up" condition to `*ngIf="(todos$ | async)?.length === 0 && !(isLoading$ | async)"`.
 
 **Tactical Maneuver 2: Mobile Field Kit (PWA)**
 *   **Target:** `angular-ui/src/manifest.json`
-*   **Action:** Configure manifest with "standalone" display, theme colors, and high-res icons.
+    *   Create manifest with "standalone" display, theme colors, and icons.
 *   **Target:** `angular-ui/src/styles.css`
-*   **Action:** Enforce minimum 44px touch targets for all interactive elements (buttons, checkboxes).
+    *   Enforce `min-height: 44px` on `button`, `input`, `.todo-item`.
 
 ### PHASE II: OPERATION "STEEL WALL" (SECURITY HARDENING)
+**Priority:** **HIGH**
 **Objective:** Close all open vectors.
 
 **Tactical Maneuver 1: Supply Chain Update**
-*   **Action:** Upgrade `mongodb` to latest stable. Pin versions in `package.json`.
-*   **Action:** Run `npm audit fix` cautiously to avoid breaking Angular build.
+*   **Action:** Upgrade `mongodb` to `^6.0.0` in `package.json`.
+*   **Action:** Verify database connection logic in `src/config/db.js` for compatibility.
 
 **Tactical Maneuver 2: CSP Lockdown**
 *   **Target:** `src/app.js`
-*   **Action:** Configure `helmet.contentSecurityPolicy` to explicitly allow Angular scripts and styles while blocking external injections.
+*   **Action:** Configure `helmet.contentSecurityPolicy`:
+    ```javascript
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"], // Angular needs inline for templates/jit
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:"],
+        connectSrc: ["'self'"]
+      }
+    }
+    ```
 
 ### PHASE III: OPERATION "COMMAND STRUCTURE" (REFACTORING)
+**Priority:** **MEDIUM**
 **Objective:** Architectural Purity.
 
 **Tactical Maneuver 1: Repository Pattern**
 *   **Action:** Create `src/repositories/todo.repository.js`.
-*   **Action:** Migrate direct DB calls from `todo.controller.js` to the repository.
+*   **Action:** Move all `db.collection('list')` calls from `todo.controller.js` to the repository.
 *   **Result:** Controller handles HTTP; Repository handles Data.
 
 ---
 
 ## 4. IMMEDIATE ACTION ORDERS
 
-1.  **Acknowledge V15 Roadmap.**
+1.  **Acknowledge V16 Roadmap.**
 2.  **Begin Phase I immediately.** The user experience is the primary mission constraint.
 3.  **Report back upon completion of Skeleton Loader deployment.**
 
