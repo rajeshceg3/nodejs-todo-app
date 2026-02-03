@@ -30,6 +30,7 @@ import { TodoItemComponent } from '../todo-item/todo-item.component';
 export class TodoListComponent implements OnInit {
   todos: Todo[] = [];
   private todoService = inject(TodoService);
+  isLoading$ = this.todoService.isLoading$;
 
   ngOnInit(): void {
     // Subscribe to the stream of todos

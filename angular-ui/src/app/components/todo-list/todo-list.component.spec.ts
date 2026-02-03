@@ -20,6 +20,7 @@ describe('TodoListComponent', () => {
 
   beforeEach(async () => {
     mockTodoService = jasmine.createSpyObj('TodoService', ['getTodos', 'deleteTodo', 'updateTodo', 'loadTodos']);
+    (mockTodoService as any).isLoading$ = of(false);
 
     await TestBed.configureTestingModule({
       imports: [

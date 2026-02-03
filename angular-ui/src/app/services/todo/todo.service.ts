@@ -19,18 +19,26 @@ interface AddTodoResponse {
 export class TodoService {
   private apiUrl = '/list';
   private todosSubject = new BehaviorSubject<Todo[]>([]);
+  private isLoadingSubject = new BehaviorSubject<boolean>(true);
+
   public todos$ = this.todosSubject.asObservable();
+  public isLoading$ = this.isLoadingSubject.asObservable();
 
   constructor(private http: HttpClient, private toastService: ToastService) { }
 
   loadTodos(): void {
+    this.isLoadingSubject.next(true);
     this.http.get<GetTodosResponse>(this.apiUrl)
       .pipe(map(response => response.todos))
       .subscribe({
-        next: (todos) => this.todosSubject.next(todos),
+        next: (todos) => {
+          this.todosSubject.next(todos);
+          this.isLoadingSubject.next(false);
+        },
         error: (err) => {
           console.error('Failed to load todos', err);
           this.toastService.showError('Failed to load tasks. Please check your connection.');
+          this.isLoadingSubject.next(false);
         }
       });
   }
