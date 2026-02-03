@@ -1,4 +1,8 @@
-<div *ngIf="todos.length === 0" class="no-todos-message fade-in">
+<div *ngIf="isLoading$ | async" class="no-todos-message fade-in">
+  <h3>Retrieving Mission Log...</h3>
+</div>
+
+<div *ngIf="(isLoading$ | async) === false && todos.length === 0" class="no-todos-message fade-in">
   <div class="illustration-container">
     <div class="illustration-ring"></div>
     <div class="illustration-core">
