@@ -1,6 +1,6 @@
-# TACTICAL ASSESSMENT & STRATEGIC ROADMAP (V18.0)
+# TACTICAL ASSESSMENT & STRATEGIC ROADMAP (V19.0)
 **CLASSIFICATION:** TOP SECRET // EYES ONLY
-**DATE:** 2026-05-21
+**DATE:** 2026-05-22
 **PREPARED BY:** COMMANDER JULES (NAVY SEAL / CHIEF TECHNICAL STRATEGIST)
 **TARGET:** PROJECT "TO-DO" REPOSITORY
 
@@ -12,13 +12,14 @@
 **READINESS:** **PARTIALLY HARDENED (UX OPTIMIZED)**
 
 **SITREP (SITUATION REPORT):**
-Reconnaissance confirms successful execution of Phase I (UX Stabilization). The "Flash of Empty State" (FOES) hostile element has been neutralized via reactive state management in `TodoService`. The UI is visually cohesive ("Stripe-Grade"). However, the perimeter remains vulnerable. The application lacks offline capabilities (Service Worker AWOL) and relies on legacy supply lines (MongoDB v4). Security protocols (CSP) are running on default settings, leaving the unit exposed to XSS incursions.
+A comprehensive tactical analysis of the repository has been conducted. The unit (application) demonstrates superior visual discipline and reactive capabilities ("Optimistic UI"), effectively neutralizing the "Flash of Empty State" (FOES) threat. However, deep reconnaissance reveals critical structural and logistical vulnerabilities that compromise long-term mission viability. The unit is currently unfit for hostile (production) environments due to lack of offline resilience, legacy supply chain dependencies, and weak perimeter defenses.
 
 **BLUF (BOTTOM LINE UP FRONT):**
-The unit looks elite but lacks combat resilience. Immediate pivot required from "Aesthetics" to "Fortification".
-1.  **Activate Offline Protocols:** Deploy Angular Service Worker to ensure mission capability in disconnected environments.
-2.  **Harden the Perimeter:** Enforce strict Content Security Policy (CSP) to deny unauthorized script execution.
-3.  **Secure Supply Chain:** Upgrade database drivers to LTS standards (`mongodb` v6+).
+The application is "Showroom Ready" but not "Combat Ready." Immediate tactical pivot required from surface-level aesthetics to deep structural fortification.
+1.  **Offline Capability (Critical):** Service Worker is AWOL. Application is functionally dead in zero-connectivity zones.
+2.  **Supply Chain (Critical):** Database driver (`mongodb`) is outdated (v4.x), exposing the unit to obsolescence and security risks.
+3.  **Perimeter Defense (High):** Content Security Policy (CSP) is running on default settings, leaving the unit exposed to XSS incursions.
+4.  **Chain of Command (Medium):** Direct database access in Controllers violates separation of concerns.
 
 ---
 
@@ -26,71 +27,76 @@ The unit looks elite but lacks combat resilience. Immediate pivot required from 
 
 ### SECTOR ALPHA: USER EXPERIENCE (THE "HEARTS AND MINDS")
 *   **Flash of Empty State (FOES):** **NEUTRALIZED.**
-    *   *Intel:* `TodoService` correctly manages `isLoading$` streams. `TodoListComponent` waits for intel before rendering.
+    *   *Intel:* `TodoService` correctly manages `isLoading$` streams via BehaviorSubjects.
     *   *Status:* **GREEN**.
-*   **Mobile Readiness (PWA):** **PARTIAL.**
-    *   *Intel:* `manifest.json` is deployed. Touch targets are 44px compliant.
-    *   *Gap:* Service Worker configuration (`ngsw-config.json`) and registration (`provideServiceWorker`) are missing.
-    *   *Impact:* Application fails in zero-connectivity zones. Not truly "Mission Ready."
+*   **Offline Resilience (PWA):** **CRITICAL FAILURE.**
+    *   *Intel:* `ngsw-config.json` is missing. `provideServiceWorker` is absent from `app.config.ts`.
+    *   *Impact:* User operation is impossible without active comms (internet). This violates "Mission Critical" availability standards.
+    *   *Action:* Immediate deployment of Angular Service Worker.
+*   **Interaction Polishing:** **SATISFACTORY.**
+    *   *Intel:* Optimistic updates provide immediate feedback. Animations are present.
 
 ### SECTOR BRAVO: SECURITY & INFRASTRUCTURE
 *   **Perimeter Defense (CSP):** **WEAK.**
     *   *Intel:* `src/app.js` uses default `helmet()`.
-    *   *Threat:* Angular's JIT compilation (if active) or future script injections are not strictly blocked.
-    *   *Action:* Explicit `contentSecurityPolicy` directives required.
-*   **Supply Chain:** **CRITICAL.**
-    *   *Intel:* `mongodb` driver is v4.12.1.
-    *   *Threat:* End-of-Life vulnerability risks.
+    *   *Threat:* No explicit `contentSecurityPolicy` defined. Vulnerable to script injection.
+    *   *Action:* Implement strict CSP directives whitelist.
+*   **Supply Chain Logistics:** **COMPROMISED.**
+    *   *Intel:* `mongodb` driver is v4.12.1 (Legacy).
+    *   *Threat:* Driver is generations behind current LTS (v6+).
     *   *Action:* Upgrade to v6.0+ immediately.
 
 ### SECTOR CHARLIE: ARCHITECTURE
-*   **Command Structure:** **COMPROMISED.**
-    *   *Intel:* `todo.controller.js` and tests (`api.test.js`) directly access the database via `getDb().collection('list')`.
-    *   *Risk:* High coupling. Changing DB strategy requires refactoring the entire command chain.
-    *   *Action:* Repository Pattern implementation remains a Phase III objective.
+*   **Command Structure:** **SUB-OPTIMAL.**
+    *   *Intel:* `todo.controller.js` directly executes `getDb().collection('list')`.
+    *   *Risk:* High coupling. Scaling or changing data strategies requires refactoring the entire command chain.
+    *   *Action:* Implement Repository Pattern (Phase III).
 
 ---
 
-## 3. EXECUTION ROADMAP (OPERATION IRONCLAD V18)
+## 3. EXECUTION ROADMAP (OPERATION IRONCLAD V19)
 
 ### PHASE I: OPERATION "GHOST WIRE" (RESILIENCE)
-**Priority:** **IMMEDIATE**
+**Priority:** **DEFCON 1 (IMMEDIATE)**
 **Objective:** Enable offline combat capabilities.
 
 **Tactical Maneuver 1: Service Worker Deployment**
 *   **Target:** `angular-ui/src/app/app.config.ts`
     *   Inject `provideServiceWorker`.
 *   **Target:** `angular-ui/ngsw-config.json`
-    *   Configure asset caching strategies (Freshness vs Performance).
+    *   Configure asset caching strategies (Freshness vs Performance) for static assets and API data.
+*   **Target:** `angular-ui/angular.json`
+    *   Ensure `serviceWorker` build flag is true.
 
-### PHASE II: OPERATION "IRON DOME" (SECURITY)
-**Priority:** **HIGH**
-**Objective:** Impenetrable defense.
+### PHASE II: OPERATION "IRON DOME" (FORTIFICATION)
+**Priority:** **DEFCON 2 (HIGH)**
+**Objective:** Impenetrable defense and secure logistics.
 
-**Tactical Maneuver 1: CSP Lockdown**
-*   **Target:** `src/app.js`
-    *   Implement `helmet.contentSecurityPolicy` with strict `script-src`, `style-src`, and `connect-src` directives matching Angular's requirements.
-
-**Tactical Maneuver 2: Supply Chain Logistics**
+**Tactical Maneuver 1: Supply Chain Upgrade**
 *   **Target:** `package.json`
-    *   Upgrade `mongodb` to latest stable.
-    *   Refactor `src/config/db.js` to align with new driver APIs.
+    *   Upgrade `mongodb` to `^6.0.0`.
+*   **Target:** `src/config/db.js`
+    *   Refactor connection logic to align with new driver APIs.
+
+**Tactical Maneuver 2: CSP Lockdown**
+*   **Target:** `src/app.js`
+    *   Implement `helmet.contentSecurityPolicy` with strict `script-src`, `style-src`, and `connect-src` directives.
 
 ### PHASE III: OPERATION "CHAIN OF COMMAND" (REFACTORING)
-**Priority:** **MEDIUM**
-**Objective:** Architectural Purity.
+**Priority:** **DEFCON 3 (MEDIUM)**
+**Objective:** Architectural Purity and Scalability.
 
 **Tactical Maneuver 1: Repository Pattern**
 *   **Target:** `src/repositories/todo.repository.js`
     *   Abstract all `db.collection(...)` calls.
-    *   Ensure Controllers only issue orders to Repositories, not the Database directly.
+    *   Ensure Controllers only issue orders to Repositories.
 
 ---
 
 ## 4. STANDING ORDERS
 
-1.  **Maintain Phase I gains.** Do not regress on UX fluidity.
-2.  **Execute Phase I (Ghost Wire) immediately.** Offline capability is the next force multiplier.
-3.  **Prepare for Phase II.** Intel gathering on MongoDB v6 migration is authorized.
+1.  **Execute Phase I (Ghost Wire) immediately.** The lack of offline capability is the single largest gap in User Experience.
+2.  **Proceed to Phase II upon successful verification of Phase I.**
+3.  **Maintain strict code quality discipline.** No shortcuts.
 
 **COMMANDER JULES OUT.**
