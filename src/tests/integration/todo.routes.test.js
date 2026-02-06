@@ -1,6 +1,6 @@
 const request = require('supertest');
-const app = require('../app');
-const { connectDB, closeDB, getDb } = require('../config/db');
+const app = require('../../app');
+const { connectDB, closeDB, getDb } = require('../../config/db');
 
 describe('API Endpoints Integration Tests', () => {
   beforeAll(async () => {
