@@ -47,6 +47,9 @@ jobs:
       - name: Static Code Analysis (Root)
         run: npm run lint
 
+      - name: Backend Verification (Unit & Integration)
+        run: npm test
+
       # --- FRONTEND DEPENDENCIES & TESTS ---
       - name: Install Dependencies (Frontend)
         working-directory: angular-ui
@@ -60,8 +63,8 @@ jobs:
 
       - name: Unit Verification (Frontend)
         working-directory: angular-ui
-        # Run tests in Headless Chrome
-        run: npx ng test --watch=false --browsers=ChromeHeadlessCI
+        # Run tests in Headless Chrome with Coverage
+        run: npm run test -- --watch=false --browsers=ChromeHeadlessCI
 
   docker-verification:
     name: Container Build Verification
@@ -78,9 +81,42 @@ jobs:
         # This catches environment-specific build issues early.
         run: docker build . -t app-candidate:latest
 
+  e2e-verification:
+    name: End-to-End Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: security-and-quality
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies (Root)
+        run: npm ci
+
+      - name: Install Dependencies (Frontend)
+        working-directory: angular-ui
+        run: npm ci --legacy-peer-deps
+
+      - name: Build Frontend
+        working-directory: angular-ui
+        run: npm run build
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run E2E Tests
+        run: npx playwright test
+
   deploy:
     name: Production Deployment
-    needs: [docker-verification]
+    needs: [docker-verification, e2e-verification]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
