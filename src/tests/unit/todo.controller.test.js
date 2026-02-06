@@ -1,4 +1,4 @@
-const { createTodo, updateTodo, deleteTodo, getTodos } = require('../../controllers/todo.controller');
+const { createTodo, updateTodo, deleteTodo } = require('../../controllers/todo.controller');
 const { getDb } = require('../../config/db');
 const { createAuditLog } = require('../../models/audit.model');
 const logger = require('../../config/logger');
