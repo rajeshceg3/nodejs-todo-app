@@ -2,7 +2,13 @@
   "name": "node-starter",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
+    "setup": "bin/setup-local.sh",
+    "validate": "bin/validate-build.sh",
     "start": "npm run build:ui && node src/server.js",
     "start:server": "node src/server.js",
     "dev": "nodemon src/server.js",
