@@ -3,8 +3,8 @@ set -e
 
 echo "🔒 Sourcing environment configuration..."
 # Enforce Node version if nvm is available
-if [ -s "$HOME/.nvm/nvm.sh" ]; then
-  . "$HOME/.nvm/nvm.sh"
+if [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ]; then
+  . "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
   nvm use
 fi
 
