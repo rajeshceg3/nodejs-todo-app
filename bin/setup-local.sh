@@ -13,8 +13,9 @@ npm ci
 
 echo "📦 Installing Frontend Dependencies (Deterministic with Legacy Peer Deps)..."
 # Angular UI has fragile dependencies requiring legacy-peer-deps
-cd angular-ui
-npm ci --legacy-peer-deps
-cd ..
+(
+  cd angular-ui
+  npm ci --legacy-peer-deps
+)
 
 echo "✅ Local Environment Setup Complete."
