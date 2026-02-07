@@ -43,5 +43,22 @@ describe('Audit Routes Integration Tests', () => {
       expect(res.body.status).toBe('INTEGRITY_VERIFIED');
       expect(res.body.count).toBe(1);
     });
+
+    it('should detect tampered logs (hash mismatch)', async () => {
+      await createAuditLog('TEST_ACTION', '123', { data: 'original' });
+
+      const db = getDb();
+      // Tamper with the log directly (change payload but keep hash same -> hash mismatch)
+      // Or change hash -> hash mismatch
+      await db.collection('audit_log').updateOne(
+        { action: 'TEST_ACTION' },
+        { $set: { hash: 'badhash' } }
+      );
+
+      const res = await request(app).get('/audit-logs/verify');
+      expect(res.statusCode).toBe(200);
+      expect(res.body.status).toBe('INTEGRITY_COMPROMISED');
+      expect(res.body.brokenIndices.length).toBeGreaterThan(0);
+    });
   });
 });

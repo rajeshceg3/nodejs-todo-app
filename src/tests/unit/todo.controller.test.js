@@ -3,11 +3,13 @@ const { getDb } = require('../../config/db');
 const { createAuditLog } = require('../../models/audit.model');
 const logger = require('../../config/logger');
 const { ObjectId } = require('mongodb');
+const { parseTodo } = require('../../utils/todo.parser');
 
 // Mock dependencies
 jest.mock('../../config/db');
 jest.mock('../../models/audit.model');
 jest.mock('../../config/logger');
+jest.mock('../../utils/todo.parser');
 
 describe('Todo Controller Unit Tests', () => {
   let mockReq, mockRes, mockDb, mockCollection;
@@ -36,6 +38,14 @@ describe('Todo Controller Unit Tests', () => {
 
     getDb.mockReturnValue(mockDb);
     createAuditLog.mockResolvedValue(true);
+
+    // Default mock implementation for parseTodo
+    parseTodo.mockReturnValue({
+      content: 'Test Mission',
+      priority: 'medium',
+      tags: [],
+      dueDate: null
+    });
   });
 
   afterEach(() => {
@@ -50,9 +60,13 @@ describe('Todo Controller Unit Tests', () => {
 
       await createTodo(mockReq, mockRes);
 
+      expect(parseTodo).toHaveBeenCalledWith('Test Mission');
       expect(mockCollection.insertOne).toHaveBeenCalledWith(expect.objectContaining({
         content: 'Test Mission',
-        status: 'pending'
+        status: 'pending',
+        priority: 'medium',
+        tags: [],
+        dueDate: null
       }));
       expect(createAuditLog).toHaveBeenCalledWith('CREATE_TASK', mockInsertId.toString(), expect.any(Object));
       expect(mockRes.status).toHaveBeenCalledWith(201);

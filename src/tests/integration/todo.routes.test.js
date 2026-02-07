@@ -39,6 +39,17 @@ describe('API Endpoints Integration Tests', () => {
       expect(res.body.todo.status).toBe('pending');
     });
 
+    it('should parse metadata correctly', async () => {
+      const res = await request(app)
+        .post('/list')
+        .send({ text: 'Mission !high #security' });
+
+      expect(res.statusCode).toBe(201);
+      expect(res.body.todo.priority).toBe('high');
+      expect(res.body.todo.tags).toContain('security');
+      expect(res.body.todo.content).toBe('Mission');
+    });
+
     it('should fail if text is missing', async () => {
       const res = await request(app)
         .post('/list')
@@ -66,6 +77,23 @@ describe('API Endpoints Integration Tests', () => {
       expect(res.statusCode).toBe(200);
       expect(res.body.todo.status).toBe('completed');
     });
+
+    it('should return 404 if todo not found', async () => {
+      const nonExistentId = '507f1f77bcf86cd799439011'; // valid format but not in db
+      const res = await request(app)
+        .patch(`/list/${nonExistentId}`)
+        .send({ status: 'completed' });
+
+      expect(res.statusCode).toBe(404);
+    });
+
+    it('should return 400 for invalid ID format', async () => {
+      const res = await request(app)
+        .patch('/list/invalid-id')
+        .send({ status: 'completed' });
+
+      expect(res.statusCode).toBe(400);
+    });
   });
 
   describe('DELETE /list/:id', () => {
@@ -88,6 +116,17 @@ describe('API Endpoints Integration Tests', () => {
       const getRes = await request(app).get('/list');
       const found = getRes.body.todos.find(t => t._id === todoId);
       expect(found).toBeUndefined();
+    });
+
+    it('should return 404 if todo not found', async () => {
+      const nonExistentId = '507f1f77bcf86cd799439011';
+      const res = await request(app).delete(`/list/${nonExistentId}`);
+      expect(res.statusCode).toBe(404);
+    });
+
+    it('should return 400 for invalid ID format', async () => {
+      const res = await request(app).delete('/list/invalid-id');
+      expect(res.statusCode).toBe(400);
     });
   });
 });
