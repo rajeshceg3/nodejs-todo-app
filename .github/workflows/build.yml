@@ -114,15 +114,6 @@ jobs:
         working-directory: angular-ui
         run: npm run build
 
-      - name: Start Backend
-        run: npm run start:server &
-        env:
-          PORT: 3000
-          # MONGODB_URI not set -> triggers MongoMemoryServer
-
-      - name: Wait for Backend
-        run: npx -y wait-on http://localhost:3000
-
       - name: Run Playwright Tests
         run: npx playwright test
 
