@@ -1,9 +1,12 @@
-# Node.js To-Do List Application (Production Ready)
+# Node.js To-Do List Developer Demo
 
-**CLASSIFICATION:** INTERNAL USE ONLY
 **VERSION:** 1.0.0
 
-A mission-critical To-Do List application built with a Node.js/Express backend and an advanced Angular frontend. Designed for reliability, security, and high-performance user operations.
+A shared developer example with a Node.js/Express backend and Angular frontend.
+
+The public demo has no user accounts: anyone can view and change the same tasks.
+Its default database is disposable and can reset on restart or idle spin-down.
+Use made-up examples only, never personal information. It is not private task storage.
 
 ## Architecture
 

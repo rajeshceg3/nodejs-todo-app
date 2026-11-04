@@ -224,3 +224,14 @@
     box-shadow: 0 0 8px var(--color-primary);
   }
 }
+
+.demo-notice {
+  position: relative;
+  z-index: 20;
+  padding: 12px 20px;
+  background: #fff3cf;
+  color: #483700;
+  font: 500 14px/1.5 system-ui, sans-serif;
+  text-align: center;
+  border-bottom: 1px solid #dac88d;
+}
