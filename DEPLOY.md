@@ -39,3 +39,18 @@ Now, when you push to `main`:
 1. GitHub Actions will run tests.
 2. If tests pass, it will hit the Render Deploy Hook.
 3. Render will pull the latest code and deploy it.
+
+## Current recovery candidate (not deployed)
+
+The existing Render service is a free Node service. Build Angular during the build
+phase, not at server startup:
+
+- Build: `npm ci --ignore-scripts && npm run build:deploy`
+- Start: `npm run start:deploy`
+
+Do not enable real task storage until persistent MongoDB and an authenticated
+access boundary are configured. The current default MongoMemoryServer is a
+disposable local-development database. Render free services lose local state on
+restart, redeploy and idle spin-down. A passing build does not prove durability,
+privacy, a configured deploy hook, or successful hosting. Never publish database
+credentials in source, logs or client bundles.

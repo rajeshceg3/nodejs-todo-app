@@ -15,7 +15,9 @@
     "build:ui": "npm install --prefix angular-ui --legacy-peer-deps --include=dev && npm run build --prefix angular-ui",
     "lint": "eslint .",
     "test": "jest src/tests --detectOpenHandles --verbose --coverage",
-    "verify": "node .cursor/skills/verify-nodejs-todo-app/verify.cjs"
+    "verify": "node .cursor/skills/verify-nodejs-todo-app/verify.cjs",
+    "build:deploy": "npm ci --prefix angular-ui --legacy-peer-deps --include=dev --ignore-scripts && npm run build --prefix angular-ui",
+    "start:deploy": "node src/server.js"
   },
   "dependencies": {
     "@angular/forms": "^20.0.0",

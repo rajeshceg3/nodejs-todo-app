@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterLinkActive, RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLinkActive, RouterLink } from '@angular/router';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -30,6 +30,14 @@ describe('AppComponent', () => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it('warns before task entry that this is a shared disposable demo', () => {
+    const note = fixture.nativeElement.querySelector('[role=note]');
+    expect(note.textContent).toContain('Everyone can see and change');
+    expect(note.textContent).toContain('disappear when the service restarts');
+    expect(note.textContent).toContain('never personal data');
+    expect(note.compareDocumentPosition(fixture.nativeElement.querySelector('main')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('should create the app', () => {
