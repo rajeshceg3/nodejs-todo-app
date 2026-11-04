@@ -14,7 +14,8 @@
     "dev": "nodemon src/server.js",
     "build:ui": "npm install --prefix angular-ui --legacy-peer-deps --include=dev && npm run build --prefix angular-ui",
     "lint": "eslint .",
-    "test": "jest src/tests --detectOpenHandles --verbose --coverage"
+    "test": "jest src/tests --detectOpenHandles --verbose --coverage",
+    "verify": "node .cursor/skills/verify-nodejs-todo-app/verify.cjs"
   },
   "dependencies": {
     "@angular/forms": "^20.0.0",

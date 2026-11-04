@@ -79,3 +79,7 @@ A mission-critical To-Do List application built with a Node.js/Express backend a
 ## Deployment
 
 The application is Docker-ready and supports standard CI/CD pipelines. See `DEPLOY.md` for details.
+
+## Verification
+
+Run `npm run verify` after installing dependencies. Read [.cursor/skills/verify-nodejs-todo-app/SKILL.md](.cursor/skills/verify-nodejs-todo-app/SKILL.md) for isolation, prerequisites, browser mode, proof locations, feature coverage and cleanup. Setup is not a claim of full feature or production verification.
