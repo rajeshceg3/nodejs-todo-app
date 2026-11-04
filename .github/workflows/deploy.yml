@@ -18,7 +18,7 @@ permissions:
 jobs:
   security-and-quality:
     name: Security & Quality Gate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     steps:
@@ -68,7 +68,7 @@ jobs:
 
   docker-verification:
     name: Container Build Verification
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     needs: security-and-quality
 
@@ -83,7 +83,7 @@ jobs:
 
   e2e-verification:
     name: End-to-End Verification
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: security-and-quality
 
@@ -117,7 +117,7 @@ jobs:
   deploy:
     name: Production Deployment
     needs: [docker-verification, e2e-verification]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
     timeout-minutes: 5
