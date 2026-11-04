@@ -1,0 +1,1916 @@
+[
+  {
+    "schema": "createTodoSchema",
+    "input": null,
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "null",
+            "path": [],
+            "message": "Expected object, received null"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": [],
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "array",
+            "path": [],
+            "message": "Expected object, received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": 0,
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "number",
+            "path": [],
+            "message": "Expected object, received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": true,
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "boolean",
+            "path": [],
+            "message": "Expected object, received boolean"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": {
+      "text": null
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "null",
+            "path": [
+              "text"
+            ],
+            "message": "Expected string, received null"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": {},
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "undefined",
+            "path": [
+              "text"
+            ],
+            "message": "Required"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": {
+      "text": 0
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "number",
+            "path": [
+              "text"
+            ],
+            "message": "Expected string, received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": {
+      "text": 1
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "number",
+            "path": [
+              "text"
+            ],
+            "message": "Expected string, received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": {
+      "text": true
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "boolean",
+            "path": [
+              "text"
+            ],
+            "message": "Expected string, received boolean"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": {
+      "text": {}
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "object",
+            "path": [
+              "text"
+            ],
+            "message": "Expected string, received object"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": {
+      "text": []
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "array",
+            "path": [
+              "text"
+            ],
+            "message": "Expected string, received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": {
+      "text": [
+        "x"
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "array",
+            "path": [
+              "text"
+            ],
+            "message": "Expected string, received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": {
+      "text": ""
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "too_small",
+            "minimum": 1,
+            "type": "string",
+            "inclusive": true,
+            "exact": false,
+            "message": "Content cannot be empty",
+            "path": [
+              "text"
+            ]
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "createTodoSchema",
+    "input": {
+      "text": "x"
+    },
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": null,
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "null",
+            "path": [],
+            "message": "Expected object, received null"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": [],
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "array",
+            "path": [],
+            "message": "Expected object, received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": 0,
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "number",
+            "path": [],
+            "message": "Expected object, received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": true,
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "boolean",
+            "path": [],
+            "message": "Expected object, received boolean"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "content": null
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "null",
+            "path": [
+              "content"
+            ],
+            "message": "Expected string, received null"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {},
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "content": 0
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "number",
+            "path": [
+              "content"
+            ],
+            "message": "Expected string, received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "content": 1
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "number",
+            "path": [
+              "content"
+            ],
+            "message": "Expected string, received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "content": true
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "boolean",
+            "path": [
+              "content"
+            ],
+            "message": "Expected string, received boolean"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "content": {}
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "object",
+            "path": [
+              "content"
+            ],
+            "message": "Expected string, received object"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "content": []
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "array",
+            "path": [
+              "content"
+            ],
+            "message": "Expected string, received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "content": [
+        null
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "array",
+            "path": [
+              "content"
+            ],
+            "message": "Expected string, received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "content": [
+        "x",
+        2
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "array",
+            "path": [
+              "content"
+            ],
+            "message": "Expected string, received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "content": [
+        "x"
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "array",
+            "path": [
+              "content"
+            ],
+            "message": "Expected string, received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "content": ""
+    },
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "content": "x"
+    },
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "priority": null
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'critical' | 'high' | 'medium' | 'low'",
+            "received": "null",
+            "code": "invalid_type",
+            "path": [
+              "priority"
+            ],
+            "message": "Expected 'critical' | 'high' | 'medium' | 'low', received null"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {},
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "priority": 0
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'critical' | 'high' | 'medium' | 'low'",
+            "received": "number",
+            "code": "invalid_type",
+            "path": [
+              "priority"
+            ],
+            "message": "Expected 'critical' | 'high' | 'medium' | 'low', received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "priority": 1
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'critical' | 'high' | 'medium' | 'low'",
+            "received": "number",
+            "code": "invalid_type",
+            "path": [
+              "priority"
+            ],
+            "message": "Expected 'critical' | 'high' | 'medium' | 'low', received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "priority": true
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'critical' | 'high' | 'medium' | 'low'",
+            "received": "boolean",
+            "code": "invalid_type",
+            "path": [
+              "priority"
+            ],
+            "message": "Expected 'critical' | 'high' | 'medium' | 'low', received boolean"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "priority": {}
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'critical' | 'high' | 'medium' | 'low'",
+            "received": "object",
+            "code": "invalid_type",
+            "path": [
+              "priority"
+            ],
+            "message": "Expected 'critical' | 'high' | 'medium' | 'low', received object"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "priority": []
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'critical' | 'high' | 'medium' | 'low'",
+            "received": "array",
+            "code": "invalid_type",
+            "path": [
+              "priority"
+            ],
+            "message": "Expected 'critical' | 'high' | 'medium' | 'low', received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "priority": [
+        null
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'critical' | 'high' | 'medium' | 'low'",
+            "received": "array",
+            "code": "invalid_type",
+            "path": [
+              "priority"
+            ],
+            "message": "Expected 'critical' | 'high' | 'medium' | 'low', received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "priority": [
+        "x",
+        2
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'critical' | 'high' | 'medium' | 'low'",
+            "received": "array",
+            "code": "invalid_type",
+            "path": [
+              "priority"
+            ],
+            "message": "Expected 'critical' | 'high' | 'medium' | 'low', received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "priority": [
+        "x"
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'critical' | 'high' | 'medium' | 'low'",
+            "received": "array",
+            "code": "invalid_type",
+            "path": [
+              "priority"
+            ],
+            "message": "Expected 'critical' | 'high' | 'medium' | 'low', received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "priority": ""
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "received": "",
+            "code": "invalid_enum_value",
+            "options": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ],
+            "path": [
+              "priority"
+            ],
+            "message": "Invalid enum value. Expected 'critical' | 'high' | 'medium' | 'low', received ''"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "priority": "x"
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "received": "x",
+            "code": "invalid_enum_value",
+            "options": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ],
+            "path": [
+              "priority"
+            ],
+            "message": "Invalid enum value. Expected 'critical' | 'high' | 'medium' | 'low', received 'x'"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "status": null
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'pending' | 'completed'",
+            "received": "null",
+            "code": "invalid_type",
+            "path": [
+              "status"
+            ],
+            "message": "Expected 'pending' | 'completed', received null"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {},
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "status": 0
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'pending' | 'completed'",
+            "received": "number",
+            "code": "invalid_type",
+            "path": [
+              "status"
+            ],
+            "message": "Expected 'pending' | 'completed', received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "status": 1
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'pending' | 'completed'",
+            "received": "number",
+            "code": "invalid_type",
+            "path": [
+              "status"
+            ],
+            "message": "Expected 'pending' | 'completed', received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "status": true
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'pending' | 'completed'",
+            "received": "boolean",
+            "code": "invalid_type",
+            "path": [
+              "status"
+            ],
+            "message": "Expected 'pending' | 'completed', received boolean"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "status": {}
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'pending' | 'completed'",
+            "received": "object",
+            "code": "invalid_type",
+            "path": [
+              "status"
+            ],
+            "message": "Expected 'pending' | 'completed', received object"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "status": []
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'pending' | 'completed'",
+            "received": "array",
+            "code": "invalid_type",
+            "path": [
+              "status"
+            ],
+            "message": "Expected 'pending' | 'completed', received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "status": [
+        null
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'pending' | 'completed'",
+            "received": "array",
+            "code": "invalid_type",
+            "path": [
+              "status"
+            ],
+            "message": "Expected 'pending' | 'completed', received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "status": [
+        "x",
+        2
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'pending' | 'completed'",
+            "received": "array",
+            "code": "invalid_type",
+            "path": [
+              "status"
+            ],
+            "message": "Expected 'pending' | 'completed', received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "status": [
+        "x"
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "expected": "'pending' | 'completed'",
+            "received": "array",
+            "code": "invalid_type",
+            "path": [
+              "status"
+            ],
+            "message": "Expected 'pending' | 'completed', received array"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "status": ""
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "received": "",
+            "code": "invalid_enum_value",
+            "options": [
+              "pending",
+              "completed"
+            ],
+            "path": [
+              "status"
+            ],
+            "message": "Invalid enum value. Expected 'pending' | 'completed', received ''"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "status": "x"
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "received": "x",
+            "code": "invalid_enum_value",
+            "options": [
+              "pending",
+              "completed"
+            ],
+            "path": [
+              "status"
+            ],
+            "message": "Invalid enum value. Expected 'pending' | 'completed', received 'x'"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "tags": null
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "array",
+            "received": "null",
+            "path": [
+              "tags"
+            ],
+            "message": "Expected array, received null"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {},
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "tags": 0
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "array",
+            "received": "number",
+            "path": [
+              "tags"
+            ],
+            "message": "Expected array, received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "tags": 1
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "array",
+            "received": "number",
+            "path": [
+              "tags"
+            ],
+            "message": "Expected array, received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "tags": true
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "array",
+            "received": "boolean",
+            "path": [
+              "tags"
+            ],
+            "message": "Expected array, received boolean"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "tags": {}
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "array",
+            "received": "object",
+            "path": [
+              "tags"
+            ],
+            "message": "Expected array, received object"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "tags": []
+    },
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "tags": [
+        null
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "null",
+            "path": [
+              "tags",
+              0
+            ],
+            "message": "Expected string, received null"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "tags": [
+        "x",
+        2
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "number",
+            "path": [
+              "tags",
+              1
+            ],
+            "message": "Expected string, received number"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "tags": [
+        "x"
+      ]
+    },
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "tags": ""
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "array",
+            "received": "string",
+            "path": [
+              "tags"
+            ],
+            "message": "Expected array, received string"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "tags": "x"
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_type",
+            "expected": "array",
+            "received": "string",
+            "path": [
+              "tags"
+            ],
+            "message": "Expected array, received string"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "dueDate": null
+    },
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {},
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "dueDate": 0
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "number",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected string, received number"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "date",
+                    "received": "number",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected date, received number"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "dueDate"
+            ],
+            "message": "Invalid input"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "dueDate": 1
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "number",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected string, received number"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "date",
+                    "received": "number",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected date, received number"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "dueDate"
+            ],
+            "message": "Invalid input"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "dueDate": true
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "boolean",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected string, received boolean"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "date",
+                    "received": "boolean",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected date, received boolean"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "dueDate"
+            ],
+            "message": "Invalid input"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "dueDate": {}
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "object",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected string, received object"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "date",
+                    "received": "object",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected date, received object"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "dueDate"
+            ],
+            "message": "Invalid input"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "dueDate": []
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "array",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected string, received array"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "date",
+                    "received": "array",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected date, received array"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "dueDate"
+            ],
+            "message": "Invalid input"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "dueDate": [
+        null
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "array",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected string, received array"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "date",
+                    "received": "array",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected date, received array"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "dueDate"
+            ],
+            "message": "Invalid input"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "dueDate": [
+        "x",
+        2
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "array",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected string, received array"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "date",
+                    "received": "array",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected date, received array"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "dueDate"
+            ],
+            "message": "Invalid input"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "dueDate": [
+        "x"
+      ]
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "error": "Validation Error",
+        "details": [
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "array",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected string, received array"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "date",
+                    "received": "array",
+                    "path": [
+                      "dueDate"
+                    ],
+                    "message": "Expected date, received array"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "dueDate"
+            ],
+            "message": "Invalid input"
+          }
+        ]
+      },
+      "next": false
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "dueDate": ""
+    },
+    "expected": {
+      "next": true
+    }
+  },
+  {
+    "schema": "updateTodoSchema",
+    "input": {
+      "dueDate": "x"
+    },
+    "expected": {
+      "next": true
+    }
+  }
+]

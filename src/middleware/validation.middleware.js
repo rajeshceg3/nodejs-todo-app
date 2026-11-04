@@ -1,4 +1,5 @@
 const { z } = require('zod');
+const { legacyIssues } = require('./legacy-validation-errors');
 
 const validate = (schema) => (req, res, next) => {
   try {
@@ -6,7 +7,7 @@ const validate = (schema) => (req, res, next) => {
     next();
   } catch (err) {
     if (err instanceof z.ZodError) {
-      return res.status(400).send({ error: 'Validation Error', details: err.errors });
+      return res.status(400).send({ error: 'Validation Error', details: legacyIssues(err.issues, req.body) });
     }
     next(err);
   }
